@@ -4,7 +4,7 @@ import path, { dirname } from "path"
 import { Server } from "socket.io"
 import { fileURLToPath } from "url";
 import { IP, PORT } from "./config.js"
-import { parseRoomId } from './utils.js'
+import { parseRoomId, isValidInstruction } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,13 +45,14 @@ app.get('/room-info', (req, res) => {
   res.end(JSON.stringify(rooms[roomId]));
 })
 
-app.post('/start-room', (req, res) => {
-  const startInfo = req.body;
-  if ('roomId' in startInfo) {
-    const roomId = parseRoomId(startInfo['roomId'], rooms)
-    if (roomId) {
-      rooms[roomId] = startInfo.room
-      io.to(roomId).emit('start')
+app.post('/toggle-countdown', (req, res) => {
+  const data = req.body;
+  if ('roomId' in data && 'room' in data) {
+    const roomId = parseRoomId(data['roomId'], rooms)
+    if (roomId && isValidInstruction(data.room.latestInstruction)) {
+      console.log(`${data.room.latestInstruction} room ${roomId}`)
+      rooms[roomId] = data.room
+      io.to(roomId).emit(data.room.latestInstruction)
     }
   }
   res.end()

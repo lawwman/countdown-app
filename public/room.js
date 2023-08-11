@@ -54,4 +54,14 @@ socket.on('start', () => {
     countdownCounter = countdownValue
 })
 
+socket.on('pause', () => {
+    countdownStatus = 'pause'
+    console.log('paused')
+})
+
+socket.on('restart', () => {
+    countdownStatus = 'start'
+    countdownCounter = countdownValue
+})
+
 init()
