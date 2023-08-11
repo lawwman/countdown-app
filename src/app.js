@@ -4,7 +4,7 @@ import path, { dirname } from "path"
 import { Server } from "socket.io"
 import { fileURLToPath } from "url";
 import { IP, PORT } from "./config.js"
-import { parseQueryParamForRoomId } from './utils.js'
+import { parseRoomId } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-let rooms = { '0': { countdown: '23' } }
+let rooms = {}
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public')
 
@@ -34,15 +34,27 @@ app.post('/sync-rooms', (req, res) => {
 });
 
 app.get('/room', (req, res) => {
-  const roomId = parseQueryParamForRoomId(req.query, rooms);
+  const roomId = parseRoomId(req.query['id'], rooms);
   if (roomId === undefined) res.sendFile(path.join(PUBLIC_DIR, 'room-not-found.html'));
   else res.sendFile(path.join(PUBLIC_DIR, 'room.html'));
 })
 
 app.get('/room-info', (req, res) => {
-  const roomId = parseQueryParamForRoomId(req.query, rooms);
+  const roomId = parseRoomId(req.query['id'], rooms);
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(rooms[roomId]));
+})
+
+app.post('/start-room', (req, res) => {
+  const startInfo = req.body;
+  if ('roomId' in startInfo) {
+    const roomId = parseRoomId(startInfo['roomId'], rooms)
+    if (roomId) {
+      rooms[roomId] = startInfo.room
+      io.to(roomId).emit('start')
+    }
+  }
+  res.end()
 })
 
 io.on('connection', (socket) => {

@@ -1,4 +1,5 @@
 let socket;
+socket = io('')
 
 const clockSpan = document.getElementById('clock')
 const countdownSpan = document.getElementById('countdown')
@@ -8,15 +9,16 @@ function clockTimer() {
     const date = new Date();
     clockSpan.textContent = date.toLocaleTimeString();
 
-    if (countdownStatus === 'start' && countdownValue >= 0) {
-        countdownSpan.textContent = countdownValue
-        countdownValue -= 1
+    if (countdownStatus === 'start' && countdownCounter >= 0) {
+        countdownSpan.textContent = countdownCounter
+        countdownCounter -= 1
     } else {
         countdownSpan.textContent = 0
     }
 }
 
 let countdownValue = 0;
+let countdownCounter = 0;
 let countdownStatus = 'idle' // idle | start | pause
 
 clockTimer();
@@ -41,10 +43,15 @@ async function init() {
     if (details.countdown !== undefined && details.countdown !== null) {
         if (!isNaN(details.countdown)) {
             countdownValue = parseInt(details.countdown);
+            countdownCounter = countdownValue
         }
     }
-    socket = io('')
     socket.emit('join-room', roomId)
 }
+
+socket.on('start', () => {
+    countdownStatus = 'start'
+    countdownCounter = countdownValue
+})
 
 init()

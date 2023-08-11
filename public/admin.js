@@ -1,7 +1,10 @@
 const roomHolder = document.getElementById('room-holder')
 const selectedRoomLabel = document.getElementById('selected-room-label')
 const selectedRoomUrl = document.getElementById('selected-room-url')
+const selectedRoomCd = document.getElementById('selected-room-cd')
 
+const startPauseRoomBtn = document.getElementById('start-pause-room')
+startPauseRoomBtn.disabled = true
 
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', (event) => {
@@ -21,44 +24,75 @@ document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
 });
 
 document.getElementById('add-room').addEventListener('click', () => addRoom())
+startPauseRoomBtn.addEventListener('click', () => startPauseRoom())
 
 let roomCounter = 0
 const rooms = {}
 
 // admin should initiate from the server as well
 
+async function startPauseRoom() {
+    const roomId = selectedRoomLabel.textContent
+    try {
+        const res = await fetch('start-room', {
+            method: 'POST',
+            body: JSON.stringify({
+                roomId,
+                room: {
+                    startTime: Date.now(),
+                    countdown: rooms[roomId].countdown,
+                },
+                
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        if (res.status !== 200) {
+            console.log('fail to start room....') // bad response from backend
+            console.log(await res.text())
+            return
+        }
+    } catch (err) {
+        console.log(err) // cant reach backend
+        return
+    }
+}
+
 async function addRoom() {
     const newRoomId = `${roomCounter}`
     roomCounter += 1
+
+    const countdown = document.getElementById(`new-room-input`).value
+    rooms[newRoomId] = { countdown, startTime: 0 }
+    try {
+        const res = await fetch('sync-rooms', {
+            method: 'POST',
+            body: JSON.stringify(rooms),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        if (res.status !== 200) {
+            console.log('fail to add room....') // bad response from backend
+            console.log(await res.text())
+            delete rooms[newRoomId]
+            return
+        }
+    } catch (err) {
+        console.log(err) // cant reach backend
+        delete rooms[newRoomId]
+        return
+    }
 
     const newRoomElement = document.createElement('div')
     newRoomElement.id = newRoomId
     newRoomElement.className = 'dashboard-room no-selection'
     newRoomElement.innerHTML = `
     <p>room: ${newRoomId}</p>
-    <p>countdown: -</p>
+    <p>countdown: ${countdown}</p>
     `
     roomHolder.appendChild(newRoomElement)
-
-    const newRoomObj = {
-        countdown: document.getElementById(`new-room-input`).value,
-    }
-
-    rooms[newRoomId] = newRoomObj
-
-    const res = await fetch('sync-rooms', {
-        method: 'POST',
-        body: JSON.stringify(rooms),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-
-    if (res.status !== 200) {
-        console.log('fail to add room....') // i should add a ui for this
-        console.log(await res.text())
-        return
-    }
 
     newRoomElement.addEventListener('click', () => {
         const rooms = roomHolder.children
@@ -78,13 +112,18 @@ async function addRoom() {
         }
 
         if (isAnyRoomSelected) {
-            selectedRoomLabel.textContent = `selected room: ${newRoomId}`
+            selectedRoomLabel.textContent = `${newRoomId}`
             const url = new URL(`${location.href}room`)
             url.searchParams.set('id', newRoomId)
-            selectedRoomUrl.textContent = `url: ${url.href}`
+            selectedRoomUrl.textContent = `${url.href}`
+            startPauseRoomBtn.disabled = false
+            selectedRoomCd.textContent = countdown
+            
         } else {
-            selectedRoomLabel.textContent = `selected room: -`
-            selectedRoomUrl.textContent = `url: -`
+            selectedRoomCd.textContent = ''
+            selectedRoomLabel.textContent = ``
+            selectedRoomUrl.textContent = ``
+            startPauseRoomBtn.disabled = true
         }
     })
 }

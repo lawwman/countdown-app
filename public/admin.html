@@ -30,8 +30,9 @@
 
         <div class="control-div">
           <div id="room-info">
-            <p id="selected-room-label">selected room: -</p>
-            <p id="selected-room-url">url: -</p>
+            <p>selected room: <span id="selected-room-label"></span></p>
+            <p>url: <span id="selected-room-url"></span></p>
+            <p>selected room cd: <span id="selected-room-cd"></span></p>
           </div>
           <form id="select-room-form">
             <label for="countdown">Set new countdown</label>
@@ -46,6 +47,7 @@
             </select>
             <input type="submit" value="Set countdown">
           </form>
+          <button id="start-pause-room">start countdown</button>
         </div>
       </div>
       <div id="room-holder">
