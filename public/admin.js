@@ -39,7 +39,9 @@ async function startPauseRoom() {
             body: JSON.stringify({
                 roomId,
                 room: {
-                    startTime: Date.now(),
+                    startEpoch: Date.now(),
+                    pauseEpoch: undefined,
+                    pauseBuffer: 0,
                     countdown: rooms[roomId].countdown,
                 },
                 
@@ -64,7 +66,7 @@ async function addRoom() {
     roomCounter += 1
 
     const countdown = document.getElementById(`new-room-input`).value
-    rooms[newRoomId] = { countdown, startTime: 0 }
+    rooms[newRoomId] = { countdown, startEpoch: 0, pauseBuffer: 0, pauseEpoch: undefined }
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',
