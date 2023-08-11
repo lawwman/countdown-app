@@ -12,26 +12,41 @@
 	  <script src="admin.js" type="module"></script>
     <div>
       <div id="control">
-        <div id="room-info">
-          <p id="selected-room-label">selected room: -</p>
-          <p id="selected-room-url">url: -</p>
-        </div>
-        <form id="control-form">
-          <label for="countdown">Set new countdown</label>
-          <input id="control-input" type="number" placeholder="20">
-          <select name="countdown" id="control-select">
-            <option value="60">60</option>
-            <option value="45">45</option>
-            <option value="30">30</option>
-            <option value="20">20</option>
-            <option value="10">10</option>
-            <option value="5">5</option>
-          </select>
-          <input type="submit" value="Set countdown">
-
-          <br>
+        <div class="control-div">
+          <form id="new-room-form">
+            <label for="countdown">countdown (mins)</label>
+            <input id="new-room-input" type="number" placeholder="20" value="0">
+            <select name="countdown" id="new-room-dropdown">
+              <option value="60">60</option>
+              <option value="45">45</option>
+              <option value="30">30</option>
+              <option value="20">20</option>
+              <option value="10">10</option>
+              <option value="5">5</option>
+            </select>
+          </form>
           <button id="add-room">make new room</button>
-        </form>
+        </div>
+
+        <div class="control-div">
+          <div id="room-info">
+            <p id="selected-room-label">selected room: -</p>
+            <p id="selected-room-url">url: -</p>
+          </div>
+          <form id="select-room-form">
+            <label for="countdown">Set new countdown</label>
+            <input id="select-room-input" type="number" placeholder="20">
+            <select name="countdown" id="select-room-dropdown">
+              <option value="60">60</option>
+              <option value="45">45</option>
+              <option value="30">30</option>
+              <option value="20">20</option>
+              <option value="10">10</option>
+              <option value="5">5</option>
+            </select>
+            <input type="submit" value="Set countdown">
+          </form>
+        </div>
       </div>
       <div id="room-holder">
         <!-- <div id="a" class="dashboard-room">

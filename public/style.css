@@ -10,12 +10,17 @@
 /* for control panel */
 
 #control {
-    background-color: lightblue;
     position: sticky;
     top: 0px;
-    padding: 10px;
     margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.control-div {
+    background-color: lightblue;
     border-radius: 6px;
+    padding: 10px;
 }
 
 /* for rooms */
