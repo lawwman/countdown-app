@@ -1,11 +1,11 @@
 /* TODO:
-- admin should initiate from the server as well
 - admin ui should reflect what is happening too
-- able to name rooms
 - error handling dont show on ui
 - select between units / mins or seconds. currently is second
-- room should detect when lost connection, gracefully exit -> redirect to room-not-found.html
+- room should detect when lost connection (backend down). display accordingly
+- admin should detect when lost connection (backend down). display accordingly
 - input does not trim 0 at start
+- able to name rooms
 */
 
 /*
@@ -18,8 +18,12 @@ instructions:
 import {
     withInstructionMakeRoom,
     makeNewRoom,
-    makeNewRoomDiv
+    makeNewRoomDiv,
+    isUserCdInputValid,
+    makeUrl
 } from "./admin.utils.js"
+
+import { calculateCountdown } from './countdown.utils.js'
 
 const roomHolder = document.getElementById('room-holder')
 const selectedRoomLabel = document.getElementById('selected-room-label')
@@ -45,6 +49,10 @@ document.getElementById(`select-room-dropdown`).addEventListener('change', () =>
     document.getElementById(`select-room-input`).value = document.getElementById(`select-room-dropdown`).value
 });
 
+document.getElementById(`select-room-input`).addEventListener('input', (event) => {
+    setCountdownBtn.disabled = !isUserCdInputValid(event.target.value, rooms[selectedRoomLabel.textContent].countdown)
+})
+
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
 });
@@ -59,6 +67,65 @@ restartCdBtn.addEventListener('click', () => countdownInstruct('restart'))
 
 let roomCounter = 0
 let rooms = {}
+
+
+function controlAppearance(room, roomId) {
+    selectedRoomCd.textContent = room.countdown
+    selectedRoomLabel.textContent = roomId
+    selectedRoomUrl.textContent = makeUrl(roomId)
+
+    /* figure out countdown base on latest instructions */
+    let countdown = 0
+    if (room.instruction === 'set') {
+        countdown = room.countdown
+    } else if (room.instruction === 'pause') {
+        countdown = calculateCountdown(
+            room.countdown,
+            room.pauseBuffer,
+            room.startEpoch,
+            room.pauseEpoch
+        )
+    } else {
+        /* start or restart */
+        countdown = calculateCountdown(
+            room.countdown,
+            room.pauseBuffer,
+            room.startEpoch,
+            Date.now()
+        )
+    }
+    const isDone = countdown <= 0
+    startPauseCdBtn.disabled = isDone
+
+    /* if invalid user cd input, disable set cd btn */
+    setCountdownBtn.disabled = !isUserCdInputValid(document.getElementById(`select-room-input`).value, room.countdown)
+
+    /* no point restarting if countdown is zero */
+    restartCdBtn.disabled = room.countdown === 0 ? true : false
+
+    if (room.instruction === 'set') {
+        startPauseInstr.textContent = 'start'
+        setCountdownBtn.disabled = true // dont make sense to set same value
+        restartCdBtn.disabled = true // dont make sense to restart if just set
+    } else if (room.instruction === 'start') {
+        startPauseInstr.textContent = 'pause'
+    } else if (room.instruction === 'pause') {
+        startPauseInstr.textContent = 'start'
+    } else {
+        /* restart */
+        startPauseInstr.textContent = 'pause' // since restart automatically starts it, makes sense btn is now to pause
+    }
+}
+
+function controlAppearanceOnUnselect() {
+    selectedRoomCd.textContent = ''
+    selectedRoomLabel.textContent = ``
+    selectedRoomUrl.textContent = ``
+    startPauseCdBtn.disabled = true
+    startPauseInstr.textContent = 'start'
+    setCountdownBtn.disabled = true
+    restartCdBtn.disabled = true
+}
 
 async function countdownInstruct(instruction) {
     const roomId = selectedRoomLabel.textContent
@@ -76,16 +143,7 @@ async function countdownInstruct(instruction) {
             return
         }
         rooms[roomId] = room // all good, add the room
-
-        if (instruction === 'start' || instruction === 'pause') {
-            startPauseInstr.textContent = instruction === 'start' ? 'pause' : 'start'
-        } else if (instruction === 'restart') {
-            startPauseInstr.textContent = 'pause' // restart automatically starts the countdown
-        } else {
-            /* set */
-            startPauseInstr.textContent = 'start'
-        }
-
+        controlAppearance(room, roomId)
     } catch (err) {
         console.log(`caught error: ${err}`) // cant reach backend
         return
@@ -136,26 +194,8 @@ async function addRoom() {
             } else roomElem.classList.remove('selected-room')
         }
 
-        if (isAnyRoomSelected) {
-            selectedRoomLabel.textContent = `${newRoomId}`
-            const url = new URL(`${location.href}room`)
-            url.searchParams.set('id', newRoomId)
-            selectedRoomUrl.textContent = `${url.href}`
-            startPauseCdBtn.disabled = false
-            setCountdownBtn.disabled = false
-            restartCdBtn.disabled = false
-            selectedRoomCd.textContent = rooms[newRoomId].countdown
-            startPauseInstr.textContent = rooms[newRoomId].instruction === 'start' ? 'pause' : 'start'
-            
-        } else {
-            selectedRoomCd.textContent = ''
-            selectedRoomLabel.textContent = ``
-            selectedRoomUrl.textContent = ``
-            startPauseCdBtn.disabled = true
-            setCountdownBtn.disabled = true
-            restartCdBtn.disabled = true
-            startPauseInstr.textContent = 'start'
-        }
+        if (isAnyRoomSelected) controlAppearance(rooms[newRoomId], newRoomId)
+        else controlAppearanceOnUnselect()
     })
 }
 

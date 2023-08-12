@@ -1,6 +1,8 @@
 let socket;
 socket = io('')
 
+import { calculateCountdown } from './countdown.utils.js'
+
 const clockSpan = document.getElementById('clock')
 const countdownSpan = document.getElementById('countdown')
 const statusSpan = document.getElementById('status')
@@ -17,15 +19,6 @@ setInterval(clockTimer, 1000);
 let roomId = (new URL(document.location)).searchParams.get("id");
 
 let countdownInterval;
-
-function calculateCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
-    const pauseBufferSeconds = pauseBuffer / 1000.0;
-    const timePassed = (currentEpoch - startEpoch) / 1000.0;
-    const timeLeftFloat = countdown - pauseBufferSeconds - timePassed
-    const lengthOfString = `${parseInt(timeLeftFloat)}`.length
-    const timeLeft = parseFloat(`${timeLeftFloat}`).toPrecision(lengthOfString + 2)
-    return Math.max(0, timeLeft)
-}
 
 function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
     const countdownLeft = calculateCountdown(countdown, pauseBuffer, startEpoch, currentEpoch)
