@@ -1,10 +1,11 @@
 /* TODO:
+- admin ui should reflect what is happening too
 - admin should initiate from the server as well
 - able to name rooms
 - error handling dont show on ui
-- select between units / mins or seconds. currently is seconds
-- admin ui should reflect what is happening too
-- room should detect when lost connection
+- select between units / mins or seconds. currently is second
+- room should detect when lost connection, gracefully exit -> redirect to room-not-found.html
+- input does not trim 0 at start
 */
 
 /*

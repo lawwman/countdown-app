@@ -19,28 +19,38 @@ let roomId = (new URL(document.location)).searchParams.get("id");
 let countdownInterval;
 
 function calculateCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
-    const pauseBufferSeconds = pauseBuffer / 1000
-    const timePassed = (currentEpoch - startEpoch) / 1000;
-    const timeLeft = parseInt(countdown - pauseBufferSeconds - timePassed)
+    const pauseBufferSeconds = pauseBuffer / 1000.0;
+    const timePassed = (currentEpoch - startEpoch) / 1000.0;
+    const timeLeftFloat = countdown - pauseBufferSeconds - timePassed
+    const lengthOfString = `${parseInt(timeLeftFloat)}`.length
+    const timeLeft = parseFloat(`${timeLeftFloat}`).toPrecision(lengthOfString + 2)
     return Math.max(0, timeLeft)
 }
 
+function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
+    const countdownLeft = calculateCountdown(countdown, pauseBuffer, startEpoch, currentEpoch)
+    countdownSpan.textContent = countdownLeft
+    if (countdownLeft <= 0) statusSpan.textContent = 'done'
+    return countdownLeft
+}
+
 function processRoomUpdate(room) {
-    console.log('here')
     if (countdownInterval) clearInterval(countdownInterval)
+    else console.log('already cleared')
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         countdownSpan.textContent = room.countdown
         statusSpan.textContent = 'idle'
     } else if (room.instruction === 'start') {
         statusSpan.textContent = 'running'
-        countdownSpan.textContent = calculateCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now()) // for immediate response
+        setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
         countdownInterval = setInterval(() => {
-            countdownSpan.textContent = calculateCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
-        }, 1000)
+            const countdownLeft = setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
+            if (countdownLeft <= 0) clearInterval(countdownInterval)
+        }, 100)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
-        countdownSpan.textContent = calculateCountdown(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
+        setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
     } else {
         /* restart */
         statusSpan.textContent = 'restarted'
