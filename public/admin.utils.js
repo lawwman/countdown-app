@@ -59,3 +59,17 @@ export function makeUrl(roomId) {
     url.searchParams.set('id', roomId)
     return url.href
 }
+
+export function figureOutCountdownLeft(room) {
+    if (room.instruction === 'set') return room.countdown
+    return calculateCountdown(
+        room.countdown,
+        room.pauseBuffer,
+        room.startEpoch,
+        room.instruction === 'pause' ? room.pauseEpoch : Date.now()
+    )
+}
+
+export function isCountdownDone(room) {
+    return figureOutCountdownLeft(room) <= 0
+}

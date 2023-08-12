@@ -20,7 +20,8 @@ import {
     makeNewRoom,
     makeNewRoomDiv,
     isUserCdInputValid,
-    makeUrl
+    makeUrl,
+    isCountdownDone,
 } from "./admin.utils.js"
 
 import { calculateCountdown } from './countdown.utils.js'
@@ -29,6 +30,7 @@ const roomHolder = document.getElementById('room-holder')
 const selectedRoomLabel = document.getElementById('selected-room-label')
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const selectedRoomCd = document.getElementById('selected-room-cd')
+const setCooldownInput = document.getElementById(`select-room-input`)
 
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
@@ -46,10 +48,10 @@ document.getElementById(`select-room-form`).addEventListener('submit', async (ev
 });
 
 document.getElementById(`select-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`select-room-input`).value = document.getElementById(`select-room-dropdown`).value
+    setCooldownInput.value = document.getElementById(`select-room-dropdown`).value
 });
 
-document.getElementById(`select-room-input`).addEventListener('input', (event) => {
+setCooldownInput.addEventListener('input', (event) => {
     setCountdownBtn.disabled = !isUserCdInputValid(event.target.value, rooms[selectedRoomLabel.textContent].countdown)
 })
 
@@ -73,47 +75,22 @@ function controlAppearance(room, roomId) {
     selectedRoomCd.textContent = room.countdown
     selectedRoomLabel.textContent = roomId
     selectedRoomUrl.textContent = makeUrl(roomId)
+    
+    /* no point start or pause if countdown is done. */
+    startPauseCdBtn.disabled = isCountdownDone(room)
 
-    /* figure out countdown base on latest instructions */
-    let countdown = 0
-    if (room.instruction === 'set') {
-        countdown = room.countdown
-    } else if (room.instruction === 'pause') {
-        countdown = calculateCountdown(
-            room.countdown,
-            room.pauseBuffer,
-            room.startEpoch,
-            room.pauseEpoch
-        )
-    } else {
-        /* start or restart */
-        countdown = calculateCountdown(
-            room.countdown,
-            room.pauseBuffer,
-            room.startEpoch,
-            Date.now()
-        )
-    }
-    const isDone = countdown <= 0
-    startPauseCdBtn.disabled = isDone
+    /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
+    startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
 
     /* if invalid user cd input, disable set cd btn */
-    setCountdownBtn.disabled = !isUserCdInputValid(document.getElementById(`select-room-input`).value, room.countdown)
+    setCountdownBtn.disabled = !isUserCdInputValid(setCooldownInput.value, room.countdown)
 
     /* no point restarting if countdown is zero */
     restartCdBtn.disabled = room.countdown === 0 ? true : false
 
     if (room.instruction === 'set') {
-        startPauseInstr.textContent = 'start'
         setCountdownBtn.disabled = true // dont make sense to set same value
         restartCdBtn.disabled = true // dont make sense to restart if just set
-    } else if (room.instruction === 'start') {
-        startPauseInstr.textContent = 'pause'
-    } else if (room.instruction === 'pause') {
-        startPauseInstr.textContent = 'start'
-    } else {
-        /* restart */
-        startPauseInstr.textContent = 'pause' // since restart automatically starts it, makes sense btn is now to pause
     }
 }
 
