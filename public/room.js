@@ -55,6 +55,10 @@ function processRoomUpdate(room) {
         /* restart */
         statusSpan.textContent = 'restarted'
         countdownSpan.textContent = room.countdown
+        countdownInterval = setInterval(() => {
+            const countdownLeft = setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
+            if (countdownLeft <= 0) clearInterval(countdownInterval)
+        }, 100)
     }
 }
 

@@ -26,12 +26,14 @@ const selectedRoomLabel = document.getElementById('selected-room-label')
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const selectedRoomCd = document.getElementById('selected-room-cd')
 
-const startPauseRoomBtn = document.getElementById('start-pause-room')
+const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
 
 const setCountdownBtn = document.getElementById('set-countdown-btn')
-startPauseRoomBtn.disabled = true
+const restartCdBtn = document.getElementById('restart-cd')
+startPauseCdBtn.disabled = true
 setCountdownBtn.disabled = true
+restartCdBtn.disabled = true
 
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
@@ -52,7 +54,8 @@ document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
 });
 
 document.getElementById('add-room').addEventListener('click', () => addRoom())
-startPauseRoomBtn.addEventListener('click', () => countdownInstruct(startPauseInstr.textContent))
+startPauseCdBtn.addEventListener('click', () => countdownInstruct(startPauseInstr.textContent))
+restartCdBtn.addEventListener('click', () => countdownInstruct('restart'))
 
 let roomCounter = 0
 const rooms = {}
@@ -76,6 +79,11 @@ async function countdownInstruct(instruction) {
 
         if (instruction === 'start' || instruction === 'pause') {
             startPauseInstr.textContent = instruction === 'start' ? 'pause' : 'start'
+        } else if (instruction === 'restart') {
+            startPauseInstr.textContent = 'pause' // restart automatically starts the countdown
+        } else {
+            /* set */
+            startPauseInstr.textContent = 'start'
         }
 
     } catch (err) {
@@ -133,8 +141,9 @@ async function addRoom() {
             const url = new URL(`${location.href}room`)
             url.searchParams.set('id', newRoomId)
             selectedRoomUrl.textContent = `${url.href}`
-            startPauseRoomBtn.disabled = false
+            startPauseCdBtn.disabled = false
             setCountdownBtn.disabled = false
+            restartCdBtn.disabled = false
             selectedRoomCd.textContent = rooms[newRoomId].countdown
             startPauseInstr.textContent = rooms[newRoomId].instruction === 'start' ? 'pause' : 'start'
             
@@ -142,8 +151,9 @@ async function addRoom() {
             selectedRoomCd.textContent = ''
             selectedRoomLabel.textContent = ``
             selectedRoomUrl.textContent = ``
-            startPauseRoomBtn.disabled = true
+            startPauseCdBtn.disabled = true
             setCountdownBtn.disabled = true
+            restartCdBtn.disabled = true
             startPauseInstr.textContent = 'start'
         }
     })
