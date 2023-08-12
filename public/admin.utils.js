@@ -13,7 +13,7 @@ export function withInstructionMakeRoom(rooms, roomId, instruction) {
     } else if (instruction === 'pause') {
         room.pauseEpoch = Date.now()
     } else if (instruction === 'set') {
-        room.countdown = parseInt(document.getElementById(`select-room-input`).value);
+        room.countdown = parseInt(document.getElementById(`set-room-cd-input`).value);
         room.startEpoch = 0;
         room.pauseBuffer = 0;
         room.pauseEpoch = undefined;
@@ -51,8 +51,9 @@ export function makeNewRoomDiv(newRoomId, countdown) {
 export function isUserCdInputValid(value, currentValue) {
     if (value === '' || value === '0') return false
     if (value === undefined || value === null) return false
-    const integerValue = parseInt(value)
-    if (integerValue <= 0 || integerValue === currentValue) return false
+    const intVal = parseInt(value)
+    if (intVal <= 0) return false
+    if (currentValue !== undefined && intVal === currentValue) return false // if currentValue is declared and matches intVal
     return true
 }
 

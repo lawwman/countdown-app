@@ -31,7 +31,7 @@ import {
 
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const selectedRoomCd = document.getElementById('selected-room-cd')
-const setCooldownInput = document.getElementById(`select-room-input`)
+const setCooldownInput = document.getElementById(`set-room-cd-input`)
 
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
@@ -39,7 +39,7 @@ const startPauseInstr = document.getElementById('start-pause-instr')
 const setCountdownBtn = document.getElementById('set-countdown-btn')
 const restartCdBtn = document.getElementById('restart-cd')
 
-controlAppearanceOnUnselect() // start unselected
+uiUpdateRoomUnSelected() // start unselected
 
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
@@ -48,11 +48,11 @@ document.getElementById(`select-room-form`).addEventListener('submit', async (ev
 });
 
 document.getElementById(`select-room-dropdown`).addEventListener('change', () => {
-    setCooldownInput.value = document.getElementById(`select-room-dropdown`).value
+    document.getElementById(`set-room-cd-input`).value = document.getElementById(`select-room-dropdown`).value
 });
 
-setCooldownInput.addEventListener('input', (event) => {
-    setCountdownBtn.disabled = !isUserCdInputValid(event.target.value, rooms[getSelectedRoomId()].countdown)
+document.getElementById(`set-room-cd-input`).addEventListener('input', (event) => {
+    document.getElementById('set-countdown-btn').disabled = !isUserCdInputValid(event.target.value, rooms[getSelectedRoomId()].countdown)
 })
 
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
@@ -60,12 +60,16 @@ document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
 });
 
 document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`new-room-input`).value = document.getElementById(`new-room-dropdown`).value
+    document.getElementById(`new-room-cd-input`).value = document.getElementById(`new-room-dropdown`).value
 });
 
+document.getElementById(`new-room-cd-input`).addEventListener('input', (event) => {
+    document.getElementById('add-room').disabled = !isUserCdInputValid(event.target.value)
+})
+
 document.getElementById('add-room').addEventListener('click', () => addRoomHandler())
-startPauseCdBtn.addEventListener('click', () => countdownInstruct(getSelectedRoomId(), startPauseInstr.textContent))
-restartCdBtn.addEventListener('click', () => countdownInstruct(getSelectedRoomId(), 'restart'))
+document.getElementById('start-pause-cd').addEventListener('click', () => countdownInstruct(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
+document.getElementById('restart-cd').addEventListener('click', () => countdownInstruct(getSelectedRoomId(), 'restart'))
 
 let roomCounter = 0
 let rooms = {}
@@ -80,7 +84,6 @@ function updateCountdownLeft() {
         document.getElementById(`room-cd-left-${roomId}`).textContent = countdownLeft
     }
 }
-
 setInterval(updateCountdownLeft, 500)
 
 function updateRoomUi(room, roomId) {
@@ -88,7 +91,7 @@ function updateRoomUi(room, roomId) {
     updateCountdownLeft()
 }
 
-function controlAppearance(room, roomId) {
+function uiUpdateRoomSelected(room, roomId) {
     selectedRoomCd.textContent = room.countdown
     setSelectedRoomId(roomId)
     selectedRoomUrl.textContent = makeUrl(roomId)
@@ -110,11 +113,10 @@ function controlAppearance(room, roomId) {
         setCountdownBtn.disabled = true // dont make sense to set same value
         restartCdBtn.disabled = true // dont make sense to restart if just set
     }
-
     updateRoomUi(room, roomId)
 }
 
-function controlAppearanceOnUnselect() {
+function uiUpdateRoomUnSelected() {
     selectedRoomCd.textContent = ''
     setSelectedRoomId('')
     selectedRoomUrl.textContent = ``
@@ -140,7 +142,7 @@ async function countdownInstruct(roomId, instruction) {
             return
         }
         rooms[roomId] = room // all good, add the room
-        controlAppearance(room, roomId)
+        uiUpdateRoomSelected(room, roomId)
     } catch (err) {
         console.log(`caught error: ${err}`) // cant reach backend
         return
@@ -169,15 +171,15 @@ function addRoomDiv(roomId) {
             } else roomElem.classList.remove('selected-room')
         }
 
-        if (isAnyRoomSelected) controlAppearance(rooms[roomId], roomId)
-        else controlAppearanceOnUnselect()
+        if (isAnyRoomSelected) uiUpdateRoomSelected(rooms[roomId], roomId)
+        else uiUpdateRoomUnSelected()
     })
 }
 
 async function addRoomHandler() {
     const newRoomId = `${roomCounter}`
     roomCounter += 1
-    rooms[newRoomId] = makeNewRoom(document.getElementById(`new-room-input`).value);
+    rooms[newRoomId] = makeNewRoom(document.getElementById(`new-room-cd-input`).value);
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',
