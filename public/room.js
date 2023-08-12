@@ -27,9 +27,8 @@ function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
     return countdownLeft
 }
 
-function processRoomUpdate(room) {
+function applyRoomValues(room) {
     if (countdownInterval) clearInterval(countdownInterval)
-    else console.log('already cleared')
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         countdownSpan.textContent = room.countdown
@@ -55,7 +54,7 @@ function processRoomUpdate(room) {
     }
 }
 
-
+socket.emit('join-room', roomId) // join room first before init. so you do not miss updates
 async function init() {
     try {
         const res = await fetch('room-info?'  + new URLSearchParams({ id: roomId }), {
@@ -68,14 +67,12 @@ async function init() {
             return
         }
         const room = await res.json()
-        processRoomUpdate(room)
-        socket.emit('join-room', roomId)
+        applyRoomValues(room)
     } catch (err) {
         console.log(`caught error: ${err}`) // cant reach backend
         return
     }
 }
 
-socket.on('toggle-countdown', (room) => processRoomUpdate(room))
-
+socket.on('toggle-countdown', (room) => applyRoomValues(room))
 init()

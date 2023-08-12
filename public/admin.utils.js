@@ -1,3 +1,5 @@
+import { calculateCountdown } from './countdown.utils.js'
+
 export function withInstructionMakeRoom(rooms, roomId, instruction) {
     const room = JSON.parse(JSON.stringify(rooms[roomId]))
     room.instruction = instruction
@@ -36,11 +38,12 @@ export function makeNewRoom(countdown) {
 }
 export function makeNewRoomDiv(newRoomId, countdown) {
     const newRoomElement = document.createElement('div')
-    newRoomElement.id = newRoomId
+    newRoomElement.id = `room-div-${newRoomId}`
     newRoomElement.className = 'dashboard-room no-selection'
     newRoomElement.innerHTML = `
     <p>room: ${newRoomId}</p>
-    <p>countdown: ${countdown}</p>
+    <p>countdown: <span id="room-cd-${newRoomId}">${countdown}</span></p>
+    <p>countdown left: <span id="room-cd-left-${newRoomId}">${countdown}</span></p>
     `
     return newRoomElement
 }
@@ -49,7 +52,6 @@ export function isUserCdInputValid(value, currentValue) {
     if (value === '' || value === '0') return false
     if (value === undefined || value === null) return false
     const integerValue = parseInt(value)
-    console.log(integerValue, currentValue)
     if (integerValue <= 0 || integerValue === currentValue) return false
     return true
 }
