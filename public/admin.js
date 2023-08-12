@@ -15,7 +15,11 @@ instructions:
  - restart means to clear all countdown progress and start. no new countdown value
 */
 
-import { withInstructionMakeRoom } from "./admin.utils.js"
+import {
+    withInstructionMakeRoom,
+    makeNewRoom,
+    makeNewRoomDiv
+} from "./admin.utils.js"
 
 const roomHolder = document.getElementById('room-holder')
 const selectedRoomLabel = document.getElementById('selected-room-label')
@@ -83,15 +87,7 @@ async function countdownInstruct(instruction) {
 async function addRoom() {
     const newRoomId = `${roomCounter}`
     roomCounter += 1
-
-    const countdown = document.getElementById(`new-room-input`).value
-    rooms[newRoomId] = {
-        countdown,
-        startEpoch: 0,
-        pauseBuffer: 0,
-        pauseEpoch: undefined,
-        instruction: 'set'
-    }
+    rooms[newRoomId] = makeNewRoom(document.getElementById(`new-room-input`).value);
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',
@@ -112,13 +108,7 @@ async function addRoom() {
         return
     }
 
-    const newRoomElement = document.createElement('div')
-    newRoomElement.id = newRoomId
-    newRoomElement.className = 'dashboard-room no-selection'
-    newRoomElement.innerHTML = `
-    <p>room: ${newRoomId}</p>
-    <p>countdown: ${countdown}</p>
-    `
+    const newRoomElement = makeNewRoomDiv(newRoomId, rooms[newRoomId].countdown)
     roomHolder.appendChild(newRoomElement)
 
     newRoomElement.addEventListener('click', () => {
@@ -145,7 +135,7 @@ async function addRoom() {
             selectedRoomUrl.textContent = `${url.href}`
             startPauseRoomBtn.disabled = false
             setCountdownBtn.disabled = false
-            selectedRoomCd.textContent = countdown
+            selectedRoomCd.textContent = rooms[newRoomId].countdown
             startPauseInstr.textContent = rooms[newRoomId].instruction === 'start' ? 'pause' : 'start'
             
         } else {

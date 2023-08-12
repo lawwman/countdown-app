@@ -25,3 +25,23 @@ export function withInstructionMakeRoom(rooms, roomId, instruction) {
 
     return room;
 }
+
+export function makeNewRoom(countdown) {
+    return {
+        countdown,
+        startEpoch: 0,
+        pauseBuffer: 0,
+        pauseEpoch: undefined,
+        instruction: 'set'
+    }
+}
+export function makeNewRoomDiv(newRoomId, countdown) {
+    const newRoomElement = document.createElement('div')
+    newRoomElement.id = newRoomId
+    newRoomElement.className = 'dashboard-room no-selection'
+    newRoomElement.innerHTML = `
+    <p>room: ${newRoomId}</p>
+    <p>countdown: ${countdown}</p>
+    `
+    return newRoomElement
+}
