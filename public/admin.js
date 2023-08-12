@@ -1,6 +1,6 @@
 /* TODO:
-- admin ui should reflect what is happening too
 - admin should initiate from the server as well
+- admin ui should reflect what is happening too
 - able to name rooms
 - error handling dont show on ui
 - select between units / mins or seconds. currently is second
@@ -15,7 +15,7 @@ instructions:
  - restart means to clear all countdown progress and start. no new countdown value
 */
 
-// import { test } from "./admin.utils.js"
+import { withInstructionMakeRoom } from "./admin.utils.js"
 
 const roomHolder = document.getElementById('room-holder')
 const selectedRoomLabel = document.getElementById('selected-room-label')
@@ -55,30 +55,7 @@ const rooms = {}
 
 async function countdownInstruct(instruction) {
     const roomId = selectedRoomLabel.textContent
-
-    const room = JSON.parse(JSON.stringify(rooms[roomId])) // clone room
-    room.countdown = rooms[roomId].countdown
-    room.instruction = instruction
-
-    if (instruction === 'start') {
-        if (room.pauseEpoch !== undefined) {
-            room.pauseBuffer += room.pauseEpoch - room.startEpoch
-        }
-        room.startEpoch = Date.now()
-        room.pauseEpoch = undefined
-    } else if (instruction === 'pause') {
-        room.pauseEpoch = Date.now()
-    } else if (instruction === 'set') {
-        room.countdown = document.getElementById(`select-room-input`).value;
-        room.startEpoch = 0;
-        room.pauseBuffer = 0;
-        room.pauseEpoch = undefined;
-    } else {
-        /* restart */
-        room.startEpoch = Date.now()
-        room.pauseEpoch = undefined
-        room.pauseBuffer = 0
-    }
+    const room = withInstructionMakeRoom(rooms, roomId, instruction) // by reference
     
     try {
         const res = await fetch('toggle-countdown', {
