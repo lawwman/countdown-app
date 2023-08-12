@@ -49,10 +49,10 @@ app.post('/toggle-countdown', (req, res) => {
   const data = req.body;
   if ('roomId' in data && 'room' in data) {
     const roomId = parseRoomId(data['roomId'], rooms)
-    if (roomId && isValidInstruction(data.room.latestInstruction)) {
-      console.log(`${data.room.latestInstruction} room ${roomId}`)
+    if (roomId && isValidInstruction(data.room.instruction)) {
+      console.log(`${data.room.instruction} room ${roomId}`)
       rooms[roomId] = data.room
-      io.to(roomId).emit(data.room.latestInstruction)
+      io.to(roomId).emit('toggle-countdown', data.room)
     }
   }
   res.end()

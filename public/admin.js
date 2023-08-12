@@ -1,7 +1,20 @@
 /* TODO:
 - admin should initiate from the server as well
+- able to name rooms
+- error handling dont show on ui
+- select between units / mins or seconds. currently is seconds
+- admin ui should reflect what is happening too
+- room should detect when lost connection
 */
 
+/*
+instructions:
+ - start, pause is as expected. no new countdown value
+ - set means to clear all countdown progress and not start. may have new countdown value
+ - restart means to clear all countdown progress and start. no new countdown value
+*/
+
+// import { test } from "./admin.utils.js"
 
 const roomHolder = document.getElementById('room-holder')
 const selectedRoomLabel = document.getElementById('selected-room-label')
@@ -10,11 +23,15 @@ const selectedRoomCd = document.getElementById('selected-room-cd')
 
 const startPauseRoomBtn = document.getElementById('start-pause-room')
 const startPauseInstr = document.getElementById('start-pause-instr')
+
+const setCountdownBtn = document.getElementById('set-countdown-btn')
 startPauseRoomBtn.disabled = true
+setCountdownBtn.disabled = true
 
 /* setup event listeners for the control panel */
-document.getElementById(`select-room-form`).addEventListener('submit', (event) => {
+document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
     event.preventDefault();
+    countdownInstruct('set');
 });
 
 document.getElementById(`select-room-dropdown`).addEventListener('change', () => {
@@ -40,7 +57,7 @@ async function countdownInstruct(instruction) {
 
     const room = JSON.parse(JSON.stringify(rooms[roomId])) // clone room
     room.countdown = rooms[roomId].countdown
-    room.latestInstruction = instruction
+    room.instruction = instruction
 
     if (instruction === 'start') {
         if (room.pauseEpoch !== undefined) {
@@ -50,6 +67,11 @@ async function countdownInstruct(instruction) {
         room.pauseEpoch = undefined
     } else if (instruction === 'pause') {
         room.pauseEpoch = Date.now()
+    } else if (instruction === 'set') {
+        room.countdown = document.getElementById(`select-room-input`).value;
+        room.startEpoch = 0;
+        room.pauseBuffer = 0;
+        room.pauseEpoch = undefined;
     } else {
         /* restart */
         room.startEpoch = Date.now()
@@ -85,7 +107,13 @@ async function addRoom() {
     roomCounter += 1
 
     const countdown = document.getElementById(`new-room-input`).value
-    rooms[newRoomId] = { countdown, startEpoch: 0, pauseBuffer: 0, pauseEpoch: undefined, latestInstruction: 'idle' }
+    rooms[newRoomId] = {
+        countdown,
+        startEpoch: 0,
+        pauseBuffer: 0,
+        pauseEpoch: undefined,
+        instruction: 'set'
+    }
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',
@@ -138,14 +166,16 @@ async function addRoom() {
             url.searchParams.set('id', newRoomId)
             selectedRoomUrl.textContent = `${url.href}`
             startPauseRoomBtn.disabled = false
+            setCountdownBtn.disabled = false
             selectedRoomCd.textContent = countdown
-            startPauseInstr.textContent = rooms[newRoomId].latestInstruction === 'start' ? 'pause' : 'start'
+            startPauseInstr.textContent = rooms[newRoomId].instruction === 'start' ? 'pause' : 'start'
             
         } else {
             selectedRoomCd.textContent = ''
             selectedRoomLabel.textContent = ``
             selectedRoomUrl.textContent = ``
             startPauseRoomBtn.disabled = true
+            setCountdownBtn.disabled = true
             startPauseInstr.textContent = 'start'
         }
     })
