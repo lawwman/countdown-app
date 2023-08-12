@@ -1,13 +1,11 @@
 /* TODO:
-- make new room ui input  strict
-- error handling dont show on ui
 - select between units / mins or seconds. currently is second
-- room should detect when lost connection (backend down). display accordingly
-- admin should detect when lost connection (backend down). display accordingly
-- input does not trim 0 at start
-- able to name rooms
 - send msg
 - show countdown only / show all
+- room should detect when lost connection (backend down). display accordingly
+- admin should detect when lost connection (backend down). display accordingly
+- error handling dont show on ui
+- able to name rooms
 */
 
 /*
@@ -74,21 +72,21 @@ document.getElementById('restart-cd').addEventListener('click', () => countdownI
 let roomCounter = 0
 let rooms = {}
 
-function updateCountdownLeft() {
+setInterval(() => updateAllRoomsCdLeft(rooms), 500)
+
+function updateAllRoomsCdLeft(rooms) {
     for (const roomId of Object.keys(rooms)) {
         const countdownLeft = figureOutCountdownLeft(rooms[roomId])
         if (getSelectedRoomId() === roomId) {
             if (countdownLeft <= 0) startPauseCdBtn.disabled = true
         }
-        
         document.getElementById(`room-cd-left-${roomId}`).textContent = countdownLeft
     }
 }
-setInterval(updateCountdownLeft, 500)
 
 function updateRoomUi(room, roomId) {
     document.getElementById(`room-cd-${roomId}`).textContent = room.countdown
-    updateCountdownLeft()
+    updateAllRoomsCdLeft()
 }
 
 function uiUpdateRoomSelected(room, roomId) {
