@@ -75,3 +75,11 @@ export function figureOutCountdownLeft(room) {
 export function isCountdownDone(room) {
     return figureOutCountdownLeft(room) <= 0
 }
+
+export function getSelectedRoomId() {
+    return document.getElementById('selected-room-label').textContent
+}
+
+export function setSelectedRoomId(newId) {
+    document.getElementById('selected-room-label').textContent = newId
+}
