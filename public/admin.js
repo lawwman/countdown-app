@@ -58,7 +58,7 @@ startPauseCdBtn.addEventListener('click', () => countdownInstruct(startPauseInst
 restartCdBtn.addEventListener('click', () => countdownInstruct('restart'))
 
 let roomCounter = 0
-const rooms = {}
+let rooms = {}
 
 async function countdownInstruct(instruction) {
     const roomId = selectedRoomLabel.textContent
@@ -158,3 +158,27 @@ async function addRoom() {
         }
     })
 }
+
+async function init() {
+    try {
+        const res = await fetch('sync-rooms', {
+            method: 'GET',
+        })
+        if (res.status !== 200) {
+            console.log('fail to init rooms....') // bad response from backend
+            console.log(await res.text())
+            return
+        }
+        rooms = await res.json()
+        for (const roomId of Object.keys(rooms)) {
+            const newRoomElement = makeNewRoomDiv(roomId, rooms[roomId].countdown)
+            roomHolder.appendChild(newRoomElement)
+        }
+        roomCounter = Object.keys(rooms).length + 1
+    } catch (err) {
+        console.log(`caught error: ${err}`) // cant reach backend
+        return
+    }
+}
+
+void init()

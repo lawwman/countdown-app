@@ -27,11 +27,14 @@ app.get('/', (req, res) => {
 
 // sync the rooms body
 app.post('/sync-rooms', (req, res) => {
-  console.log('syncing rooms...')
   rooms = req.body;
   res.end();
-  console.log('done syncing rooms.');
 });
+
+app.get('/sync-rooms', (_req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(rooms));
+})
 
 app.get('/room', (req, res) => {
   const roomId = parseRoomId(req.query['id'], rooms);
