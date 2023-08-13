@@ -4,6 +4,7 @@
 - admin should detect when lost connection (backend down). display accordingly
 - error handling dont show on ui
 - able to name rooms
+- css update
 */
 
 /*
@@ -42,22 +43,26 @@ document.getElementById(`select-room-form`).addEventListener('submit', async (ev
     event.preventDefault();
 });
 
+document.getElementById(`select-room-form`).addEventListener('input', async (_event) => {
+    updateRoomBtn();
+});
+
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
 });
 
-document.getElementById(`set-room-cd-min-input`).addEventListener('input', (_event) => {
-    updateRoomBtn();
-})
-document.getElementById(`set-room-cd-s-input`).addEventListener('input', (_event) => {
-    updateRoomBtn();
-})
-document.getElementById(`send-msg`).addEventListener('input', (_event) => {
-    updateRoomBtn();
-})
-document.getElementById(`cd-only-checkbox`).addEventListener('input', (_event) => {
-    updateRoomBtn();
-})
+// document.getElementById(`set-room-cd-min-input`).addEventListener('input', (_event) => {
+//     updateRoomBtn();
+// })
+// document.getElementById(`set-room-cd-s-input`).addEventListener('input', (_event) => {
+//     updateRoomBtn();
+// })
+// document.getElementById(`send-msg`).addEventListener('input', (_event) => {
+//     updateRoomBtn();
+// })
+// document.getElementById(`cd-only-checkbox`).addEventListener('input', (_event) => {
+//     updateRoomBtn();
+// })
 
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
