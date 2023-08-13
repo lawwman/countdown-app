@@ -26,31 +26,39 @@ import {
     uiUpdateRoomSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
+    isUserFormInputUpdated
 } from "./admin.ui.js"
 
 uiUpdateRoomUnSelected() // start unselected
 
+function updateRoomBtn() {
+    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
+    document.getElementById('update-room-btn').disabled = !formUpdated
+    document.getElementById('discard-form-changes').disabled = !formUpdated
+}
+
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
     event.preventDefault();
-    sendInstructionToRoom(getSelectedRoomId(), 'set');
 });
 
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
 });
 
-document.getElementById(`set-room-cd-min-input`).addEventListener('input', (event) => {
-    document.getElementById('set-countdown-btn').disabled = !isUserCdInputValid(event.target.value)
+document.getElementById(`set-room-cd-min-input`).addEventListener('input', (_event) => {
+    updateRoomBtn();
 })
-document.getElementById(`set-room-cd-s-input`).addEventListener('input', (event) => {
-    document.getElementById('set-countdown-btn').disabled = !isUserCdInputValid(event.target.value)
+document.getElementById(`set-room-cd-s-input`).addEventListener('input', (_event) => {
+    updateRoomBtn();
+})
+document.getElementById(`send-msg`).addEventListener('input', (_event) => {
+    updateRoomBtn();
+})
+document.getElementById(`cd-only-checkbox`).addEventListener('input', (_event) => {
+    updateRoomBtn();
 })
 
-document.getElementById('send-msg-form').addEventListener('submit', (event) => {
-    event.preventDefault();
-    sendMsgToRoom(getSelectedRoomId())
-});
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
 });
@@ -69,6 +77,8 @@ document.getElementById(`new-room-cd-s-input`).addEventListener('input', (event)
 document.getElementById('add-room').addEventListener('click', () => addRoomHandler())
 document.getElementById('start-pause-cd').addEventListener('click', () => sendInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
 document.getElementById('restart-cd').addEventListener('click', () => sendInstructionToRoom(getSelectedRoomId(), 'restart'))
+document.getElementById('update-room-btn').addEventListener('click', () => updateRoom(getSelectedRoomId()))
+document.getElementById('discard-form-changes').addEventListener('click', () => uiUpdateRoomSelected(getSelectedRoomId(), rooms))
 
 let roomCounter = 0
 let rooms = {}
@@ -96,15 +106,15 @@ async function toggleRoom(roomId, room) {
     }
 }
 
-
-async function sendInstructionToRoom(roomId, instruction) {
-    const room = withInstructionMakeRoom(rooms, roomId, instruction) // by reference
+async function updateRoom(roomId) {
+    const room = withInstructionMakeRoom(rooms, roomId, 'set')
+    room.msg = document.getElementById('send-msg').value
+    room.countdownOnly = document.getElementById('cd-only-checkbox').checked
     await toggleRoom(roomId, room)
 }
 
-async function sendMsgToRoom(roomId) {
-    const room = JSON.parse(JSON.stringify(rooms[roomId])) // clone
-    room.msg = document.getElementById('send-msg').value
+async function sendInstructionToRoom(roomId, instruction) {
+    const room = withInstructionMakeRoom(rooms, roomId, instruction) // by reference
     await toggleRoom(roomId, room)
 }
 

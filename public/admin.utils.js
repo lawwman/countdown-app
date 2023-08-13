@@ -43,8 +43,10 @@ export function makeNewRoom(countdown) {
         pauseEpoch: undefined,
         instruction: 'set',
         msg: '',
+        countdownOnly: false
     }
 }
+
 export function makeNewRoomDiv(newRoomId, countdown) {
     const newRoomElement = document.createElement('div')
     newRoomElement.id = `room-div-${newRoomId}`
@@ -61,7 +63,7 @@ export function isUserCdInputValid(value) {
     if (value === '') return false
     if (value === undefined || value === null) return false
     const intVal = parseInt(value)
-    if (intVal <= 0 || intVal > 60) return false
+    if (intVal < 0 || intVal > 60) return false
     return true
 }
 

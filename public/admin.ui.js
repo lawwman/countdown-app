@@ -9,17 +9,17 @@ import {
 } from "./admin.utils.js"
 
 const selectedRoomUrl = document.getElementById('selected-room-url')
-const selectedRoomCd = document.getElementById('selected-room-cd')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
 const setCooldownSInput = document.getElementById(`set-room-cd-s-input`)
 const setCdDropdown = document.getElementById('set-room-dropdown')
 const sendMsgInput = document.getElementById('send-msg')
-const sendMsgBtn = document.getElementById('send-msg-btn')
+const cdOnlyCheckBox = document.getElementById('cd-only-checkbox')
+const discardChangesBtn = document.getElementById('discard-form-changes')
 
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
 
-const setCountdownBtn = document.getElementById('set-countdown-btn')
+const updateRoomBtn = document.getElementById('update-room-btn')
 const restartCdBtn = document.getElementById('restart-cd')
 
 export function updateAllRoomsCdLeft(rooms) {
@@ -37,16 +37,30 @@ function updateRoomUi(roomId, rooms) {
     updateAllRoomsCdLeft(rooms)
 }
 
+export function isUserFormInputUpdated(room) {
+    const minutes = Math.floor(room.countdown / 60)
+    const seconds = room.countdown - (minutes * 60)
+
+    const isCountdownOnlyUpdated = room.countdownOnly !== cdOnlyCheckBox.checked
+    const isCountdownValid = isUserCdInputValid(setCooldownMinInput.value) && isUserCdInputValid(setCooldownSInput.value)
+    const isCountdownUpdated = !(`${minutes}` === setCooldownMinInput.value && `${seconds}` === setCooldownSInput.value)
+
+    const isMsgUpdated = room.msg !== sendMsgInput.value
+
+    return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated) && isCountdownValid
+}
+
 export function uiUpdateRoomSelected(roomId, rooms) {
     const room = rooms[roomId]
-    selectedRoomCd.textContent = room.countdown
     setSelectedRoomId(roomId)
     selectedRoomUrl.textContent = makeUrl(roomId)
     setCooldownMinInput.disabled = false
     setCooldownSInput.disabled = false
     setCdDropdown.disabled = false
     sendMsgInput.disabled = false
-    sendMsgBtn.disabled = false
+    cdOnlyCheckBox.disabled = false
+    updateRoomBtn.disabled = true
+    discardChangesBtn.disabled = true
     
     /* no point start or pause if countdown is done. */
     startPauseCdBtn.disabled = isCountdownDone(room)
@@ -54,8 +68,13 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
     startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
 
-    /* if both inputs aren't valid, disable set cd btn */
-    setCountdownBtn.disabled = !(isUserCdInputValid(setCooldownMinInput.value) && isUserCdInputValid(setCooldownSInput.value))
+    const minutes = Math.floor(room.countdown / 60)
+    const seconds = room.countdown - (minutes * 60)
+
+    setCooldownMinInput.value = minutes
+    setCooldownSInput.value = seconds
+    cdOnlyCheckBox.checked = room.countdownOnly
+    sendMsgInput.value = room.msg
 
     /* no point restarting if countdown is zero */
     restartCdBtn.disabled = room.countdown === 0 ? true : false
@@ -65,18 +84,18 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 }
 
 export function uiUpdateRoomUnSelected() {
-    selectedRoomCd.textContent = ''
     setSelectedRoomId('')
     selectedRoomUrl.textContent = ``
     startPauseInstr.textContent = 'start'
     startPauseCdBtn.disabled = true
-    setCountdownBtn.disabled = true
+    updateRoomBtn.disabled = true
     restartCdBtn.disabled = true
     setCooldownMinInput.disabled = true
     setCooldownSInput.disabled = true
     setCdDropdown.disabled = true
     sendMsgInput.disabled = true
-    sendMsgBtn.disabled = true
+    cdOnlyCheckBox.disabled = true
+    discardChangesBtn.disabled = true
 }
 
 export function addRoomDiv(roomId, rooms) {
