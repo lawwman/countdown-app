@@ -1,6 +1,4 @@
 /* TODO:
-- select between units / mins or seconds. currently is second
-- send msg
 - show countdown only / show all
 - room should detect when lost connection (backend down). display accordingly
 - admin should detect when lost connection (backend down). display accordingly
@@ -20,6 +18,7 @@ import {
     makeNewRoom,
     isUserCdInputValid,
     getSelectedRoomId,
+    sumMinsAndSeconds
 } from "./admin.utils.js"
 
 import {
@@ -34,32 +33,42 @@ uiUpdateRoomUnSelected() // start unselected
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
     event.preventDefault();
-    countdownInstruct(getSelectedRoomId(), 'set');
+    sendInstructionToRoom(getSelectedRoomId(), 'set');
 });
 
-document.getElementById(`select-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`set-room-cd-input`).value = document.getElementById(`select-room-dropdown`).value
+document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
+    document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
 });
 
-document.getElementById(`set-room-cd-input`).addEventListener('input', (event) => {
-    document.getElementById('set-countdown-btn').disabled = !isUserCdInputValid(event.target.value, rooms[getSelectedRoomId()].countdown)
+document.getElementById(`set-room-cd-min-input`).addEventListener('input', (event) => {
+    document.getElementById('set-countdown-btn').disabled = !isUserCdInputValid(event.target.value)
+})
+document.getElementById(`set-room-cd-s-input`).addEventListener('input', (event) => {
+    document.getElementById('set-countdown-btn').disabled = !isUserCdInputValid(event.target.value)
 })
 
+document.getElementById('send-msg-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    sendMsgToRoom(getSelectedRoomId())
+});
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
 });
 
 document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`new-room-cd-input`).value = document.getElementById(`new-room-dropdown`).value
+    document.getElementById(`new-room-cd-min-input`).value = document.getElementById(`new-room-dropdown`).value
 });
 
-document.getElementById(`new-room-cd-input`).addEventListener('input', (event) => {
+document.getElementById(`new-room-cd-min-input`).addEventListener('input', (event) => {
+    document.getElementById('add-room').disabled = !isUserCdInputValid(event.target.value)
+})
+document.getElementById(`new-room-cd-s-input`).addEventListener('input', (event) => {
     document.getElementById('add-room').disabled = !isUserCdInputValid(event.target.value)
 })
 
 document.getElementById('add-room').addEventListener('click', () => addRoomHandler())
-document.getElementById('start-pause-cd').addEventListener('click', () => countdownInstruct(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
-document.getElementById('restart-cd').addEventListener('click', () => countdownInstruct(getSelectedRoomId(), 'restart'))
+document.getElementById('start-pause-cd').addEventListener('click', () => sendInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
+document.getElementById('restart-cd').addEventListener('click', () => sendInstructionToRoom(getSelectedRoomId(), 'restart'))
 
 let roomCounter = 0
 let rooms = {}
@@ -67,11 +76,9 @@ let rooms = {}
 setInterval(() => updateAllRoomsCdLeft(rooms), 500)
 
 
-async function countdownInstruct(roomId, instruction) {
-    const room = withInstructionMakeRoom(rooms, roomId, instruction) // by reference
-    
+async function toggleRoom(roomId, room) {
     try {
-        const res = await fetch('toggle-countdown', {
+        const res = await fetch('toggle-room', {
             method: 'POST',
             body: JSON.stringify({ roomId, room }),
             headers: { "Content-Type": "application/json" },
@@ -89,10 +96,28 @@ async function countdownInstruct(roomId, instruction) {
     }
 }
 
+
+async function sendInstructionToRoom(roomId, instruction) {
+    const room = withInstructionMakeRoom(rooms, roomId, instruction) // by reference
+    await toggleRoom(roomId, room)
+}
+
+async function sendMsgToRoom(roomId) {
+    const room = JSON.parse(JSON.stringify(rooms[roomId])) // clone
+    room.msg = document.getElementById('send-msg').value
+    await toggleRoom(roomId, room)
+}
+
 async function addRoomHandler() {
     const newRoomId = `${roomCounter}`
     roomCounter += 1
-    rooms[newRoomId] = makeNewRoom(document.getElementById(`new-room-cd-input`).value);
+
+    const countdown = sumMinsAndSeconds(
+        parseInt(document.getElementById(`new-room-cd-min-input`).value),
+        parseInt(document.getElementById(`new-room-cd-s-input`).value)
+    )
+
+    rooms[newRoomId] = makeNewRoom(countdown);
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',

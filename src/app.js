@@ -48,14 +48,14 @@ app.get('/room-info', (req, res) => {
   res.end(JSON.stringify(rooms[roomId]));
 })
 
-app.post('/toggle-countdown', (req, res) => {
+app.post('/toggle-room', (req, res) => {
   const data = req.body;
   if ('roomId' in data && 'room' in data) {
     const roomId = parseRoomId(data['roomId'], rooms)
     if (roomId && isValidInstruction(data.room.instruction)) {
       console.log(`${data.room.instruction} room ${roomId}`)
       rooms[roomId] = data.room
-      io.to(roomId).emit('toggle-countdown', data.room)
+      io.to(roomId).emit('toggle-room', data.room)
     }
   }
   res.end()

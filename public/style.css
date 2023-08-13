@@ -23,6 +23,17 @@
     padding: 10px;
 }
 
+.countdown-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin: 10px;
+}
+
+p.label {
+    margin: 0px;
+}
+
 /* for rooms */
 
 #room-holder {

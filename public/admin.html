@@ -13,17 +13,25 @@
     <div>
       <div id="control">
         <div class="control-div">
-          <form id="new-room-form">
-            <label for="countdown">countdown (mins)</label>
-            <input id="new-room-cd-input" type="number" placeholder="20" value="0">
-            <select name="countdown" id="new-room-dropdown">
-              <option value="60">60</option>
-              <option value="45">45</option>
-              <option value="30">30</option>
-              <option value="20">20</option>
-              <option value="10">10</option>
-              <option value="5">5</option>
-            </select>
+          <form id="new-room-form" class="countdown-form">
+            <div>Countdown:</div>
+            <div>
+              <p class="label">minutes</p>
+              <input id="new-room-cd-min-input" type="number" placeholder="20" value="0" min="0" max="60">
+              <select name="countdown" id="new-room-dropdown" style="width:20px">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+                <option value="60">60</option>
+              </select>
+            </div>
+            <div>:</div>
+            <div>
+              <p class="label">seconds</p>
+              <input id="new-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
+            </div>
           </form>
           <button id="add-room">make new room</button>
         </div>
@@ -34,21 +42,33 @@
             <p>url: <span id="selected-room-url"></span></p>
             <p>selected room cd: <span id="selected-room-cd"></span></p>
           </div>
-          <form id="select-room-form">
-            <label for="countdown">Set new countdown</label>
-            <input id="set-room-cd-input" type="number" placeholder="20">
-            <select name="countdown" id="select-room-dropdown">
-              <option value="60">60</option>
-              <option value="45">45</option>
-              <option value="30">30</option>
-              <option value="20">20</option>
-              <option value="10">10</option>
-              <option value="5">5</option>
-            </select>
+          <form id="select-room-form"  class="countdown-form">
+            <div>Set Countdown:</div>
+            <div>
+              <p class="label">minutes</p>
+              <input id="set-room-cd-min-input" type="number" placeholder="20" value="0" min="0" max="60">
+              <select name="countdown" id="set-room-dropdown" style="width:20px">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+                <option value="60">60</option>
+              </select>
+            </div>
+            <div>:</div>
+            <div>
+              <p class="label">seconds</p>
+              <input id="set-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
+            </div>
             <input id="set-countdown-btn" type="submit" value="Set countdown">
           </form>
           <button id="start-pause-cd"><p><span id="start-pause-instr">start</span> countdown</p></button>
           <button id="restart-cd">restart countdown</button>
+          <form id="send-msg-form">
+            <input id="send-msg" type="text">
+            <input id="send-msg-btn" type="submit" value="Send msg">
+          </form>
         </div>
       </div>
       <div id="room-holder">

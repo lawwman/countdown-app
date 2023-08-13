@@ -6,6 +6,7 @@ import { calculateCountdown } from './countdown.utils.js'
 const clockSpan = document.getElementById('clock')
 const countdownSpan = document.getElementById('countdown')
 const statusSpan = document.getElementById('status')
+const msgSpan = document.getElementById('msg')
 
 function clockTimer() {
     const date = new Date();
@@ -29,6 +30,7 @@ function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
 
 function applyRoomValues(room) {
     if (countdownInterval) clearInterval(countdownInterval)
+    msgSpan.textContent = room.msg
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         countdownSpan.textContent = room.countdown
@@ -74,5 +76,5 @@ async function init() {
     }
 }
 
-socket.on('toggle-countdown', (room) => applyRoomValues(room))
+socket.on('toggle-room', (room) => applyRoomValues(room))
 init()
