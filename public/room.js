@@ -33,7 +33,11 @@ function applyRoomValues(room) {
     msgSpan.textContent = room.msg === '' ? 'none' : room.msg
 
     if (room.countdownOnly) {
-        
+        document.getElementById('clock-div').classList.add('invisible')
+        document.getElementById('msg-div').classList.add('invisible')
+    } else {
+        document.getElementById('clock-div').classList.remove('invisible')
+        document.getElementById('msg-div').classList.remove('invisible')
     }
 
     /* no validation. assuming it is all correct */

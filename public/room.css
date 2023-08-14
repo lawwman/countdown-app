@@ -5,6 +5,10 @@ html, body {
     height: 100%;
 }
 
+.visible {
+    display: flex;
+}
+
 .invisible {
     display: none;
 }
@@ -19,10 +23,17 @@ html, body {
     box-sizing: border-box; /* so that padding does not affect the width & height */
 }
 
+/* how i calc min-width:
+    W = main-div's width
+    W - main-div's padding = W - 10px * 2 = W - 20px
+    left and right sub-div gets (W - 20px) / 2 = 50% - 10px
+    since gap is 10px, left and right sub-div split the gap for 5px each.
+    50% - 10px - 5px = 50% - 5px
+*/
+
 .sub-div {
     flex-grow: 1;
     min-width: calc(50% - 5px);
-    display: flex;
     align-items: center;
     justify-content: center;
     position: relative;

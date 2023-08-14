@@ -1,6 +1,4 @@
 /* TODO:
-- room ui ux
-- show countdown only / show all
 - room should detect when lost connection (backend down). display accordingly
 - admin should detect when lost connection (backend down). display accordingly
 - error handling dont show on ui
