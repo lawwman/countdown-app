@@ -13,7 +13,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-let rooms = {}
+let rooms = {"1": {
+  startEpoch: 0,
+  countdownOnly: false,
+  pauseBuffer: 0,
+  countdown: 0,
+  instruction: 'set',
+  msg: '',
+}}
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public')
 

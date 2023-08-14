@@ -31,6 +31,11 @@ function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
 function applyRoomValues(room) {
     if (countdownInterval) clearInterval(countdownInterval)
     msgSpan.textContent = room.msg
+
+    if (room.countdownOnly) {
+        
+    }
+
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         countdownSpan.textContent = room.countdown

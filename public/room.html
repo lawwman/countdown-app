@@ -5,15 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Room</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="room.css">
   </head>
   <body>
     <script src="/socket.io/socket.io.js"></script>
 	  <script src="room.js" type="module"></script>
-      <p>clock: <span id="clock"></span></p>
-      <p>countdown: <span id="countdown"></span></p>
-      <p>status: <span id="status"></span></p>
-      <p>msg: <span id="msg"></span></p>
+      <div class="main-div">
+        <div class="sub-div">
+          <div class="label"><p>clock</p></div>
+          <div><span id="clock"></span></div>
+        </div>
+        <div class="sub-div">
+          <div class="label"><p>countdown</p></div>
+          <div>
+            <p id="countdown"></p>
+            <p>status: <span id="status"></span></p>
+          </div>
+        </div>
+        <div class="sub-div">
+          <p>msg: <span id="msg"></span></p>
+        </div>
+      </div>
+      
+      
     
   </body>
 </html>

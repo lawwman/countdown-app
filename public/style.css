@@ -7,7 +7,7 @@
     -ms-user-select: none; /* IE10+ */
 }
 
-/* for control panel */
+/* for admin forms */
 
 #control {
     position: sticky;
@@ -34,7 +34,7 @@ p.label {
     margin: 0px;
 }
 
-/* for rooms */
+/* for rooms in admin page */
 
 #room-holder {
     display: flex;

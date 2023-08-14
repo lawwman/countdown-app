@@ -1,4 +1,5 @@
 /* TODO:
+- room ui ux
 - show countdown only / show all
 - room should detect when lost connection (backend down). display accordingly
 - admin should detect when lost connection (backend down). display accordingly
@@ -51,25 +52,12 @@ document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
 });
 
-// document.getElementById(`set-room-cd-min-input`).addEventListener('input', (_event) => {
-//     updateRoomBtn();
-// })
-// document.getElementById(`set-room-cd-s-input`).addEventListener('input', (_event) => {
-//     updateRoomBtn();
-// })
-// document.getElementById(`send-msg`).addEventListener('input', (_event) => {
-//     updateRoomBtn();
-// })
-// document.getElementById(`cd-only-checkbox`).addEventListener('input', (_event) => {
-//     updateRoomBtn();
-// })
+document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
+    document.getElementById(`new-room-cd-min-input`).value = document.getElementById(`new-room-dropdown`).value
+});
 
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
-});
-
-document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`new-room-cd-min-input`).value = document.getElementById(`new-room-dropdown`).value
 });
 
 document.getElementById(`new-room-cd-min-input`).addEventListener('input', (event) => {
