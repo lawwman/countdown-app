@@ -30,7 +30,7 @@ function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
 
 function applyRoomValues(room) {
     if (countdownInterval) clearInterval(countdownInterval)
-    msgSpan.textContent = room.msg
+    msgSpan.textContent = room.msg === '' ? 'none' : room.msg
 
     if (room.countdownOnly) {
         

@@ -1,12 +1,8 @@
 html, body {
-    background-color: black;
+    background-color: rgb(39, 39, 39);
     margin:0;
     padding:0;
     height: 100%;
-}
-
-span, p {
-    color: white;
 }
 
 .invisible {
@@ -18,18 +14,36 @@ span, p {
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box; /* so that padding does not affect the width & height */
 }
 
 .sub-div {
     flex-grow: 1;
     min-width: calc(50% - 10px * 2);
-    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    border-radius: 6px;
+    background-color: rgb(240, 240, 240);
 }
 
 .label {
     position: absolute;
     top: 0px;
+    background-color: rgb(39, 39, 39);
+    border-radius: 0px 0px 6px 6px;
+    padding: 10px;
+}
+
+.label p {
+    color: white;
+    margin: 0px;
+    font-size: x-large;
+}
+
+.main-label {
+    font-size: 5em;
 }

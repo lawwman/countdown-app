@@ -10,24 +10,22 @@
   <body>
     <script src="/socket.io/socket.io.js"></script>
 	  <script src="room.js" type="module"></script>
-      <div class="main-div">
-        <div class="sub-div">
-          <div class="label"><p>clock</p></div>
-          <div><span id="clock"></span></div>
-        </div>
-        <div class="sub-div">
-          <div class="label"><p>countdown</p></div>
-          <div>
-            <p id="countdown"></p>
-            <p>status: <span id="status"></span></p>
-          </div>
-        </div>
-        <div class="sub-div">
-          <p>msg: <span id="msg"></span></p>
-        </div>
+    <div class="main-div">
+      <div class="sub-div">
+        <div class="label"><p>clock</p></div>
+        <p id="clock" class="main-label"></p>
       </div>
-      
-      
-    
+      <div class="sub-div">
+        <div class="label">
+          <p>countdown</p>
+          <p>status: <span id="status"></span></p>
+        </div>
+        <p id="countdown" class="main-label"></p>
+      </div>
+      <div class="sub-div">
+        <div class="label"><p>message</p></div>
+        <p id="msg" class="main-label"></p>
+      </div>
+    </div>
   </body>
 </html>
