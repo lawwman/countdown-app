@@ -64,3 +64,31 @@ html, body {
 .main-label {
     font-size: 5em;
 }
+
+.countdown-character {
+    color: white;
+    font-size: 5em;
+    background-color: rgb(39, 39, 39);
+    border-radius: 6px;
+    padding: 0px 10px;
+    margin: 3px;
+}
+
+.countdown-colon {
+    font-size: 5.5em;
+}
+
+.countdown-holder {
+    display: flex;
+}
+
+.countdown-and-label {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+.countdown-and-label p {
+    font-size: 2em;
+    margin: 0px;
+}

@@ -1,4 +1,5 @@
 /* TODO:
+- css for countdown should be nicer. show minutes and seconds
 - room should detect when lost connection (backend down). display accordingly
 - admin should detect when lost connection (backend down). display accordingly
 - error handling dont show on ui

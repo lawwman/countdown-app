@@ -8,6 +8,8 @@ import {
     makeNewRoomDiv,
 } from "./admin.utils.js"
 
+import { intCountdownToMinsAndSeconds } from "./countdown.utils.js"
+
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
 const setCooldownSInput = document.getElementById(`set-room-cd-s-input`)
@@ -38,8 +40,7 @@ function updateRoomUi(roomId, rooms) {
 }
 
 export function isUserFormInputUpdated(room) {
-    const minutes = Math.floor(room.countdown / 60)
-    const seconds = room.countdown - (minutes * 60)
+    const { minutes, seconds } = intCountdownToMinsAndSeconds(room.countdown)
 
     const isCountdownOnlyUpdated = room.countdownOnly !== cdOnlyCheckBox.checked
     const isCountdownValid = isUserCdInputValid(setCooldownMinInput.value) && isUserCdInputValid(setCooldownSInput.value)

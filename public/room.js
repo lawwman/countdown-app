@@ -1,10 +1,15 @@
 let socket;
 socket = io('')
 
-import { calculateCountdown } from './countdown.utils.js'
+import { calculateCountdownForUi } from './countdown.utils.js'
 
 const clockSpan = document.getElementById('clock')
-const countdownSpan = document.getElementById('countdown')
+const minutesLeft = document.getElementById('minutesLeft')
+const minutesRight = document.getElementById('minutesRight')
+const secondsLeft = document.getElementById('secondsLeft')
+const secondsRight = document.getElementById('secondsRight')
+const miliSecondsLeft = document.getElementById('miliSecondsLeft')
+const miliSecondsRight = document.getElementById('miliSecondsRight')
 const statusSpan = document.getElementById('status')
 const msgSpan = document.getElementById('msg')
 
@@ -21,11 +26,20 @@ let roomId = (new URL(document.location)).searchParams.get("id");
 
 let countdownInterval;
 
-function setCountdown(countdown, pauseBuffer, startEpoch, currentEpoch) {
-    const countdownLeft = calculateCountdown(countdown, pauseBuffer, startEpoch, currentEpoch)
-    countdownSpan.textContent = countdownLeft
-    if (countdownLeft <= 0) statusSpan.textContent = 'done'
-    return countdownLeft
+function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
+    const { minutesString, secondsString, milisecondsString, timeLeftFloat } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
+
+    minutesLeft.textContent = minutesString[0]
+    minutesRight.textContent = minutesString[1]
+
+    secondsLeft.textContent = secondsString[0]
+    secondsRight.textContent = secondsString[1]
+
+    miliSecondsLeft.textContent = milisecondsString[0]
+    miliSecondsRight.textContent = milisecondsString[1]
+
+    if (timeLeftFloat <= 0) statusSpan.textContent = 'done'
+    return timeLeftFloat;
 }
 
 function applyRoomValues(room) {
@@ -42,24 +56,24 @@ function applyRoomValues(room) {
 
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
-        countdownSpan.textContent = room.countdown
+        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.startEpoch)
         statusSpan.textContent = 'idle'
     } else if (room.instruction === 'start') {
         statusSpan.textContent = 'running'
-        setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
+        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
         countdownInterval = setInterval(() => {
-            const countdownLeft = setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
+            const countdownLeft = updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
             if (countdownLeft <= 0) clearInterval(countdownInterval)
         }, 100)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
-        setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
+        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
     } else {
         /* restart */
         statusSpan.textContent = 'restarted'
-        countdownSpan.textContent = room.countdown
+        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.startEpoch)
         countdownInterval = setInterval(() => {
-            const countdownLeft = setCountdown(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
+            const countdownLeft = updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
             if (countdownLeft <= 0) clearInterval(countdownInterval)
         }, 100)
     }

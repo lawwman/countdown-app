@@ -1,4 +1,4 @@
-import { calculateCountdown } from './countdown.utils.js'
+import { calculateTimeLeftFloat } from './countdown.utils.js'
 
 export function withInstructionMakeRoom(rooms, roomId, instruction) {
     const room = JSON.parse(JSON.stringify(rooms[roomId]))
@@ -75,7 +75,7 @@ export function makeUrl(roomId) {
 
 export function figureOutCountdownLeft(room) {
     if (room.instruction === 'set') return room.countdown
-    return calculateCountdown(
+    return calculateTimeLeftFloat(
         room.countdown,
         room.pauseBuffer,
         room.startEpoch,
