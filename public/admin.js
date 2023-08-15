@@ -1,5 +1,4 @@
 /* TODO:
-- css for countdown should be nicer. show minutes and seconds
 - room should detect when lost connection (backend down). display accordingly
 - admin should detect when lost connection (backend down). display accordingly
 - error handling dont show on ui
@@ -12,6 +11,7 @@ instructions:
  - start, pause is as expected. no new countdown value
  - set means to clear all countdown progress and not start. may have new countdown value
  - restart means to clear all countdown progress and start. no new countdown value
+ - config means no countdown related update
 */
 
 import {
@@ -27,7 +27,8 @@ import {
     uiUpdateRoomSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
-    isUserFormInputUpdated
+    isUserFormInputUpdated,
+    isCountdownUpdatedFn,
 } from "./admin.ui.js"
 
 uiUpdateRoomUnSelected() // start unselected
@@ -99,9 +100,14 @@ async function toggleRoom(roomId, room) {
 }
 
 async function updateRoom(roomId) {
-    const room = withInstructionMakeRoom(rooms, roomId, 'set')
+    const isCountdownUpdated = isCountdownUpdatedFn(rooms[roomId])
+    const instruction = isCountdownUpdated ? 'set' : 'config'
+
+    const room = withInstructionMakeRoom(rooms, roomId, instruction)
     room.msg = document.getElementById('send-msg').value
     room.countdownOnly = document.getElementById('cd-only-checkbox').checked
+
+    console.log(room)
     await toggleRoom(roomId, room)
 }
 

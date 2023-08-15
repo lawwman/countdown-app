@@ -43,7 +43,6 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
 }
 
 function applyRoomValues(room) {
-    if (countdownInterval) clearInterval(countdownInterval)
     msgSpan.textContent = room.msg === '' ? 'none' : room.msg
 
     if (room.countdownOnly) {
@@ -54,6 +53,9 @@ function applyRoomValues(room) {
         document.getElementById('msg-div').classList.remove('invisible')
     }
 
+    if (room.instruction === 'config') return;
+
+    if (countdownInterval) clearInterval(countdownInterval)
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.startEpoch)
@@ -68,8 +70,7 @@ function applyRoomValues(room) {
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
         updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
-    } else {
-        /* restart */
+    } else if (room.instruction === 'restart') {
         statusSpan.textContent = 'restarted'
         updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.startEpoch)
         countdownInterval = setInterval(() => {

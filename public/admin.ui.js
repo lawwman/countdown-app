@@ -39,13 +39,16 @@ function updateRoomUi(roomId, rooms) {
     updateAllRoomsCdLeft(rooms)
 }
 
-export function isUserFormInputUpdated(room) {
+export function isCountdownUpdatedFn(room) {
     const { minutes, seconds } = intCountdownToMinsAndSeconds(room.countdown)
+    const isCountdownUpdated = !(`${minutes}` === setCooldownMinInput.value && `${seconds}` === setCooldownSInput.value)
+    return isCountdownUpdated;
+}
 
+export function isUserFormInputUpdated(room) {
+    const isCountdownUpdated = isCountdownUpdatedFn(room)
     const isCountdownOnlyUpdated = room.countdownOnly !== cdOnlyCheckBox.checked
     const isCountdownValid = isUserCdInputValid(setCooldownMinInput.value) && isUserCdInputValid(setCooldownSInput.value)
-    const isCountdownUpdated = !(`${minutes}` === setCooldownMinInput.value && `${seconds}` === setCooldownSInput.value)
-
     const isMsgUpdated = room.msg !== sendMsgInput.value
 
     return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated) && isCountdownValid
@@ -66,8 +69,11 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     /* no point start or pause if countdown is done. */
     startPauseCdBtn.disabled = isCountdownDone(room)
 
-    /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
-    startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
+    // config does nothing to countdown
+    if (room.instruction !== 'config') {
+        /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
+        startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
+    }
 
     const minutes = Math.floor(room.countdown / 60)
     const seconds = room.countdown - (minutes * 60)

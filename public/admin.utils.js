@@ -21,6 +21,8 @@ export function withInstructionMakeRoom(rooms, roomId, instruction) {
         room.startEpoch = 0;
         room.pauseBuffer = 0;
         room.pauseEpoch = undefined;
+    } else if (instruction === 'config') {
+
     } else {
         /* restart */
         room.startEpoch = Date.now()

@@ -5,5 +5,5 @@ export function parseRoomId(id, rooms) {
 }
 
 export function isValidInstruction(instruction) {
-  return instruction === 'start' || instruction === 'pause' || instruction === 'restart' || instruction === 'set'
+  return instruction === 'start' || instruction === 'pause' || instruction === 'restart' || instruction === 'set' || instruction === 'config'
 }
