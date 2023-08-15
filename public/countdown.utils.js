@@ -1,9 +1,16 @@
-/* takes in countdown in integer, with unit of seconds. returns float with 2 sf of the time left */
-export function calculateTimeLeftFloat(countdown, pauseBuffer, startEpoch, currentEpoch) {
+/* takes in countdown in integer, with unit of seconds returns float */
+function calculateTimeLeftFloat(countdown, pauseBuffer, startEpoch, currentEpoch) {
     const pauseBufferSeconds = pauseBuffer / 1000.0;
     const timePassed = (currentEpoch - startEpoch) / 1000.0;
     const timeLeftFloat = countdown - pauseBufferSeconds - timePassed
     return timeLeftFloat
+}
+
+export function calculateTimeLeftFloat2sf(countdown, pauseBuffer, startEpoch, currentEpoch) {
+    const timeLeftFloat = calculateTimeLeftFloat(countdown, pauseBuffer, startEpoch, currentEpoch)
+    if (timeLeftFloat <= 0) return 0.00
+    const lengthOfString = `${parseInt(timeLeftFloat)}`.length
+    return parseFloat(`${timeLeftFloat}`).toPrecision(lengthOfString + 2)
 }
 
 

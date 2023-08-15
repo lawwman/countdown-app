@@ -4,6 +4,7 @@
 - admin should detect when lost connection (backend down). display accordingly
 - error handling dont show on ui
 - able to name rooms
+- Copy to clipboard function for url
 */
 
 /*

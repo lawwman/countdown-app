@@ -1,7 +1,6 @@
 import {
     isUserCdInputValid,
     makeUrl,
-    isCountdownDone,
     figureOutCountdownLeft,
     getSelectedRoomId,
     setSelectedRoomId,
@@ -67,7 +66,8 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     discardChangesBtn.disabled = true
     
     /* no point start or pause if countdown is done. */
-    startPauseCdBtn.disabled = isCountdownDone(room)
+    const cdDone = figureOutCountdownLeft(room) <= 0
+    startPauseCdBtn.disabled = cdDone
 
     /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
     startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
