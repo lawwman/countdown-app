@@ -53,8 +53,6 @@ function applyRoomValues(room) {
         document.getElementById('msg-div').classList.remove('invisible')
     }
 
-    if (room.instruction === 'config') return;
-
     if (countdownInterval) clearInterval(countdownInterval)
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {

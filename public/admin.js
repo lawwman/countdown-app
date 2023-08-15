@@ -1,9 +1,9 @@
 /* TODO:
+- css update
 - room should detect when lost connection (backend down). display accordingly
 - admin should detect when lost connection (backend down). display accordingly
 - error handling dont show on ui
 - able to name rooms
-- css update
 */
 
 /*
@@ -11,11 +11,11 @@ instructions:
  - start, pause is as expected. no new countdown value
  - set means to clear all countdown progress and not start. may have new countdown value
  - restart means to clear all countdown progress and start. no new countdown value
- - config means no countdown related update
 */
 
 import {
-    withInstructionMakeRoom,
+    pauseStartOrRestartRoom,
+    updateRoom,
     makeNewRoom,
     isUserCdInputValid,
     getSelectedRoomId,
@@ -28,16 +28,9 @@ import {
     updateAllRoomsCdLeft,
     addRoomDiv,
     isUserFormInputUpdated,
-    isCountdownUpdatedFn,
 } from "./admin.ui.js"
 
 uiUpdateRoomUnSelected() // start unselected
-
-function updateRoomBtn() {
-    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
-    document.getElementById('update-room-btn').disabled = !formUpdated
-    document.getElementById('discard-form-changes').disabled = !formUpdated
-}
 
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
@@ -45,7 +38,9 @@ document.getElementById(`select-room-form`).addEventListener('submit', async (ev
 });
 
 document.getElementById(`select-room-form`).addEventListener('input', async (_event) => {
-    updateRoomBtn();
+    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
+    document.getElementById('update-room-btn').disabled = !formUpdated
+    document.getElementById('discard-form-changes').disabled = !formUpdated
 });
 
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
@@ -67,10 +62,14 @@ document.getElementById(`new-room-cd-s-input`).addEventListener('input', (event)
     document.getElementById('add-room').disabled = !isUserCdInputValid(event.target.value)
 })
 
-document.getElementById('add-room').addEventListener('click', () => addRoomHandler())
-document.getElementById('start-pause-cd').addEventListener('click', () => sendInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
-document.getElementById('restart-cd').addEventListener('click', () => sendInstructionToRoom(getSelectedRoomId(), 'restart'))
-document.getElementById('update-room-btn').addEventListener('click', () => updateRoom(getSelectedRoomId()))
+document.getElementById('add-room').addEventListener('click', () => addRoom())
+document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
+document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
+document.getElementById('update-room-btn').addEventListener('click', async () => {
+    const roomId = getSelectedRoomId()
+    const room = updateRoom(rooms, roomId)
+    await toggleRoom(roomId, room)
+})
 document.getElementById('discard-form-changes').addEventListener('click', () => uiUpdateRoomSelected(getSelectedRoomId(), rooms))
 
 let roomCounter = 0
@@ -78,8 +77,8 @@ let rooms = {}
 
 setInterval(() => updateAllRoomsCdLeft(rooms), 500)
 
-
 async function toggleRoom(roomId, room) {
+    console.log(room)
     try {
         const res = await fetch('toggle-room', {
             method: 'POST',
@@ -99,24 +98,12 @@ async function toggleRoom(roomId, room) {
     }
 }
 
-async function updateRoom(roomId) {
-    const isCountdownUpdated = isCountdownUpdatedFn(rooms[roomId])
-    const instruction = isCountdownUpdated ? 'set' : 'config'
-
-    const room = withInstructionMakeRoom(rooms, roomId, instruction)
-    room.msg = document.getElementById('send-msg').value
-    room.countdownOnly = document.getElementById('cd-only-checkbox').checked
-
-    console.log(room)
+async function sendCdInstructionToRoom(roomId, instruction) {
+    const room = pauseStartOrRestartRoom(rooms, roomId, instruction)
     await toggleRoom(roomId, room)
 }
 
-async function sendInstructionToRoom(roomId, instruction) {
-    const room = withInstructionMakeRoom(rooms, roomId, instruction) // by reference
-    await toggleRoom(roomId, room)
-}
-
-async function addRoomHandler() {
+async function addRoom() {
     const newRoomId = `${roomCounter}`
     roomCounter += 1
 

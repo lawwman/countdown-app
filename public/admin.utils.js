@@ -1,6 +1,8 @@
 import { calculateTimeLeftFloat } from './countdown.utils.js'
+import { isCountdownUpdatedFn } from './admin.ui.js'
 
-export function withInstructionMakeRoom(rooms, roomId, instruction) {
+
+export function pauseStartOrRestartRoom(rooms, roomId, instruction) {
     const room = JSON.parse(JSON.stringify(rooms[roomId]))
     room.instruction = instruction
 
@@ -12,7 +14,21 @@ export function withInstructionMakeRoom(rooms, roomId, instruction) {
         room.pauseEpoch = undefined
     } else if (instruction === 'pause') {
         room.pauseEpoch = Date.now()
-    } else if (instruction === 'set') {
+    } else if (instruction === 'restart') {
+        room.startEpoch = Date.now()
+        room.pauseEpoch = undefined
+        room.pauseBuffer = 0
+    }
+    return room;
+}
+
+export function updateRoom(rooms, roomId) {
+    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    room.msg = document.getElementById('send-msg').value
+    room.countdownOnly = document.getElementById('cd-only-checkbox').checked
+
+    const isCountdownUpdated = isCountdownUpdatedFn(rooms[roomId])
+    if (isCountdownUpdated) {
         const countdown = sumMinsAndSeconds(
             parseInt(document.getElementById(`set-room-cd-min-input`).value),
             parseInt(document.getElementById(`set-room-cd-s-input`).value)
@@ -21,17 +37,11 @@ export function withInstructionMakeRoom(rooms, roomId, instruction) {
         room.startEpoch = 0;
         room.pauseBuffer = 0;
         room.pauseEpoch = undefined;
-    } else if (instruction === 'config') {
-
-    } else {
-        /* restart */
-        room.startEpoch = Date.now()
-        room.pauseEpoch = undefined
-        room.pauseBuffer = 0
+        room.instruction = 'set'
     }
-
     return room;
 }
+
 
 export function sumMinsAndSeconds(mins, seconds) {
     return mins * 60 + seconds

@@ -69,11 +69,8 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     /* no point start or pause if countdown is done. */
     startPauseCdBtn.disabled = isCountdownDone(room)
 
-    // config does nothing to countdown
-    if (room.instruction !== 'config') {
-        /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
-        startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
-    }
+    /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
+    startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
 
     const minutes = Math.floor(room.countdown / 60)
     const seconds = room.countdown - (minutes * 60)
