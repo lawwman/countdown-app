@@ -19,10 +19,6 @@ html, body {
     height: 100%;
     padding: 10px;
     box-sizing: border-box; /* so that padding does not affect the width & height */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
 }
 
 .title {
@@ -34,26 +30,20 @@ html, body {
 
 /* for admin forms */
 
-#sticky-top {
-    position: sticky;
-    top: 0px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 .add-room-div {
     background-color: rgb(240, 240, 240);
     padding: 10px;
     border-radius: 6px;
     height: fit-content;
+    margin-bottom: 10px;
 }
 
-.control-div {
+.select-room-div {
     background-color: rgb(240, 240, 240);
     border-radius: 6px;
     padding: 10px;
+    height: fit-content;
+    margin-bottom: 10px;
 }
 
 .select-room-flex {
