@@ -89,7 +89,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 
 export function uiUpdateRoomUnSelected() {
     setSelectedRoomId('')
-    selectedRoomUrl.textContent = ``
+    selectedRoomUrl.textContent = `-`
     startPauseInstr.textContent = 'start'
     startPauseCdBtn.disabled = true
     updateRoomBtn.disabled = true

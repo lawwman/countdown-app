@@ -7,27 +7,72 @@
     -ms-user-select: none; /* IE10+ */
 }
 
+html, body {
+    background-color: rgb(39, 39, 39);
+    margin:0;
+    padding:0;
+    height: 100%;
+}
+
+.main-div {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box; /* so that padding does not affect the width & height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.title {
+    font-size: 2em;
+    color: rgb(240, 240, 240);
+    font-weight: bold;
+    margin: 10px;
+}
+
 /* for admin forms */
 
-#control {
+#sticky-top {
     position: sticky;
     top: 0px;
     margin-bottom: 10px;
     display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
+.add-room-div {
+    background-color: rgb(240, 240, 240);
+    padding: 10px;
+    border-radius: 6px;
+    height: fit-content;
+}
+
 .control-div {
-    background-color: lightblue;
+    background-color: rgb(240, 240, 240);
     border-radius: 6px;
     padding: 10px;
+}
+
+.select-room-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-label {
+    font-size: 1.5em;
+    color: rgb(39, 39, 39);
+    text-align: center;
+    margin: 5px;
 }
 
 .countdown-div {
     display: flex;
     gap: 10px;
     align-items: flex-end;
-    margin: 10px;
 }
 
 p.label {
@@ -38,14 +83,16 @@ p.label {
 
 #room-holder {
     display: flex;
-    flex-direction: column;
     gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .dashboard-room {
-    background-color: lightgray;
+    background-color: rgb(240, 240, 240);
     padding: 10px;
-    border-radius: 6px; 
+    border-radius: 6px;
+    width: 200px;
 }
 
 .selected-room {

@@ -10,9 +10,54 @@
   <body>
     <script src="/socket.io/socket.io.js"></script>
 	  <script src="admin.js" type="module"></script>
-    <div>
-      <div id="control">
+    <div class="main-div">
+      <p class="title">Admin page.</p>
+      <div id="sticky-top">
         <div class="control-div">
+          <div id="room-info">
+            <p class="form-label">Update Room (select the rooms below to begin)</p>
+            <p>selected room: <span id="selected-room-label"></span></p>
+            <p>url: <span id="selected-room-url"></span></p>
+          </div>
+          <form id="select-room-form">
+            <div class="select-room-flex">
+              <div class="countdown-div">
+                <div>Countdown duration:</div>
+                <div>
+                  <p class="label">minutes</p>
+                  <input id="set-room-cd-min-input" type="number" placeholder="20" value="0" min="0" max="60">
+                  <select name="countdown" id="set-room-dropdown" style="width:20px">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                    <option value="60">60</option>
+                  </select>
+                </div>
+                <div>:</div>
+                <div>
+                  <p class="label">seconds</p>
+                  <input id="set-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
+                </div>
+              </div>
+              <div>
+                <label>Set msg</label>
+                <input id="send-msg" type="text">
+              </div>
+              <div>
+                <input type="checkbox" id="cd-only-checkbox" value="countdownOnly">
+                <label> Room show countdown only</label><br>
+              </div>
+            </div>
+            <button id="discard-form-changes">discard changes</button>
+            <input id="update-room-btn" type="submit" value="update room">
+          </form>
+          <button id="start-pause-cd"><p><span id="start-pause-instr">start</span> countdown</p></button>
+          <button id="restart-cd">restart countdown</button>
+        </div>
+        <div class="add-room-div">
+          <p class="form-label">Add New Room</p>
           <form id="new-room-form" class="countdown-div">
             <div>Countdown:</div>
             <div>
@@ -32,51 +77,11 @@
               <p class="label">seconds</p>
               <input id="new-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
             </div>
+            <button id="add-room">add new room</button>
           </form>
-          <button id="add-room">make new room</button>
-        </div>
-
-        <div class="control-div">
-          <div id="room-info">
-            <p>selected room: <span id="selected-room-label"></span></p>
-            <p>url: <span id="selected-room-url"></span></p>
-          </div>
-          <form id="select-room-form">
-            <div class="countdown-div">
-              <div>Countdown duration:</div>
-              <div>
-                <p class="label">minutes</p>
-                <input id="set-room-cd-min-input" type="number" placeholder="20" value="0" min="0" max="60">
-                <select name="countdown" id="set-room-dropdown" style="width:20px">
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="45">45</option>
-                  <option value="60">60</option>
-                </select>
-              </div>
-              <div>:</div>
-              <div>
-                <p class="label">seconds</p>
-                <input id="set-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
-              </div>
-            </div>
-            <label>Set msg</label>
-            <input id="send-msg" type="text">
-            <div>
-              <input type="checkbox" id="cd-only-checkbox" value="countdownOnly">
-              <label> Room show countdown only</label><br>
-            </div>
-            <button id="discard-form-changes">discard changes</button>
-            <input id="update-room-btn" type="submit" value="update room">
-          </form>
-          <button id="start-pause-cd"><p><span id="start-pause-instr">start</span> countdown</p></button>
-          <button id="restart-cd">restart countdown</button>
         </div>
       </div>
-      <div id="room-holder">
-      </div>
+      <div id="room-holder"></div>
     </div>
     
   </body>
