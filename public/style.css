@@ -90,3 +90,26 @@ p.label {
 .selected-room {
     background-color: lightblue;
 }
+
+
+@keyframes flashing {
+    from {
+        color: red;
+    }
+    to {
+        color: white;
+    }
+  }
+
+.error {
+    animation-name: flashing;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+#status {
+    font-size: 1em;
+    color: rgb(240, 240, 240);
+    font-weight: normal;
+    color: lightgreen;
+}

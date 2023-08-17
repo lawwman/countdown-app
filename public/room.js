@@ -44,7 +44,7 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
 
 function showDisconnected() {
     statusSpan.textContent = "disconnected"
-    msgSpan.textContent = "disconnected"
+    msgSpan.textContent = "attempting to reconnect"
     statusSpan.classList.add("error")
     msgSpan.classList.add("error")
     minutesLeft.classList.add("error")

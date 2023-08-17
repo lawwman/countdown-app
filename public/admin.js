@@ -1,6 +1,4 @@
 /* TODO:
-- admin should detect when lost connection (backend down or lost internet connection). display accordingly
-- error handling dont show on ui
 - able to name rooms
 - Copy to clipboard function for url
 */
@@ -74,10 +72,9 @@ document.getElementById('discard-form-changes').addEventListener('click', () => 
 let roomCounter = 0
 let rooms = {}
 
-setInterval(() => updateAllRoomsCdLeft(rooms), 500)
+let interval;
 
 async function toggleRoom(roomId, room) {
-    console.log(room)
     try {
         const res = await fetch('toggle-room', {
             method: 'POST',
@@ -153,4 +150,25 @@ async function init() {
     }
 }
 
-void init()
+let socket;
+socket = io('')
+
+socket.on("connect", async () => {
+    await init()
+    const status = document.getElementById('status')
+    status.textContent = "connected"
+    status.classList.remove("error")
+    document.getElementById("add-room").disabled = false
+    interval = setInterval(() => updateAllRoomsCdLeft(rooms), 500)
+});
+
+socket.on('disconnect', () => {
+    if (interval) clearInterval(interval);
+    document.getElementById("room-holder").innerHTML = ''
+    uiUpdateRoomUnSelected()
+    document.getElementById("add-room").disabled = true
+    const status = document.getElementById('status')
+    status.textContent = "disconnected, attempting to reconnect"
+    status.classList.add("error")
+    
+})
