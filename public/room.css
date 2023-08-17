@@ -92,3 +92,18 @@ html, body {
     font-size: 2em;
     margin: 0px;
 }
+
+@keyframes flashing {
+    from {
+        color: red;
+    }
+    to {
+        color: white;
+    }
+  }
+
+.error {
+    animation-name: flashing;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}

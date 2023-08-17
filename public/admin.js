@@ -1,7 +1,5 @@
 /* TODO:
-- css update
-- room should detect when lost connection (backend down). display accordingly
-- admin should detect when lost connection (backend down). display accordingly
+- admin should detect when lost connection (backend down or lost internet connection). display accordingly
 - error handling dont show on ui
 - able to name rooms
 - Copy to clipboard function for url

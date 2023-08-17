@@ -42,6 +42,30 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
     return timeLeftFloat;
 }
 
+function showDisconnected() {
+    statusSpan.textContent = "disconnected"
+    msgSpan.textContent = "disconnected"
+    statusSpan.classList.add("error")
+    msgSpan.classList.add("error")
+    minutesLeft.classList.add("error")
+    minutesRight.classList.add("error")
+    secondsLeft.classList.add("error")
+    secondsRight.classList.add("error")
+    miliSecondsLeft.classList.add("error")
+    miliSecondsRight.classList.add("error")
+}
+
+function removeDisconnectedMsgs() {
+    statusSpan.classList.remove("error")
+    msgSpan.classList.remove("error")
+    minutesLeft.classList.remove("error")
+    minutesRight.classList.remove("error")
+    secondsLeft.classList.remove("error")
+    secondsRight.classList.remove("error")
+    miliSecondsLeft.classList.remove("error")
+    miliSecondsRight.classList.remove("error")
+}
+
 function applyRoomValues(room) {
     msgSpan.textContent = room.msg === '' ? 'none' : room.msg
 
@@ -78,8 +102,8 @@ function applyRoomValues(room) {
     }
 }
 
-socket.emit('join-room', roomId) // join room first before init. so you do not miss updates
 async function init() {
+    socket.emit('join-room', roomId) // join room first before init. so you do not miss updates
     try {
         const res = await fetch('room-info?'  + new URLSearchParams({ id: roomId }), {
             method: 'GET',
@@ -99,4 +123,17 @@ async function init() {
 }
 
 socket.on('toggle-room', (room) => applyRoomValues(room))
-init()
+
+socket.on("connect", async () => {
+    removeDisconnectedMsgs();
+    await init()
+});
+
+socket.on('disconnect', () => {
+    if (countdownInterval) clearInterval(countdownInterval)
+    showDisconnected()
+})
+
+socket.io.on("reconnect_attempt", () => {
+    console.log('reconnect attempt')
+})
