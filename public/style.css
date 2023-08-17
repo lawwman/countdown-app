@@ -46,10 +46,11 @@ html, body {
     margin-bottom: 10px;
 }
 
-.select-room-flex {
+#select-room-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-bottom: 15px;
 }
 
 .form-label {
@@ -57,6 +58,7 @@ html, body {
     color: rgb(39, 39, 39);
     text-align: center;
     margin: 5px;
+    text-decoration: underline;
 }
 
 .countdown-div {
