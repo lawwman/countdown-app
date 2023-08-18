@@ -44,10 +44,16 @@ document.getElementById(`select-room-form`).addEventListener('input', async (_ev
 
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
+    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
+    document.getElementById('update-room-btn').disabled = !formUpdated
+    document.getElementById('discard-form-changes').disabled = !formUpdated
 });
 
 document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`new-room-cd-min-input`).value = document.getElementById(`new-room-dropdown`).value
+    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
+    document.getElementById('update-room-btn').disabled = !formUpdated
+    document.getElementById('discard-form-changes').disabled = !formUpdated
 });
 
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
