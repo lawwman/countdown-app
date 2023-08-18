@@ -13,14 +13,16 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-let rooms = {"1": {
-  startEpoch: 0,
-  countdownOnly: false,
-  pauseBuffer: 0,
-  countdown: 0,
-  instruction: 'set',
-  msg: '',
-}}
+// let rooms = {"1": {
+//   startEpoch: 0,
+//   countdownOnly: false,
+//   pauseBuffer: 0,
+//   countdown: 0,
+//   instruction: 'set',
+//   msg: '',
+// }}
+
+let rooms = {}
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public')
 
@@ -51,15 +53,19 @@ app.get('/room', (req, res) => {
 
 app.get('/room-info', (req, res) => {
   const roomId = parseRoomId(req.query['id'], rooms);
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(rooms[roomId]));
+  if (roomId === undefined) {
+    res.status(400).send()
+  } else {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(rooms[roomId]));
+  }
 })
 
 app.post('/toggle-room', (req, res) => {
   const data = req.body;
   if ('roomId' in data && 'room' in data) {
     const roomId = parseRoomId(data['roomId'], rooms)
-    if (roomId && isValidInstruction(data.room.instruction)) {
+    if (roomId !== undefined && isValidInstruction(data.room.instruction)) {
       console.log(`${data.room.instruction} room ${roomId}`)
       rooms[roomId] = data.room
       io.to(roomId).emit('toggle-room', data.room)

@@ -112,6 +112,10 @@ async function init() {
         if (res.status !== 200) {
             console.log('fail to init room....') // bad response from backend
             console.log(await res.text())
+
+            const test = new URL(document.location)
+            
+            window.location.replace(`${test.origin}/room`)
             return
         }
         const room = await res.json()

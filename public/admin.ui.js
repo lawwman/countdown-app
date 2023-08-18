@@ -24,7 +24,7 @@ const restartCdBtn = document.getElementById('restart-cd')
 
 export function displayRoomCd(countdown) {
     const mins = Math.floor(countdown / 60)
-    const seconds = countdown - mins * 60
+    const seconds = parseInt(countdown - mins * 60)
     return `${mins} mins, ${seconds}s`
 }
 
