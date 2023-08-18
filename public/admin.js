@@ -31,6 +31,9 @@ uiUpdateRoomUnSelected() // start unselected
 /* setup event listeners for the control panel */
 document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
     event.preventDefault();
+    const roomId = getSelectedRoomId()
+    const room = updateRoom(rooms, roomId)
+    await toggleRoom(roomId, room)
 });
 
 document.getElementById(`select-room-form`).addEventListener('input', async (_event) => {
@@ -54,11 +57,6 @@ document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
 
 document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
 document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
-document.getElementById('update-room-btn').addEventListener('click', async () => {
-    const roomId = getSelectedRoomId()
-    const room = updateRoom(rooms, roomId)
-    await toggleRoom(roomId, room)
-})
 document.getElementById('discard-form-changes').addEventListener('click', () => uiUpdateRoomSelected(getSelectedRoomId(), rooms))
 
 let roomCounter = 0

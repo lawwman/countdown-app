@@ -45,7 +45,7 @@
               </div>
               <div>
                 <label>Set msg</label>
-                <input id="send-msg" type="text" maxlength="20">
+                <input id="send-msg" type="text" maxlength="20" pattern="^([a-zA-Z0-9])+$" title="only alphanumeric characters">
               </div>
               <div>
                 <input type="checkbox" id="cd-only-checkbox" value="countdownOnly">
@@ -53,7 +53,7 @@
               </div>
               <div style="width: fit-content; margin: auto;">
                 <button id="discard-form-changes">discard changes</button>
-                <input id="update-room-btn" type="submit" value="update room">  
+                <input id="update-room-btn" type="submit" value="update room">
               </div>
             </form>
 

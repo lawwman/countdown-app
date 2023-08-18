@@ -1,5 +1,4 @@
 import {
-    isUserCdInputValid,
     makeUrl,
     figureOutCountdownLeft,
     getSelectedRoomId,
@@ -53,11 +52,9 @@ export function isCountdownUpdatedFn(room) {
 export function isUserFormInputUpdated(room) {
     const isCountdownUpdated = isCountdownUpdatedFn(room)
     const isCountdownOnlyUpdated = room.countdownOnly !== cdOnlyCheckBox.checked
-    const isCountdownValid = isUserCdInputValid(setCooldownMinInput.value) && isUserCdInputValid(setCooldownSInput.value)
     const isMsgUpdated = room.msg !== sendMsgInput.value
-    const isMsgValid = !sendMsgInput.value.match(/^([a-zA-Z0-9]+)$/)
 
-    return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated) && isCountdownValid && isMsgValid
+    return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated)
 }
 
 export function uiUpdateRoomSelected(roomId, rooms) {
