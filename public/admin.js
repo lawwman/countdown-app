@@ -55,6 +55,11 @@ document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     addRoom();
 });
 
+/* ensure unique rooms */
+document.getElementById(`new-room-name`).addEventListener('input', async (_event) => {
+    document.getElementById('add-room').disabled = document.getElementById(`new-room-name`).value in rooms
+});
+
 document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
 document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
 document.getElementById('discard-form-changes').addEventListener('click', () => uiUpdateRoomSelected(getSelectedRoomId(), rooms))
