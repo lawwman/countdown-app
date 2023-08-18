@@ -45,7 +45,7 @@
               </div>
               <div>
                 <label>Set msg</label>
-                <input id="send-msg" type="text">
+                <input id="send-msg" type="text" maxlength="20">
               </div>
               <div>
                 <input type="checkbox" id="cd-only-checkbox" value="countdownOnly">
@@ -68,26 +68,32 @@
 
           <div class="add-room-div">
             <p class="form-label">Add New Room</p>
-            <form id="new-room-form" class="countdown-div">
-              <div>Countdown:</div>
-              <div>
-                <p class="label">minutes</p>
-                <input id="new-room-cd-min-input" type="number" placeholder="20" value="0" min="0" max="60">
-                <select name="countdown" id="new-room-dropdown" style="width:20px">
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="45">45</option>
-                  <option value="60">60</option>
-                </select>
+            <form id="new-room-form">
+              <div class="countdown-div">
+                <div>Countdown:</div>
+                <div>
+                  <p class="label">minutes</p>
+                  <input id="new-room-cd-min-input" type="number" placeholder="20" value="0" min="0" max="60">
+                  <select name="countdown" id="new-room-dropdown" style="width:20px">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                    <option value="60">60</option>
+                  </select>
+                </div>
+                <div>:</div>
+                <div>
+                  <p class="label">seconds</p>
+                  <input id="new-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
+                </div>
               </div>
-              <div>:</div>
-              <div>
-                <p class="label">seconds</p>
-                <input id="new-room-cd-s-input" type="number" placeholder="20" value="0" min="0" max="60">
+              <div style="margin-top: 10px; margin-bottom: 10px;">
+                <label>Room name: </label><input id="new-room-name" minlength="1" maxlength="20" required pattern="^([a-zA-Z0-9])+$" title="only alphanumeric characters">
               </div>
-              <button id="add-room">add new room</button>
+              
+              <input id="add-room" type="submit" value="add new room">
             </form>
           </div>
         </div>

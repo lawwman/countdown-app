@@ -16,7 +16,7 @@ function getIpAddress() {
 const LOCALHOST = '127.0.0.1'
 const ACTUAL_IP = getIpAddress()
 
-const useLocal = false
+const useLocal = true
 
 export const PORT = 3000;
 export const IP = useLocal ? LOCALHOST : ACTUAL_IP

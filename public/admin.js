@@ -1,6 +1,6 @@
 /* TODO:
-- able to name rooms
-- Copy to clipboard function for url
+- css of rooms
+  - display minutes and seconds
 */
 
 /*
@@ -14,7 +14,6 @@ import {
     pauseStartOrRestartRoom,
     updateRoom,
     makeNewRoom,
-    isUserCdInputValid,
     getSelectedRoomId,
     sumMinsAndSeconds
 } from "./admin.utils.js"
@@ -50,16 +49,9 @@ document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
 
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
+    addRoom();
 });
 
-document.getElementById(`new-room-cd-min-input`).addEventListener('input', (event) => {
-    document.getElementById('add-room').disabled = !isUserCdInputValid(event.target.value)
-})
-document.getElementById(`new-room-cd-s-input`).addEventListener('input', (event) => {
-    document.getElementById('add-room').disabled = !isUserCdInputValid(event.target.value)
-})
-
-document.getElementById('add-room').addEventListener('click', () => addRoom())
 document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
 document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
 document.getElementById('update-room-btn').addEventListener('click', async () => {
@@ -100,15 +92,14 @@ async function sendCdInstructionToRoom(roomId, instruction) {
 }
 
 async function addRoom() {
-    const newRoomId = `${roomCounter}`
-    roomCounter += 1
-
+    const newRoomId = document.getElementById('new-room-name').value
     const countdown = sumMinsAndSeconds(
         parseInt(document.getElementById(`new-room-cd-min-input`).value),
         parseInt(document.getElementById(`new-room-cd-s-input`).value)
     )
 
     rooms[newRoomId] = makeNewRoom(countdown);
+    console.log(rooms)
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',
@@ -129,6 +120,8 @@ async function addRoom() {
         return
     }
     addRoomDiv(newRoomId, rooms)
+    roomCounter += 1
+    document.getElementById('new-room-name').value = roomCounter
 }
 
 async function init() {
@@ -144,6 +137,7 @@ async function init() {
         rooms = await res.json()
         Object.keys(rooms).map(roomId => addRoomDiv(roomId, rooms))
         roomCounter = Object.keys(rooms).length + 1
+        document.getElementById('new-room-name').value = roomCounter
     } catch (err) {
         console.log(`caught error: ${err}`) // cant reach backend
         return

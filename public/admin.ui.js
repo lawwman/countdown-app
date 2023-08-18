@@ -23,18 +23,24 @@ const startPauseInstr = document.getElementById('start-pause-instr')
 const updateRoomBtn = document.getElementById('update-room-btn')
 const restartCdBtn = document.getElementById('restart-cd')
 
+export function displayRoomCd(countdown) {
+    const mins = Math.floor(countdown / 60)
+    const seconds = countdown - mins * 60
+    return `${mins} mins, ${seconds}s`
+}
+
 export function updateAllRoomsCdLeft(rooms) {
     for (const roomId of Object.keys(rooms)) {
         const countdownLeft = figureOutCountdownLeft(rooms[roomId])
         if (getSelectedRoomId() === roomId) {
             if (countdownLeft <= 0) startPauseCdBtn.disabled = true
         }
-        document.getElementById(`room-cd-left-${roomId}`).textContent = countdownLeft
+        document.getElementById(`room-cd-left-${roomId}`).textContent = displayRoomCd(countdownLeft)
     }
 }
 
 function updateRoomUi(roomId, rooms) {
-    document.getElementById(`room-cd-${roomId}`).textContent = rooms[roomId].countdown
+    document.getElementById(`room-cd-${roomId}`).textContent = displayRoomCd(rooms[roomId].countdown)
     updateAllRoomsCdLeft(rooms)
 }
 
@@ -49,8 +55,9 @@ export function isUserFormInputUpdated(room) {
     const isCountdownOnlyUpdated = room.countdownOnly !== cdOnlyCheckBox.checked
     const isCountdownValid = isUserCdInputValid(setCooldownMinInput.value) && isUserCdInputValid(setCooldownSInput.value)
     const isMsgUpdated = room.msg !== sendMsgInput.value
+    const isMsgValid = !sendMsgInput.value.match(/^([a-zA-Z0-9]+)$/)
 
-    return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated) && isCountdownValid
+    return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated) && isCountdownValid && isMsgValid
 }
 
 export function uiUpdateRoomSelected(roomId, rooms) {

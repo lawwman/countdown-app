@@ -1,5 +1,5 @@
 import { calculateTimeLeftFloat2sf } from './countdown.utils.js'
-import { isCountdownUpdatedFn } from './admin.ui.js'
+import { isCountdownUpdatedFn, displayRoomCd } from './admin.ui.js'
 
 
 export function pauseStartOrRestartRoom(rooms, roomId, instruction) {
@@ -60,13 +60,15 @@ export function makeNewRoom(countdown) {
 }
 
 export function makeNewRoomDiv(newRoomId, countdown) {
+    const cdDiplay = displayRoomCd(countdown)
+
     const newRoomElement = document.createElement('div')
     newRoomElement.id = `room-div-${newRoomId}`
     newRoomElement.className = 'dashboard-room no-selection'
     newRoomElement.innerHTML = `
     <p>room: ${newRoomId}</p>
-    <p>countdown: <span id="room-cd-${newRoomId}">${countdown}</span></p>
-    <p>countdown left: <span id="room-cd-left-${newRoomId}">${countdown}</span></p>
+    <p>countdown: <span id="room-cd-${newRoomId}">${cdDiplay}</span></p>
+    <p>countdown left: <span id="room-cd-left-${newRoomId}">${cdDiplay}</span></p>
     `
     return newRoomElement
 }
