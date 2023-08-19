@@ -1,6 +1,6 @@
 import {
     makeUrl,
-    figureOutCountdownLeft,
+    getTimeLeftInt,
     getSelectedRoomId,
     setSelectedRoomId,
     makeNewRoomDiv,
@@ -39,7 +39,7 @@ export function displayRoomCd(countdown) {
 
 export function updateAllRoomsCdLeft(rooms) {
     for (const roomId of Object.keys(rooms)) {
-        const countdownLeft = figureOutCountdownLeft(rooms[roomId])
+        const countdownLeft = getTimeLeftInt(rooms[roomId])
         if (getSelectedRoomId() === roomId) {
             if (countdownLeft <= 0) startPauseCdBtn.disabled = true
         }
@@ -81,7 +81,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show Countdown And Msg' : 'Show Countdown Only'
     
     /* no point start or pause if countdown is done. */
-    const cdDone = figureOutCountdownLeft(room) <= 0
+    const cdDone = getTimeLeftInt(room) <= 0
     startPauseCdBtn.disabled = cdDone
 
     /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */

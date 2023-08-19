@@ -38,7 +38,7 @@ import {
 } from "./admin.ui.js"
 
 import {
-    calculateTimeLeftFloat
+    calculateTimeLeftInt
 } from "./countdown.utils.js"
 
 uiUpdateRoomUnSelected() // start unselected
@@ -146,18 +146,18 @@ async function extendTime(extendPeriod) {
     const roomId = getSelectedRoomId()
 
     if (rooms[roomId].instruction === 'set') {
-        const timeLeft = parseInt(calculateTimeLeftFloat(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].startEpoch))
+        const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].startEpoch))
         console.log(timeLeft)
         const room = setRoom(rooms, timeLeft + extendPeriod * 60)
         await toggleRoom(roomId, room)
     } else if (rooms[roomId].instruction === 'pause') {
-        const timeLeft = parseInt(calculateTimeLeftFloat(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].pauseEpoch))
+        const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].pauseEpoch))
         console.log(timeLeft)
         const room = setRoom(rooms, timeLeft + extendPeriod * 60)
         await toggleRoom(roomId, room)
     }
     else {
-        const timeLeft = parseInt(calculateTimeLeftFloat(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, Date.now()))
+        const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, Date.now()))
         const room = JSON.parse(JSON.stringify(rooms[roomId]))
         room.countdown = timeLeft + extendPeriod * 60
         room.startEpoch = Date.now()

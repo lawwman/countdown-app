@@ -41,15 +41,13 @@ function inRange(value, point, buffer) {
 }
 
 function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
-    const { minutesString, secondsString, timeLeftFloat } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
+    const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
 
     minutesLeft.textContent = minutesString[0]
     minutesRight.textContent = minutesString[1]
 
     secondsLeft.textContent = secondsString[0]
     secondsRight.textContent = secondsString[1]
-
-    const timeLeftInt = parseInt(timeLeftFloat)
 
     if (inRange(timeLeftInt, 60, 3) || inRange(timeLeftInt, 30, 3) || inRange(timeLeftInt, 15, 3)) {
         document.getElementById("countdown-div").classList.add("flash-3x-warning")
@@ -63,8 +61,8 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
         document.getElementById("countdown-div").classList.remove("flash-infinite")
     }
 
-    if (timeLeftFloat <= 0 && startEpoch !== currentEpoch) statusSpan.textContent = "done"
-    return timeLeftFloat;
+    if (timeLeftInt <= 0 && startEpoch !== currentEpoch) statusSpan.textContent = "done"
+    return timeLeftInt;
 }
 
 function showDisconnected() {

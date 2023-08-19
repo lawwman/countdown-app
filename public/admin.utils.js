@@ -1,4 +1,4 @@
-import { calculateTimeLeftFloat2sf } from './countdown.utils.js'
+import { calculateTimeLeftInt } from './countdown.utils.js'
 import { isCountdownUpdatedFn, displayRoomCd } from './admin.ui.js'
 
 
@@ -69,9 +69,9 @@ export function makeUrl(roomId) {
     return url.href
 }
 
-export function figureOutCountdownLeft(room) {
+export function getTimeLeftInt(room) {
     if (room.instruction === 'set') return room.countdown
-    return calculateTimeLeftFloat2sf(
+    return calculateTimeLeftInt(
         room.countdown,
         room.pauseBuffer,
         room.startEpoch,
