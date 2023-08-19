@@ -1,5 +1,5 @@
 /* takes in countdown in integer, with unit of seconds returns float */
-function calculateTimeLeftFloat(countdown, pauseBuffer, startEpoch, currentEpoch) {
+export function calculateTimeLeftFloat(countdown, pauseBuffer, startEpoch, currentEpoch) {
     const pauseBufferSeconds = pauseBuffer / 1000.0;
     const timePassed = (currentEpoch - startEpoch) / 1000.0;
     const timeLeftFloat = countdown - pauseBufferSeconds - timePassed

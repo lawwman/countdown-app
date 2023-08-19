@@ -1,23 +1,15 @@
 /* TODO:
-- css of rooms
-  room -> room name
-  show room title as well
-
 - select room form:
- - bigger buttons
- - quick add time. single click is better. 1, 5, 10
  - delete room function()
- - easy clear message button
- - apply changes button might be clearer
- - longer message. potentially paragraphs
- - set message -> message
- - url send to clipboard
- - emphasis on big and easy to use. quick clicks. sticky top is better.
+ - url send to clipboard.
  - make it obvious what room im on.
 
+ - longer message. potentially paragraphs
+
+disable buttons when loading. async nature takes a while
+
 - add room:
- - dont need countdown
- - room title
+ - room description
 */
 
 /*
@@ -29,10 +21,9 @@ instructions:
 
 import {
     pauseStartOrRestartRoom,
-    updateRoom,
     makeNewRoom,
     getSelectedRoomId,
-    sumMinsAndSeconds
+    setRoom,
 } from "./admin.utils.js"
 
 import {
@@ -40,38 +31,68 @@ import {
     uiUpdateRoomSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
-    isUserFormInputUpdated,
+    isCountdownUpdatedFn
 } from "./admin.ui.js"
+
+import {
+    calculateTimeLeftFloat
+} from "./countdown.utils.js"
 
 uiUpdateRoomUnSelected() // start unselected
 
-/* setup event listeners for the control panel */
-document.getElementById(`select-room-form`).addEventListener('submit', async (event) => {
+
+document.getElementById('set-msg-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-    const roomId = getSelectedRoomId()
-    const room = updateRoom(rooms, roomId)
+});
+
+document.getElementById('send-msg-input').addEventListener('input', async () => {
+    // todo: some sanitisation here maybe
+    // if not change, dont enable button
+});
+
+document.getElementById('clear-msg-btn').addEventListener('click', async () => {
+    await sendMsg('')
+});
+
+document.getElementById('send-msg-btn').addEventListener('click', async () => {
+    await sendMsg(document.getElementById('send-msg-input').value)
+});
+
+document.getElementById('set-countdown-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const minutes = parseInt(document.getElementById(`set-room-cd-min-input`).value)
+    const seconds = parseInt(document.getElementById(`set-room-cd-s-input`).value)
+
+    const countdown = minutes * 60 + seconds
+    const room = setRoom(rooms, countdown)
     await toggleRoom(roomId, room)
 });
 
-document.getElementById(`select-room-form`).addEventListener('input', async (_event) => {
-    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
-    document.getElementById('update-room-btn').disabled = !formUpdated
-    document.getElementById('discard-form-changes').disabled = !formUpdated
+document.getElementById('set-countdown-form').addEventListener('input', async () => {
+    document.getElementById('set-cd-btn').disabled = !isCountdownUpdatedFn(rooms[getSelectedRoomId()])
 });
+
+document.getElementById('cd-only').addEventListener('click', async () => {
+    const roomId = getSelectedRoomId()
+    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    room.countdownOnly = !room.countdownOnly
+    await toggleRoom(getSelectedRoomId(), room)
+})
 
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
-    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
-    document.getElementById('update-room-btn').disabled = !formUpdated
-    document.getElementById('discard-form-changes').disabled = !formUpdated
+    document.getElementById('set-cd-btn').disabled = !isCountdownUpdatedFn(rooms[getSelectedRoomId()])
 });
 
-document.getElementById(`new-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`new-room-cd-min-input`).value = document.getElementById(`new-room-dropdown`).value
-    const formUpdated = isUserFormInputUpdated(rooms[getSelectedRoomId()])
-    document.getElementById('update-room-btn').disabled = !formUpdated
-    document.getElementById('discard-form-changes').disabled = !formUpdated
-});
+document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
+document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
+
+document.getElementById('extend-1-min').addEventListener('click', async () => await extendTime(1))
+document.getElementById('extend-5-min').addEventListener('click', async () => await extendTime(5))
+document.getElementById('extend-10-min').addEventListener('click', async () => await extendTime(10))
+
+
 
 document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
     event.preventDefault();
@@ -83,14 +104,42 @@ document.getElementById(`new-room-name`).addEventListener('input', async (_event
     document.getElementById('add-room').disabled = document.getElementById(`new-room-name`).value in rooms
 });
 
-document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
-document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
-document.getElementById('discard-form-changes').addEventListener('click', () => uiUpdateRoomSelected(getSelectedRoomId(), rooms))
-
 let roomCounter = 0
 let rooms = {}
 
 let interval;
+
+async function sendMsg(msg) {
+    const roomId = getSelectedRoomId()
+    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    room.msg = msg
+    await toggleRoom(roomId, room)
+}
+
+async function extendTime(extendPeriod) {
+    const roomId = getSelectedRoomId()
+
+    if (rooms[roomId].instruction === 'set') {
+        const timeLeft = parseInt(calculateTimeLeftFloat(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].startEpoch))
+        console.log(timeLeft)
+        const room = setRoom(rooms, timeLeft + extendPeriod * 60)
+        await toggleRoom(roomId, room)
+    } else if (rooms[roomId].instruction === 'pause') {
+        const timeLeft = parseInt(calculateTimeLeftFloat(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].pauseEpoch))
+        console.log(timeLeft)
+        const room = setRoom(rooms, timeLeft + extendPeriod * 60)
+        await toggleRoom(roomId, room)
+    }
+    else {
+        const timeLeft = parseInt(calculateTimeLeftFloat(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, Date.now()))
+        const room = JSON.parse(JSON.stringify(rooms[roomId]))
+        room.countdown = timeLeft + extendPeriod * 60
+        room.startEpoch = Date.now()
+        room.pauseEpoch = undefined
+        room.pauseBuffer = 0
+        await toggleRoom(roomId, room)
+    }
+}
 
 async function toggleRoom(roomId, room) {
     try {
@@ -119,10 +168,7 @@ async function sendCdInstructionToRoom(roomId, instruction) {
 
 async function addRoom() {
     const newRoomId = document.getElementById('new-room-name').value
-    const countdown = sumMinsAndSeconds(
-        parseInt(document.getElementById(`new-room-cd-min-input`).value),
-        parseInt(document.getElementById(`new-room-cd-s-input`).value)
-    )
+    const countdown = 0
 
     rooms[newRoomId] = makeNewRoom(countdown);
     console.log(rooms)

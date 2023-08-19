@@ -12,14 +12,21 @@ const selectedRoomUrl = document.getElementById('selected-room-url')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
 const setCooldownSInput = document.getElementById(`set-room-cd-s-input`)
 const setCdDropdown = document.getElementById('set-room-dropdown')
-const sendMsgInput = document.getElementById('send-msg')
-const cdOnlyCheckBox = document.getElementById('cd-only-checkbox')
-const discardChangesBtn = document.getElementById('discard-form-changes')
+const setCdBtn = document.getElementById('set-cd-btn')
+
+const extend1Min = document.getElementById('extend-1-min')
+const extend5Min = document.getElementById('extend-5-min')
+const extend10Min = document.getElementById('extend-10-min')
+
+const cdOnlyBtn = document.getElementById('cd-only')
+
+const sendMsgInput = document.getElementById('send-msg-input')
+const clearMsgButton = document.getElementById('clear-msg-btn')
+const sendMsgButton = document.getElementById('send-msg-btn')
 
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
 
-const updateRoomBtn = document.getElementById('update-room-btn')
 const restartCdBtn = document.getElementById('restart-cd')
 
 export function displayRoomCd(countdown) {
@@ -39,22 +46,14 @@ export function updateAllRoomsCdLeft(rooms) {
 }
 
 function updateRoomUi(roomId, rooms) {
-    document.getElementById(`room-cd-${roomId}`).textContent = displayRoomCd(rooms[roomId].countdown)
+    // document.getElementById(`room-cd-${roomId}`).textContent = displayRoomCd(rooms[roomId].countdown)
     updateAllRoomsCdLeft(rooms)
 }
 
 export function isCountdownUpdatedFn(room) {
-    const { minutes, seconds } = intCountdownToMinsAndSeconds(room.countdown)
-    const isCountdownUpdated = !(`${minutes}` === setCooldownMinInput.value && `${seconds}` === setCooldownSInput.value)
+    const userCd = parseInt(setCooldownMinInput.value) * 60 + parseInt(setCooldownSInput.value)
+    const isCountdownUpdated = userCd !== room.countdown
     return isCountdownUpdated;
-}
-
-export function isUserFormInputUpdated(room) {
-    const isCountdownUpdated = isCountdownUpdatedFn(room)
-    const isCountdownOnlyUpdated = room.countdownOnly !== cdOnlyCheckBox.checked
-    const isMsgUpdated = room.msg !== sendMsgInput.value
-
-    return (isCountdownOnlyUpdated || isCountdownUpdated || isMsgUpdated)
 }
 
 export function uiUpdateRoomSelected(roomId, rooms) {
@@ -63,11 +62,20 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     selectedRoomUrl.textContent = makeUrl(roomId)
     setCooldownMinInput.disabled = false
     setCooldownSInput.disabled = false
+    setCdBtn.disabled = false
+
+    extend1Min.disabled = false
+    extend5Min.disabled = false
+    extend10Min.disabled = false
+
     setCdDropdown.disabled = false
+    cdOnlyBtn.disabled = false
+
+    clearMsgButton.disabled = false
+    sendMsgButton.disabled = false
     sendMsgInput.disabled = false
-    cdOnlyCheckBox.disabled = false
-    updateRoomBtn.disabled = true
-    discardChangesBtn.disabled = true
+
+    cdOnlyBtn.textContent = room.countdownOnly ? 'Show Countdown And Msg' : 'Show Countdown Only'
     
     /* no point start or pause if countdown is done. */
     const cdDone = figureOutCountdownLeft(room) <= 0
@@ -81,7 +89,6 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 
     setCooldownMinInput.value = minutes
     setCooldownSInput.value = seconds
-    cdOnlyCheckBox.checked = room.countdownOnly
     sendMsgInput.value = room.msg
 
     /* no point restarting if countdown is zero */
@@ -94,16 +101,25 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 export function uiUpdateRoomUnSelected() {
     setSelectedRoomId('')
     selectedRoomUrl.textContent = `-`
+    
     startPauseInstr.textContent = 'start'
     startPauseCdBtn.disabled = true
-    updateRoomBtn.disabled = true
     restartCdBtn.disabled = true
+
+    extend1Min.disabled = true
+    extend5Min.disabled = true
+    extend10Min.disabled = true
+
     setCooldownMinInput.disabled = true
     setCooldownSInput.disabled = true
     setCdDropdown.disabled = true
+    setCdBtn.disabled = true
+
+    cdOnlyBtn.disabled = true
+
     sendMsgInput.disabled = true
-    cdOnlyCheckBox.disabled = true
-    discardChangesBtn.disabled = true
+    clearMsgButton.disabled = true
+    sendMsgButton.disabled = true
 }
 
 export function addRoomDiv(roomId, rooms) {

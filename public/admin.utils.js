@@ -22,23 +22,14 @@ export function pauseStartOrRestartRoom(rooms, roomId, instruction) {
     return room;
 }
 
-export function updateRoom(rooms, roomId) {
+export function setRoom(rooms, countdown) {
+    const roomId = getSelectedRoomId()
     const room = JSON.parse(JSON.stringify(rooms[roomId]))
-    room.msg = document.getElementById('send-msg').value
-    room.countdownOnly = document.getElementById('cd-only-checkbox').checked
-
-    const isCountdownUpdated = isCountdownUpdatedFn(rooms[roomId])
-    if (isCountdownUpdated) {
-        const countdown = sumMinsAndSeconds(
-            parseInt(document.getElementById(`set-room-cd-min-input`).value),
-            parseInt(document.getElementById(`set-room-cd-s-input`).value)
-        )
-        room.countdown = countdown;
-        room.startEpoch = 0;
-        room.pauseBuffer = 0;
-        room.pauseEpoch = undefined;
-        room.instruction = 'set'
-    }
+    room.countdown = countdown;
+    room.startEpoch = 0;
+    room.pauseBuffer = 0;
+    room.pauseEpoch = undefined;
+    room.instruction = 'set'
     return room;
 }
 
@@ -66,15 +57,14 @@ export function makeNewRoomDiv(newRoomId, countdown) {
     newRoomElement.id = `room-div-${newRoomId}`
     newRoomElement.className = 'dashboard-room no-selection'
     newRoomElement.innerHTML = `
-    <p>room: ${newRoomId}</p>
-    <p>countdown: <span id="room-cd-${newRoomId}">${cdDiplay}</span></p>
-    <p>countdown left: <span id="room-cd-left-${newRoomId}">${cdDiplay}</span></p>
+    <p>room name: ${newRoomId}</p>
+    <span id="room-cd-left-${newRoomId}">${cdDiplay}</span>
     `
     return newRoomElement
 }
 
-export function makeUrl(roomId) {
-    const url = new URL(`${location.href}room`)
+export function makeUrl(roomId) {   
+    const url = new URL(`${location.origin}/room`)
     url.searchParams.set('id', roomId)
     return url.href
 }
