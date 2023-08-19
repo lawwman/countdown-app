@@ -56,10 +56,18 @@ export function makeNewRoomDiv(newRoomId, countdown) {
     const newRoomElement = document.createElement('div')
     newRoomElement.id = `room-div-${newRoomId}`
     newRoomElement.className = 'dashboard-room no-selection'
-    newRoomElement.innerHTML = `
-    <p>room name: ${newRoomId}</p>
-    <span id="room-cd-left-${newRoomId}">${cdDiplay}</span>
-    `
+
+
+    const p = document.createElement("p")
+    p.textContent = `room name: ${newRoomId}`
+
+    const span = document.createElement("span")
+    span.id = `room-cd-left-${newRoomId}`
+    span.textContent = cdDiplay
+
+    newRoomElement.appendChild(p)
+    newRoomElement.appendChild(span)
+    
     return newRoomElement
 }
 
