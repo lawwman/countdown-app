@@ -29,6 +29,8 @@ const startPauseInstr = document.getElementById('start-pause-instr')
 
 const restartCdBtn = document.getElementById('restart-cd')
 
+const deleteRoomBtn = document.getElementById('delete-room-btn')
+
 export function displayRoomCd(countdown) {
     const mins = Math.floor(countdown / 60)
     const seconds = parseInt(countdown - mins * 60)
@@ -74,6 +76,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     clearMsgButton.disabled = false
     sendMsgButton.disabled = false
     sendMsgInput.disabled = false
+    deleteRoomBtn.disabled = false
 
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show Countdown And Msg' : 'Show Countdown Only'
     
@@ -120,6 +123,8 @@ export function uiUpdateRoomUnSelected() {
     sendMsgInput.disabled = true
     clearMsgButton.disabled = true
     sendMsgButton.disabled = true
+
+    deleteRoomBtn.disabled = true
 }
 
 export function addRoomDiv(roomId, rooms) {
@@ -147,4 +152,17 @@ export function addRoomDiv(roomId, rooms) {
         if (isAnyRoomSelected) uiUpdateRoomSelected(roomId, rooms)
         else uiUpdateRoomUnSelected()
     })
+}
+
+export function deleteRoomDiv(roomId) {
+    const roomHolder = document.getElementById("room-holder")
+    let childNode;
+    for (const child of roomHolder.children) {
+        if (child.id === `room-div-${roomId}`) {
+            childNode = child;
+            break;
+        }
+    }
+
+    if (childNode) roomHolder.removeChild(childNode)
 }

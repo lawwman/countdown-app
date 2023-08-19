@@ -1,10 +1,12 @@
 /* TODO:
 - select room form:
- - delete room function()
  - url send to clipboard.
  - make it obvious what room im on.
 
  - longer message. potentially paragraphs
+
+ better way to come up with room Id. dont want number to go so big.
+ limit number of rooms.
 
 disable buttons when loading. async nature takes a while
 
@@ -31,7 +33,8 @@ import {
     uiUpdateRoomSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
-    isCountdownUpdatedFn
+    isCountdownUpdatedFn,
+    deleteRoomDiv
 } from "./admin.ui.js"
 
 import {
@@ -91,6 +94,29 @@ document.getElementById('restart-cd').addEventListener('click', () => sendCdInst
 document.getElementById('extend-1-min').addEventListener('click', async () => await extendTime(1))
 document.getElementById('extend-5-min').addEventListener('click', async () => await extendTime(5))
 document.getElementById('extend-10-min').addEventListener('click', async () => await extendTime(10))
+
+document.getElementById('delete-room-btn').addEventListener('click', async () => {
+    try {
+        const res = await fetch('delete-room', {
+            method: 'POST',
+            body: JSON.stringify({ roomId: getSelectedRoomId() }),
+            headers: { "Content-Type": "application/json" },
+        })
+        if (res.status !== 200) {
+            console.log('fail to start room....') // bad response from backend
+            console.log(await res.text())
+            return
+        }
+
+        const roomId = getSelectedRoomId()
+        delete rooms[roomId]
+        uiUpdateRoomUnSelected()
+        deleteRoomDiv(roomId)
+    } catch (err) {
+        console.log(`caught error: ${err}`) // cant reach backend
+        return
+    }
+})
 
 
 

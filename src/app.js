@@ -40,6 +40,18 @@ app.post('/sync-rooms', (req, res) => {
   res.end();
 });
 
+app.post('/delete-room', (req, res) => {
+  const data = req.body;
+  const roomId = parseRoomId(data.roomId, rooms);
+  if (roomId === undefined) {
+    res.end() // maybe should throw error
+  } else {
+    delete rooms[roomId]
+    io.in(roomId).disconnectSockets(true);
+    res.end()
+  }
+})
+
 app.get('/sync-rooms', (_req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(rooms));

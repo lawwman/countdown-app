@@ -130,11 +130,8 @@ async function init() {
     
         if (res.status !== 200) {
             console.log('fail to init room....') // bad response from backend
-            console.log(await res.text())
-
-            const test = new URL(document.location)
-            
-            window.location.replace(`${test.origin}/room`)
+            console.log(await res.text())            
+            window.location.replace(`${location.origin}/room`)
             return
         }
         const room = await res.json()
@@ -152,10 +149,14 @@ socket.on("connect", async () => {
     await init()
 });
 
-socket.on('disconnect', () => {
+socket.on('disconnect', (reason) => {
     if (countdownInterval) clearInterval(countdownInterval)
     showDisconnected()
+    if (reason === "io server disconnect") {
+        window.location.replace(`${location.origin}/room`)
+    } 
 })
+
 
 socket.io.on("reconnect_attempt", () => {
     console.log('reconnect attempt')
