@@ -3,13 +3,23 @@ socket = io('')
 
 import { calculateCountdownForUi } from './countdown.utils.js'
 
+function triggerFlashing3x(element) {
+    if (element.classList.contains('flash-3x-warning')) {
+        element.classList.add('flash-3x-warning-2')
+        element.classList.remove('flash-3x-warning')
+    } else if (element.classList.contains('flash-3x-warning-2')) {
+        element.classList.add('flash-3x-warning')
+        element.classList.remove('flash-3x-warning-2')
+    } else {
+        element.classList.add('flash-3x-warning')
+    }
+}
+
 const clockSpan = document.getElementById('clock')
 const minutesLeft = document.getElementById('minutesLeft')
 const minutesRight = document.getElementById('minutesRight')
 const secondsLeft = document.getElementById('secondsLeft')
 const secondsRight = document.getElementById('secondsRight')
-const miliSecondsLeft = document.getElementById('miliSecondsLeft')
-const miliSecondsRight = document.getElementById('miliSecondsRight')
 const statusSpan = document.getElementById('status')
 const msgSpan = document.getElementById('msg')
 
@@ -26,8 +36,12 @@ let roomId = (new URL(document.location)).searchParams.get("id");
 
 let countdownInterval;
 
+function inRange(value, point, buffer) {
+    return point - buffer <= value && value <= point
+}
+
 function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
-    const { minutesString, secondsString, milisecondsString, timeLeftFloat } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
+    const { minutesString, secondsString, timeLeftFloat } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
 
     minutesLeft.textContent = minutesString[0]
     minutesRight.textContent = minutesString[1]
@@ -35,10 +49,21 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
     secondsLeft.textContent = secondsString[0]
     secondsRight.textContent = secondsString[1]
 
-    miliSecondsLeft.textContent = milisecondsString[0]
-    miliSecondsRight.textContent = milisecondsString[1]
+    const timeLeftInt = parseInt(timeLeftFloat)
 
-    if (timeLeftFloat <= 0) statusSpan.textContent = 'done'
+    if (inRange(timeLeftInt, 60, 3) || inRange(timeLeftInt, 30, 3) || inRange(timeLeftInt, 15, 3)) {
+        document.getElementById("countdown-div").classList.add("flash-3x-warning")
+    } else {
+        document.getElementById("countdown-div").classList.remove("flash-3x-warning")
+    }
+
+    if (timeLeftInt <= 10 && startEpoch !== currentEpoch) {
+        document.getElementById("countdown-div").classList.add("flash-infinite")
+    } else {
+        document.getElementById("countdown-div").classList.remove("flash-infinite")
+    }
+
+    if (timeLeftFloat <= 0 && startEpoch !== currentEpoch) statusSpan.textContent = "done"
     return timeLeftFloat;
 }
 
@@ -47,27 +72,21 @@ function showDisconnected() {
     msgSpan.textContent = "attempting to reconnect"
     statusSpan.classList.add("error")
     msgSpan.classList.add("error")
-    minutesLeft.classList.add("error")
-    minutesRight.classList.add("error")
-    secondsLeft.classList.add("error")
-    secondsRight.classList.add("error")
-    miliSecondsLeft.classList.add("error")
-    miliSecondsRight.classList.add("error")
+    document.getElementById("countdown-div").classList.add("error")
 }
 
 function removeDisconnectedMsgs() {
     statusSpan.classList.remove("error")
     msgSpan.classList.remove("error")
-    minutesLeft.classList.remove("error")
-    minutesRight.classList.remove("error")
-    secondsLeft.classList.remove("error")
-    secondsRight.classList.remove("error")
-    miliSecondsLeft.classList.remove("error")
-    miliSecondsRight.classList.remove("error")
+    document.getElementById("countdown-div").classList.remove("error")
 }
 
+
+
 function applyRoomValues(room) {
-    msgSpan.textContent = room.msg === '' ? 'none' : room.msg
+    const msg = room.msg === '' ? '-' : room.msg
+    if (msg !== msgSpan.textContent) triggerFlashing3x(msgSpan)
+    msgSpan.textContent = msg;
 
     if (room.countdownOnly) {
         document.getElementById('clock-div').classList.add('invisible')
@@ -88,7 +107,7 @@ function applyRoomValues(room) {
         countdownInterval = setInterval(() => {
             const countdownLeft = updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
             if (countdownLeft <= 0) clearInterval(countdownInterval)
-        }, 100)
+        }, 1000)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
         updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
@@ -98,7 +117,7 @@ function applyRoomValues(room) {
         countdownInterval = setInterval(() => {
             const countdownLeft = updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
             if (countdownLeft <= 0) clearInterval(countdownInterval)
-        }, 100)
+        }, 1000)
     }
 }
 

@@ -18,7 +18,7 @@ export function calculateTimeLeftFloat2sf(countdown, pauseBuffer, startEpoch, cu
 export function calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
     const timeLeftFloat = calculateTimeLeftFloat(countdown, pauseBuffer, startEpoch, currentEpoch)
 
-    if (timeLeftFloat <= 0) return { minutesString: '00', secondsString: '00', milisecondsString: '00' }
+    if (timeLeftFloat <= 0) return { timeLeftFloat: 0, minutesString: '00', secondsString: '00', milisecondsString: '00' }
 
     const lengthOfString = `${parseInt(timeLeftFloat)}`.length
     const stringWith2Sf = parseFloat(`${timeLeftFloat}`).toPrecision(lengthOfString + 2)
@@ -36,6 +36,6 @@ export function calculateCountdownForUi(countdown, pauseBuffer, startEpoch, curr
 
 export function intCountdownToMinsAndSeconds(countdown) {
     const minutes = Math.floor(countdown / 60)
-    const seconds = countdown - (minutes * 60)
+    const seconds = parseInt(countdown - (minutes * 60))
     return { minutes, seconds }
 }

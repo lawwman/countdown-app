@@ -1,6 +1,23 @@
 /* TODO:
 - css of rooms
-  - display minutes and seconds
+  room -> room name
+  show room title as well
+
+- select room form:
+ - bigger buttons
+ - quick add time. single click is better. 1, 5, 10
+ - delete room function()
+ - easy clear message button
+ - apply changes button might be clearer
+ - longer message. potentially paragraphs
+ - set message -> message
+ - url send to clipboard
+ - emphasis on big and easy to use. quick clicks. sticky top is better.
+ - make it obvious what room im on.
+
+- add room:
+ - dont need countdown
+ - room title
 */
 
 /*

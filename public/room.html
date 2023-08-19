@@ -11,14 +11,14 @@
     <script src="/socket.io/socket.io.js"></script>
 	  <script src="room.js" type="module"></script>
     <div class="main-div">
-      <div id="clock-div" class="sub-div visible">
+      <div id="clock-div" class="sub-clock-div visible">
         <div class="label">clock</div>
         <p id="clock" class="main-label"></p>
       </div>
-      <div id="countdown-div" class="sub-div visible">
+      <div id="countdown-div" class="sub-clock-div visible">
         <div class="label">countdown</div>
         <div class="countdown-and-label">
-          <p>minutes</p>
+          <p style="color: white">minutes</p>
           <div class="countdown-holder">
             <div id="minutesLeft" class="countdown-character"></div>
             <div id="minutesRight" class="countdown-character"></div>
@@ -26,35 +26,21 @@
         </div>
 
         <div class="countdown-and-label">
-          <p>:</p>
+          <p style="color: white">:</p>
           <div class="countdown-colon">:</div>
         </div>
         
         <div class="countdown-and-label">
-          <p>seconds</p>
+          <p style="color: white">seconds</p>
           <div class="countdown-holder">
             <div id="secondsLeft" class="countdown-character"></div>
             <div id="secondsRight" class="countdown-character"></div>
           </div>
         </div>
 
-        <div class="countdown-and-label">
-          <p>:</p>
-          <div class="countdown-colon">:</div>
-        </div>
-        
-        <div class="countdown-and-label">
-          <p>miliseconds</p>
-          <div class="countdown-holder">
-            <div id="miliSecondsLeft" class="countdown-character"></div>
-            <div id="miliSecondsRight" class="countdown-character"></div>
-          </div>
-        </div>
-        
-        
         <div class="bottom-label">status: <span id="status"></span></div>
       </div>
-      <div id="msg-div" class="sub-div visible">
+      <div id="msg-div" class="sub-msg-div visible">
         <div class="label">message</div>
         <p id="msg" class="main-label"></p>
       </div>

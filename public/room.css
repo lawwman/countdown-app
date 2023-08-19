@@ -1,5 +1,4 @@
 html, body {
-    background-color: rgb(39, 39, 39);
     margin:0;
     padding:0;
     height: 100%;
@@ -14,6 +13,7 @@ html, body {
 }
 
 .main-div {
+    background-color: red;
     display: flex;
     flex-wrap: wrap;
     width: 100%;
@@ -31,33 +31,46 @@ html, body {
     50% - 10px - 5px = 50% - 5px
 */
 
-.sub-div {
+.sub-clock-div {
     flex-grow: 1;
     min-width: calc(50% - 5px);
     align-items: center;
     justify-content: center;
     position: relative;
     border-radius: 6px;
-    background-color: rgb(240, 240, 240);
+    background-color: black;
+    color: white;
+}
+
+.sub-msg-div {
+    flex-grow: 1;
+    min-width: calc(50% - 5px);
+    min-height: 70%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 6px;
+    background-color: black;
+    color: white;
 }
 
 .label {
     position: absolute;
     top: 0px;
-    background-color: rgb(39, 39, 39);
+    background-color: rgb(240,240,240);
     border-radius: 0px 0px 6px 6px;
     padding: 10px;
-    color: white;
+    color: black;
     font-size: x-large;
 }
 
 .bottom-label {
     position: absolute;
     bottom: 0px;
-    background-color: rgb(39, 39, 39);
+    background-color: rgb(240,240,240);
     border-radius: 6px 6px 0px 0px;
     padding: 10px;
-    color: white;
+    color: black;
     font-size: x-large;
 }
 
@@ -66,9 +79,8 @@ html, body {
 }
 
 .countdown-character {
-    color: white;
     font-size: 5em;
-    background-color: rgb(39, 39, 39);
+    border: 1px solid white;
     border-radius: 6px;
     padding: 0px 10px;
     margin: 3px;
@@ -100,7 +112,36 @@ html, body {
     to {
         color: white;
     }
-  }
+}
+
+@keyframes flashing2 {
+    from {
+        color: red;
+    }
+    to {
+        color: white;
+    }
+}
+
+
+  .flash-3x-warning {
+    animation-name: flashing;
+    animation-duration: 1s;
+    animation-iteration-count: 3;
+}
+
+
+.flash-3x-warning-2 {
+    animation-name: flashing2;
+    animation-duration: 1s;
+    animation-iteration-count: 3;
+}
+
+.flash-infinite {
+    animation-name: flashing;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
 
 .error {
     animation-name: flashing;
