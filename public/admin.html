@@ -84,17 +84,19 @@
       </div>
 
       <div style="display: flex; gap: 10px;">
-        <div style="flex-shrink: 0;">
-          <div class="add-room-div">
-            <p class="form-label">Add New Room</p>
-            <form id="new-room-form">
-              <div style="margin-top: 10px; margin-bottom: 10px;">
-                <label>Room name: </label>
-                <input id="new-room-name" class="form-input" minlength="1" maxlength="20" required pattern="^([a-zA-Z0-9])+$" title="only alphanumeric characters">
-              </div>
-              <input id="add-room" type="submit" value="add new room">
-            </form>
-          </div>
+        <div class="add-room-div">
+          <p class="form-label">Add New Room</p>
+          <form id="new-room-form">
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+              <label>Room name: </label>
+              <input id="new-room-name" class="form-input" minlength="1" maxlength="20" required pattern="^([a-zA-Z0-9])+$" title="only alphanumeric characters">
+            </div>
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+              <label>Description: </label>
+              <input id="new-room-description" class="form-input">
+            </div>
+            <input id="add-room" type="submit" value="add new room">
+          </form>
         </div>
         
         <div>

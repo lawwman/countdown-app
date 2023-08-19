@@ -36,6 +36,7 @@ html, body {
     border-radius: 6px;
     height: fit-content;
     margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .select-room-div {
