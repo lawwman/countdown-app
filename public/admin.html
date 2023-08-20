@@ -22,12 +22,13 @@
           <span id="selected-room-url" class="form-value"></span>
         </div>
 
-        <div style="display: flex; gap: 10px">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
 
           <div class="select-room-sub-div">
             <p class="form-label">Send Messages</p>
+            <p>Current Msg: <span id="current-msg"></span></p>
             <form id="set-msg-form" style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
-              <input id="send-msg-input" type="text" maxlength="20" pattern="^([a-zA-Z0-9])+$" title="only alphanumeric characters" style="height: 80px">
+              <textarea id="send-msg-input" rows="4" cols="50"></textarea>
               <div>
                 <button id="clear-msg-btn" class="form-button">clear message</button>
                 <button id="send-msg-btn" class="form-button">send message</button>

@@ -3,8 +3,6 @@
  - url send to clipboard.
  - make it obvious what room im on.
 
- - longer message. potentially paragraphs
-
  better way to come up with room Id. dont want number to go so big.
  limit number of rooms.
 
@@ -49,8 +47,10 @@ document.getElementById('set-msg-form').addEventListener('submit', async (event)
 });
 
 document.getElementById('send-msg-input').addEventListener('input', async () => {
-    // todo: some sanitisation here maybe
-    // if not change, dont enable button
+    const userInput = document.getElementById('send-msg-input').value
+    const noMsg = userInput.length <= 0
+    const sameMsgAsCurrent = userInput === rooms[getSelectedRoomId()].msg
+    document.getElementById('send-msg-btn').disabled = noMsg || sameMsgAsCurrent
 });
 
 document.getElementById('clear-msg-btn').addEventListener('click', async () => {

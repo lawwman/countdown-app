@@ -6,8 +6,6 @@ import {
     makeNewRoomDiv,
 } from "./admin.utils.js"
 
-import { intCountdownToMinsAndSeconds } from "./countdown.utils.js"
-
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
 const setCooldownSInput = document.getElementById(`set-room-cd-s-input`)
@@ -23,12 +21,12 @@ const cdOnlyBtn = document.getElementById('cd-only')
 const sendMsgInput = document.getElementById('send-msg-input')
 const clearMsgButton = document.getElementById('clear-msg-btn')
 const sendMsgButton = document.getElementById('send-msg-btn')
+const currentMsg = document.getElementById('current-msg')
 
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
 
 const restartCdBtn = document.getElementById('restart-cd')
-
 const deleteRoomBtn = document.getElementById('delete-room-btn')
 
 export function displayRoomCd(countdown) {
@@ -73,8 +71,10 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     setCdDropdown.disabled = false
     cdOnlyBtn.disabled = false
 
-    clearMsgButton.disabled = false
-    sendMsgButton.disabled = false
+    currentMsg.textContent = room.msg
+
+    clearMsgButton.disabled = room.msg.length <= 0
+    sendMsgButton.disabled = sendMsgInput.value.length <= 0 || room.msg === sendMsgInput.value
     sendMsgInput.disabled = false
     deleteRoomBtn.disabled = false
 
