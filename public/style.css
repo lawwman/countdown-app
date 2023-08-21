@@ -28,6 +28,33 @@ html, body {
     margin: 10px;
 }
 
+.copy {
+    cursor: copy;
+    width: fit-content;
+    position: relative;
+}
+
+.copy:hover{
+    background-color: white;
+}
+
+.copy:hover .tooltip {
+    position: absolute;
+    display: block;
+    bottom: 1.5em;
+    right: 0px;
+    font-size: 1.5em;
+    background-color: black;
+    opacity: 0.8;
+    border-radius: 6px;
+    padding: 5px;
+    color: white;
+}
+
+.tooltip {
+    display: none;
+}
+
 /* for admin forms */
 
 .add-room-div {

@@ -95,3 +95,11 @@ export function getSelectedRoomId() {
 export function setSelectedRoomId(newId) {
     document.getElementById('selected-room-label').textContent = newId
 }
+
+export function getNewUniqueRoomId(rooms) {
+    let newRoomId = 0;
+    while (`${newRoomId}` in rooms) {
+        newRoomId += 1;
+    }
+    return newRoomId;
+}

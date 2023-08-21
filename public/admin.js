@@ -1,11 +1,5 @@
 /* TODO:
-- select room form:
- - url send to clipboard.
- - make it obvious what room im on.
-
- better way to come up with room Id. dont want number to go so big.
- limit number of rooms.
-
+make it obvious what room im on.
 disable buttons when loading. async nature takes a while
 
 - add room:
@@ -24,6 +18,7 @@ import {
     makeNewRoom,
     getSelectedRoomId,
     setRoom,
+    getNewUniqueRoomId
 } from "./admin.utils.js"
 
 import {
@@ -41,6 +36,14 @@ import {
 
 uiUpdateRoomUnSelected() // start unselected
 
+document.getElementById('url-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('selected-room-url').textContent);
+    document.getElementById('url-tooltip').textContent = 'copied'
+})
+
+document.getElementById('url-copy').addEventListener('mouseout', () => {
+    document.getElementById('url-tooltip').textContent = 'copy to clipboard'
+})
 
 document.getElementById('set-msg-form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -130,7 +133,6 @@ document.getElementById(`new-room-name`).addEventListener('input', async (_event
     document.getElementById('add-room').disabled = document.getElementById(`new-room-name`).value in rooms
 });
 
-let roomCounter = 0
 let rooms = {}
 
 let interval;
@@ -193,6 +195,11 @@ async function sendCdInstructionToRoom(roomId, instruction) {
 }
 
 async function addRoom() {
+    if (Object.keys(rooms).length >= 20) {
+        alert('too many rooms')
+        return;
+    }
+
     const newRoomId = document.getElementById('new-room-name').value
     const countdown = 0
 
@@ -218,8 +225,7 @@ async function addRoom() {
         return
     }
     addRoomDiv(newRoomId, rooms)
-    roomCounter += 1
-    document.getElementById('new-room-name').value = roomCounter
+    document.getElementById('new-room-name').value = getNewUniqueRoomId(rooms)
 }
 
 async function init() {
@@ -234,8 +240,7 @@ async function init() {
         }
         rooms = await res.json()
         Object.keys(rooms).map(roomId => addRoomDiv(roomId, rooms))
-        roomCounter = Object.keys(rooms).length + 1
-        document.getElementById('new-room-name').value = roomCounter
+        document.getElementById('new-room-name').value = getNewUniqueRoomId(rooms)
     } catch (err) {
         console.log(`caught error: ${err}`) // cant reach backend
         return
