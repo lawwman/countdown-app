@@ -73,6 +73,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 
     currentMsg.textContent = room.msg
 
+    sendMsgInput.value = room.msg // set sendMsgInput first before we use it in condition for sendMsgButton
     clearMsgButton.disabled = room.msg.length <= 0
     sendMsgButton.disabled = sendMsgInput.value.length <= 0 || room.msg === sendMsgInput.value
     sendMsgInput.disabled = false
@@ -92,7 +93,6 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 
     setCooldownMinInput.value = minutes
     setCooldownSInput.value = seconds
-    sendMsgInput.value = room.msg
 
     /* no point restarting if countdown is zero */
     restartCdBtn.disabled = room.countdown === 0 ? true : false

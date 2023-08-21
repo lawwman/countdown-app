@@ -1,9 +1,7 @@
 /* TODO:
 make it obvious what room im on.
-disable buttons when loading. async nature takes a while
-
-- add room:
- - room description
+- add room room description
+room message set limited words
 */
 
 /*
@@ -94,11 +92,24 @@ document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
 document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
 document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
 
-document.getElementById('extend-1-min').addEventListener('click', async () => await extendTime(1))
-document.getElementById('extend-5-min').addEventListener('click', async () => await extendTime(5))
-document.getElementById('extend-10-min').addEventListener('click', async () => await extendTime(10))
+document.getElementById('extend-1-min').addEventListener('click', async () => {
+    document.getElementById('extend-1-min').disabled = true
+    await extendTime(1)
+    document.getElementById('extend-1-min').disabled = false
+})
+document.getElementById('extend-5-min').addEventListener('click', async () => {
+    document.getElementById('extend-5-min').disabled = true
+    await extendTime(5)
+    document.getElementById('extend-5-min').disabled = false
+})
+document.getElementById('extend-10-min').addEventListener('click', async () => {
+    document.getElementById('extend-10-min').disabled = true
+    await extendTime(10)
+    document.getElementById('extend-10-min').disabled = false
+})
 
 document.getElementById('delete-room-btn').addEventListener('click', async () => {
+    document.getElementById('delete-room-btn').disabled = true
     try {
         const res = await fetch('delete-room', {
             method: 'POST',
@@ -123,9 +134,16 @@ document.getElementById('delete-room-btn').addEventListener('click', async () =>
 
 
 
-document.getElementById(`new-room-form`).addEventListener('submit', (event) => {
+document.getElementById(`new-room-form`).addEventListener('submit', async (event) => {
     event.preventDefault();
-    addRoom();
+    for (const element of document.getElementById(`new-room-form`).elements) {
+        element.disabled = true
+    }
+    await addRoom();
+
+    for (const element of document.getElementById(`new-room-form`).elements) {
+        element.disabled = false
+    }
 });
 
 /* ensure unique rooms */
