@@ -44,14 +44,18 @@ html, body {
 
 .sub-msg-div {
     flex-grow: 1;
-    min-width: calc(50% - 5px);
-    min-height: 70%;
-    align-items: center;
-    justify-content: center;
     position: relative;
     border-radius: 6px;
     background-color: black;
     color: white;
+    height: 70vh;
+    overflow: hidden;    
+}
+
+.msg-label {
+    font-size: 5em;
+    font-size: 3.5vw;
+    margin: 0px;
 }
 
 .label {

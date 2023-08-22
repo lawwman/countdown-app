@@ -31,7 +31,8 @@
             <p class="form-label">Send Messages</p>
             <p>Current Msg: <span id="current-msg"></span></p>
             <form id="set-msg-form" style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
-              <textarea id="send-msg-input" rows="4" cols="50"></textarea>
+              <textarea id="send-msg-input" rows="4" cols="50" maxlength="300"></textarea>
+              <p style="margin: 0px"><span id="word-count"></span>/300</p>
               <div>
                 <button id="clear-msg-btn" class="form-button">clear message</button>
                 <button id="send-msg-btn" class="form-button">send message</button>

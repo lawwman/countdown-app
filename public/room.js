@@ -86,6 +86,8 @@ function applyRoomValues(room) {
     if (msg !== msgSpan.textContent) triggerFlashing3x(msgSpan)
     msgSpan.textContent = msg;
 
+    console.log(msg.length)
+
     if (room.countdownOnly) {
         document.getElementById('clock-div').classList.add('invisible')
         document.getElementById('msg-div').classList.add('invisible')

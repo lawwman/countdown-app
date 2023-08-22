@@ -1,7 +1,6 @@
 /* TODO:
 make it obvious what room im on.
 - add room room description
-room message set limited words
 */
 
 /*
@@ -47,10 +46,12 @@ document.getElementById('set-msg-form').addEventListener('submit', async (event)
     event.preventDefault();
 });
 
+const wordCount = document.getElementById('word-count')
 document.getElementById('send-msg-input').addEventListener('input', async () => {
     const userInput = document.getElementById('send-msg-input').value
     const noMsg = userInput.length <= 0
     const sameMsgAsCurrent = userInput === rooms[getSelectedRoomId()].msg
+    wordCount.textContent = userInput.length
     document.getElementById('send-msg-btn').disabled = noMsg || sameMsgAsCurrent
 });
 

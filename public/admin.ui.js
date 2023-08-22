@@ -22,6 +22,7 @@ const sendMsgInput = document.getElementById('send-msg-input')
 const clearMsgButton = document.getElementById('clear-msg-btn')
 const sendMsgButton = document.getElementById('send-msg-btn')
 const currentMsg = document.getElementById('current-msg')
+const wordCount = document.getElementById('word-count')
 
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
@@ -78,6 +79,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     sendMsgButton.disabled = sendMsgInput.value.length <= 0 || room.msg === sendMsgInput.value
     sendMsgInput.disabled = false
     deleteRoomBtn.disabled = false
+    wordCount.textContent = sendMsgInput.value.length
 
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show Countdown And Msg' : 'Show Countdown Only'
     
@@ -123,6 +125,7 @@ export function uiUpdateRoomUnSelected() {
     sendMsgInput.disabled = true
     clearMsgButton.disabled = true
     sendMsgButton.disabled = true
+    wordCount.textContent = 0
 
     deleteRoomBtn.disabled = true
 }
