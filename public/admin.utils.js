@@ -38,7 +38,7 @@ export function sumMinsAndSeconds(mins, seconds) {
     return mins * 60 + seconds
 }
 
-export function makeNewRoom(countdown) {
+export function makeNewRoom(countdown, description) {
     return {
         countdown: parseInt(countdown),
         startEpoch: 0,
@@ -46,7 +46,8 @@ export function makeNewRoom(countdown) {
         pauseEpoch: undefined,
         instruction: 'set',
         msg: '',
-        countdownOnly: false
+        countdownOnly: false,
+        description: '',
     }
 }
 

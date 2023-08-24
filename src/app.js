@@ -13,6 +13,16 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// let rooms = {"1": {
+//   startEpoch: 0,
+//   countdownOnly: false,
+//   pauseBuffer: 0,
+//   countdown: 0,
+//   instruction: 'set',
+//   msg: 'test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdftest aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf',
+//   description: 'test adf asdf asdf asdf asdfasdfas dfasdf asdfasdfasdfasdf asdf asd adf asdf asdfasdf adfadsfasdfasdfasd fasdf end',
+// }}
+
 let rooms = {"1": {
   startEpoch: 0,
   countdownOnly: false,
@@ -20,6 +30,7 @@ let rooms = {"1": {
   countdown: 0,
   instruction: 'set',
   msg: '',
+  description: '',
 }}
 
 // let rooms = {}

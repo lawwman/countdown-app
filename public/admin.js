@@ -1,8 +1,3 @@
-/* TODO:
-make it obvious what room im on.
-- add room room description
-*/
-
 /*
 instructions:
  - start, pause is as expected. no new countdown value
@@ -222,8 +217,7 @@ async function addRoom() {
     const newRoomId = document.getElementById('new-room-name').value
     const countdown = 0
 
-    rooms[newRoomId] = makeNewRoom(countdown);
-    console.log(rooms)
+    rooms[newRoomId] = makeNewRoom(countdown, document.getElementById('new-room-description').value);
     try {
         const res = await fetch('sync-rooms', {
             method: 'POST',

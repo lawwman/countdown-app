@@ -34,6 +34,8 @@ setInterval(clockTimer, 1000);
 
 let roomId = (new URL(document.location)).searchParams.get("id");
 
+document.getElementById('room-label').textContent = roomId
+
 let countdownInterval;
 
 function inRange(value, point, buffer) {
@@ -86,7 +88,7 @@ function applyRoomValues(room) {
     if (msg !== msgSpan.textContent) triggerFlashing3x(msgSpan)
     msgSpan.textContent = msg;
 
-    console.log(msg.length)
+    document.getElementById('room-description').textContent = room.description.length === 0 ? '-' : room.description
 
     if (room.countdownOnly) {
         document.getElementById('clock-div').classList.add('invisible')
