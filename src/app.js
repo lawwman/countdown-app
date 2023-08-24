@@ -45,11 +45,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'admin.html'));
 });
 
-// sync the rooms body
-app.post('/sync-rooms', (req, res) => {
-  rooms = req.body;
+app.post('/add-room', (req, res) => {
+  const { roomId, room, sourceSocketId } = req.body;
+  rooms[roomId] = room;
+  io.to('admin').emit('add-room', roomId, room, sourceSocketId)
   res.end();
-});
+})
 
 app.post('/delete-room', (req, res) => {
   const data = req.body;
@@ -59,6 +60,7 @@ app.post('/delete-room', (req, res) => {
   } else {
     delete rooms[roomId]
     io.in(roomId).disconnectSockets(true);
+    io.to('admin').emit('delete-room', roomId, data.sourceSocketId)
     res.end()
   }
 })
@@ -92,6 +94,7 @@ app.post('/toggle-room', (req, res) => {
       console.log(`${data.room.instruction} room ${roomId}`)
       rooms[roomId] = data.room
       io.to(roomId).emit('toggle-room', data.room)
+      io.to('admin').emit('toggle-room', roomId, data.room, data.sourceSocketId)
     }
   }
   res.end()
@@ -103,6 +106,11 @@ io.on('connection', (socket) => {
   socket.on('join-room', (roomId) => {
     console.log(`joining room: ${roomId}`)
     socket.join(roomId)
+  })
+
+  socket.on('join-admin-room', () => {
+    console.log(`joining admin room`)
+    socket.join('admin')
   })
 
   socket.on('disconnect', () => {

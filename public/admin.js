@@ -109,7 +109,7 @@ document.getElementById('delete-room-btn').addEventListener('click', async () =>
     try {
         const res = await fetch('delete-room', {
             method: 'POST',
-            body: JSON.stringify({ roomId: getSelectedRoomId() }),
+            body: JSON.stringify({ roomId: getSelectedRoomId(), sourceSocketId: socket.id }),
             headers: { "Content-Type": "application/json" },
         })
         if (res.status !== 200) {
@@ -187,7 +187,7 @@ async function toggleRoom(roomId, room) {
     try {
         const res = await fetch('toggle-room', {
             method: 'POST',
-            body: JSON.stringify({ roomId, room }),
+            body: JSON.stringify({ roomId, room, sourceSocketId: socket.id }),
             headers: { "Content-Type": "application/json" },
         })
         if (res.status !== 200) {
@@ -219,9 +219,9 @@ async function addRoom() {
 
     rooms[newRoomId] = makeNewRoom(countdown, document.getElementById('new-room-description').value);
     try {
-        const res = await fetch('sync-rooms', {
+        const res = await fetch('add-room', {
             method: 'POST',
-            body: JSON.stringify(rooms),
+            body: JSON.stringify({ roomId: newRoomId, room: rooms[newRoomId], sourceSocketId: socket.id }),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -264,6 +264,8 @@ let socket;
 socket = io('')
 
 socket.on("connect", async () => {
+    console.log(socket.id)
+    socket.emit('join-admin-room')
     await init()
     const status = document.getElementById('status')
     status.textContent = "connected"
@@ -271,6 +273,27 @@ socket.on("connect", async () => {
     document.getElementById("add-room").disabled = false
     interval = setInterval(() => updateAllRoomsCdLeft(rooms), 500)
 });
+
+socket.on("add-room", async (roomId, room, sourceSocketId) => {
+    if (socket.id === sourceSocketId) return;
+    rooms[roomId] = room
+    addRoomDiv(roomId, rooms)
+})
+
+socket.on("delete-room", async (roomId, sourceSocketId) => {
+    if (socket.id === sourceSocketId) return;
+    delete rooms[roomId]
+    
+    if (getSelectedRoomId() === roomId) uiUpdateRoomUnSelected()
+    deleteRoomDiv(roomId)
+})
+
+socket.on("toggle-room", async (roomId, room, sourceSocketId) => {
+    if (socket.id === sourceSocketId) return;
+    rooms[roomId] = room
+    if (getSelectedRoomId() === roomId) uiUpdateRoomUnSelected()
+})
+
 
 socket.on('disconnect', () => {
     if (interval) clearInterval(interval);
