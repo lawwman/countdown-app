@@ -16,10 +16,7 @@ function triggerFlashing3x(element) {
 }
 
 const clockSpan = document.getElementById('clock')
-const minutesLeft = document.getElementById('minutesLeft')
-const minutesRight = document.getElementById('minutesRight')
-const secondsLeft = document.getElementById('secondsLeft')
-const secondsRight = document.getElementById('secondsRight')
+const countdownElement = document.getElementById("countdown")
 const statusSpan = document.getElementById('status')
 const msgSpan = document.getElementById('msg')
 
@@ -45,11 +42,7 @@ function inRange(value, point, buffer) {
 function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
     const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
 
-    minutesLeft.textContent = minutesString[0]
-    minutesRight.textContent = minutesString[1]
-
-    secondsLeft.textContent = secondsString[0]
-    secondsRight.textContent = secondsString[1]
+    countdownElement.textContent = `${minutesString}:${secondsString}`
 
     if (inRange(timeLeftInt, 60, 3) || inRange(timeLeftInt, 30, 3) || inRange(timeLeftInt, 15, 3)) {
         document.getElementById("countdown-div").classList.add("flash-3x-warning")
@@ -69,7 +62,6 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
 
 function showDisconnected() {
     statusSpan.textContent = "disconnected"
-    msgSpan.textContent = "attempting to reconnect"
     statusSpan.classList.add("error")
     msgSpan.classList.add("error")
     document.getElementById("countdown-div").classList.add("error")

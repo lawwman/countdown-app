@@ -14,13 +14,9 @@ html, body {
 
 .main-div {
     background-color: red;
-    display: flex;
-    flex-wrap: wrap;
     width: 100%;
     height: 100%;
-    gap: 10px;
-    padding: 10px;
-    box-sizing: border-box; /* so that padding does not affect the width & height */
+    position: relative;
 }
 
 /* how i calc min-width:
@@ -31,86 +27,76 @@ html, body {
     50% - 10px - 5px = 50% - 5px
 */
 
-.sub-clock-div {
-    flex-grow: 1;
-    min-width: calc(50% - 5px);
+.top-section {
+    display: flex;
+    gap: 1vh;
+    padding: 1vh;
+    box-sizing: border-box;
+    position: relative;
+    height: 20vh;
+}
+
+.top-section-sub-div {
+    width: 50vw;
     align-items: center;
     justify-content: center;
-    position: relative;
     border-radius: 6px;
     background-color: black;
     color: white;
 }
 
-.sub-msg-div {
-    flex-grow: 1;
-    position: relative;
-    border-radius: 6px;
-    background-color: black;
-    color: white;
-    height: 70vh;
-    overflow: hidden;    
-}
-
-.msg-label {
-    font-size: 5em;
-    font-size: 3.5vw;
-    margin: 0px;
-}
-
-.label {
+.absolute-label {
     position: absolute;
-    top: 0px;
     background-color: rgb(240,240,240);
-    border-radius: 0px 0px 6px 6px;
     padding: 10px;
     color: black;
     font-size: x-large;
     width: fit-content;
+    left:0px;
+    right:0px;
+    margin: 0 auto;
+}
+
+.top-label {
+    top: 0px;
+    border-radius: 0px 0px 6px 6px;
     max-width: 90%;
     overflow: hidden;
     white-space: nowrap;
 }
 
 .bottom-label {
-    position: absolute;
     bottom: 0px;
-    background-color: rgb(240,240,240);
     border-radius: 6px 6px 0px 0px;
-    padding: 10px;
-    color: black;
-    font-size: x-large;
 }
 
 .main-label {
-    font-size: 5em;
+    font-size: min(8vw, 15vh);
 }
 
-.countdown-character {
-    font-size: 5em;
-    border: 1px solid white;
+.bottom-section {
+    position: relative;
+    color: white;
+    height: 80vh;
+    box-sizing: border-box;
+    padding: 1vh;
+    overflow: hidden;    
+}
+
+.bottom-section-sub-div {
+    width: 100%;
+    height: 100%;
     border-radius: 6px;
-    padding: 0px 10px;
-    margin: 3px;
+    background-color: black;
+    vertical-align: middle;
 }
 
-.countdown-colon {
-    font-size: 5.5em;
-}
-
-.countdown-holder {
-    display: flex;
-}
-
-.countdown-and-label {
-    flex-direction: column;
-    display: flex;
-    align-items: center;
-}
-
-.countdown-and-label p {
-    font-size: 2em;
+.msg-label {
+    font-size: 5em;
+    font-size: 4.5vw;
     margin: 0px;
+    word-wrap: break-word;
+    text-align: center;
 }
 
 @keyframes flashing {

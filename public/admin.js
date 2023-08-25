@@ -66,7 +66,7 @@ document.getElementById('set-countdown-form').addEventListener('submit', async (
 
     const countdown = minutes * 60 + seconds
     const room = setRoom(rooms, countdown)
-    await toggleRoom(roomId, room)
+    await toggleRoom(getSelectedRoomId(), room)
 });
 
 document.getElementById('set-countdown-form').addEventListener('input', async () => {
@@ -163,12 +163,10 @@ async function extendTime(extendPeriod) {
 
     if (rooms[roomId].instruction === 'set') {
         const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].startEpoch))
-        console.log(timeLeft)
         const room = setRoom(rooms, timeLeft + extendPeriod * 60)
         await toggleRoom(roomId, room)
     } else if (rooms[roomId].instruction === 'pause') {
         const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].pauseEpoch))
-        console.log(timeLeft)
         const room = setRoom(rooms, timeLeft + extendPeriod * 60)
         await toggleRoom(roomId, room)
     }
@@ -264,7 +262,6 @@ let socket;
 socket = io('')
 
 socket.on("connect", async () => {
-    console.log(socket.id)
     socket.emit('join-admin-room')
     await init()
     const status = document.getElementById('status')
@@ -302,6 +299,5 @@ socket.on('disconnect', () => {
     document.getElementById("add-room").disabled = true
     const status = document.getElementById('status')
     status.textContent = "disconnected, attempting to reconnect"
-    status.classList.add("error")
-    
+    status.classList.add("error")  
 })
