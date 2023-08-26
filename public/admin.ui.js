@@ -45,15 +45,10 @@ export function updateAllRoomsCdLeft(rooms) {
     }
 }
 
-function updateRoomUi(roomId, rooms) {
-    // document.getElementById(`room-cd-${roomId}`).textContent = displayRoomCd(rooms[roomId].countdown)
-    updateAllRoomsCdLeft(rooms)
-}
-
-export function isCountdownUpdatedFn(room) {
+export function disableSetCdBtnIfNoChange(rooms) {
     const userCd = parseInt(setCooldownMinInput.value) * 60 + parseInt(setCooldownSInput.value)
-    const isCountdownUpdated = userCd !== room.countdown
-    return isCountdownUpdated;
+    const isCountdownUpdated = userCd !== rooms[getSelectedRoomId()].countdown
+    setCdBtn.disabled = !isCountdownUpdated
 }
 
 function setSelectedRoomId(newId) {
@@ -62,73 +57,83 @@ function setSelectedRoomId(newId) {
 
 export function uiUpdateRoomSelected(roomId, rooms) {
     const room = rooms[roomId]
+
+    /* info section */
     setSelectedRoomId(roomId)
     selectedRoomUrl.textContent = makeUrl(roomId)
+
+    /* message section */
+    currentMsg.textContent = room.msg
+    clearMsgButton.disabled = room.msg.length <= 0
+    sendMsgInput.disabled = false
+    sendMsgInput.value = room.msg
+    sendMsgButton.disabled = true
+    wordCount.textContent = sendMsgInput.value.length
+
+    /* set new cooldown */
+    const minutes = Math.floor(room.countdown / 60)
+    const seconds = room.countdown - (minutes * 60)
+
+    setCooldownMinInput.value = minutes // update first, disableSetCdBtnIfNoChange() requires it
+    setCooldownSInput.value = seconds // update first, disableSetCdBtnIfNoChange() requires it
+
     setCooldownMinInput.disabled = false
     setCooldownSInput.disabled = false
-    setCdBtn.disabled = false
+    
+    disableSetCdBtnIfNoChange(rooms)
+    setCdDropdown.disabled = false
 
+    /* extend time section */
     extend1Min.disabled = false
     extend5Min.disabled = false
     extend10Min.disabled = false
 
-    setCdDropdown.disabled = false
+    /* cd only section */
     cdOnlyBtn.disabled = false
-
-    currentMsg.textContent = room.msg
-
-    sendMsgInput.value = room.msg // set sendMsgInput first before we use it in condition for sendMsgButton
-    clearMsgButton.disabled = room.msg.length <= 0
-    sendMsgButton.disabled = sendMsgInput.value.length <= 0 || room.msg === sendMsgInput.value
-    sendMsgInput.disabled = false
-    deleteRoomBtn.disabled = false
-    wordCount.textContent = sendMsgInput.value.length
-
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show Countdown And Msg' : 'Show Countdown Only'
-    
-    /* no point start or pause if countdown is done. */
-    const cdDone = getTimeLeftInt(room) <= 0
+
+    /* pause start restart section */
+    const cdDone = getTimeLeftInt(room) <= 0 // no point start or pause if countdown is done.
     startPauseCdBtn.disabled = cdDone
 
     /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
     startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
 
-    const minutes = Math.floor(room.countdown / 60)
-    const seconds = room.countdown - (minutes * 60)
-
-    setCooldownMinInput.value = minutes
-    setCooldownSInput.value = seconds
-
     /* no point restarting if countdown is zero */
     restartCdBtn.disabled = room.countdown === 0 ? true : false
 
     if (room.instruction === 'set') restartCdBtn.disabled = true // dont make sense to restart if just set
-    updateRoomUi(roomId, rooms)
+    
+    deleteRoomBtn.disabled = false
 }
 
 export function uiUpdateRoomUnSelected() {
+    /* info section */
     setSelectedRoomId('')
     selectedRoomUrl.textContent = `-`
-    
-    startPauseInstr.textContent = 'start'
-    startPauseCdBtn.disabled = true
-    restartCdBtn.disabled = true
 
-    extend1Min.disabled = true
-    extend5Min.disabled = true
-    extend10Min.disabled = true
-
-    setCooldownMinInput.disabled = true
-    setCooldownSInput.disabled = true
-    setCdDropdown.disabled = true
-    setCdBtn.disabled = true
-
-    cdOnlyBtn.disabled = true
-
+    /* message section */
     sendMsgInput.disabled = true
     clearMsgButton.disabled = true
     sendMsgButton.disabled = true
     wordCount.textContent = 0
+    currentMsg.textContent = ''
+
+    /* set new cooldown */
+    setCooldownMinInput.disabled = true
+    setCooldownSInput.disabled = true
+    setCdDropdown.disabled = true
+    setCdBtn.disabled = true
+    
+    /* extend time section */
+    extend1Min.disabled = true
+    extend5Min.disabled = true
+    extend10Min.disabled = true
+
+    startPauseInstr.textContent = 'start'
+    startPauseCdBtn.disabled = true
+    restartCdBtn.disabled = true
+    cdOnlyBtn.disabled = true
 
     deleteRoomBtn.disabled = true
 }
@@ -162,13 +167,10 @@ export function addRoomDiv(roomId, rooms) {
 
 export function deleteRoomDiv(roomId) {
     const roomHolder = document.getElementById("room-holder")
-    let childNode;
     for (const child of roomHolder.children) {
         if (child.id === `room-div-${roomId}`) {
-            childNode = child;
+            roomHolder.removeChild(child)
             break;
         }
     }
-
-    if (childNode) roomHolder.removeChild(childNode)
 }

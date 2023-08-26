@@ -10,6 +10,14 @@ export function setRoom(room, countdown) {
     return room;
 }
 
+export function setRoomCdKeepInstruction(room, countdown) {
+    room.countdown = countdown
+    room.startEpoch = Date.now()
+    room.pauseEpoch = undefined
+    room.pauseBuffer = 0
+    return room
+}
+
 export function startRoom(room) {
     room.instruction = 'start'
     if (room.pauseEpoch !== undefined) {
@@ -34,29 +42,16 @@ export function restartRoom(room) {
     return room
 }
 
-export function setRoomCdKeepInstruction(room, countdown) {
-    room.countdown = countdown
-    room.startEpoch = Date.now()
-    room.pauseEpoch = undefined
-    room.pauseBuffer = 0
-    return room
-}
-
-
-export function sumMinsAndSeconds(mins, seconds) {
-    return mins * 60 + seconds
-}
-
-export function makeNewRoom(countdown, description) {
+export function makeNewRoom(description) {
     return {
-        countdown: parseInt(countdown),
+        countdown: 0,
         startEpoch: 0,
         pauseBuffer: 0,
         pauseEpoch: undefined,
         instruction: 'set',
         msg: '',
         countdownOnly: false,
-        description: '',
+        description: description,
     }
 }
 
@@ -66,7 +61,6 @@ export function makeNewRoomDiv(newRoomId, countdown) {
     const newRoomElement = document.createElement('div')
     newRoomElement.id = `room-div-${newRoomId}`
     newRoomElement.className = 'dashboard-room no-selection'
-
 
     const p = document.createElement("p")
     p.textContent = `room name: ${newRoomId}`
@@ -97,7 +91,6 @@ export function getTimeLeftInt(room) {
     )
 }
 
-
 export function getSelectedRoomId() {
     return document.getElementById('selected-room-label').textContent
 }
@@ -110,8 +103,6 @@ export function cloneSelectedRoom(rooms) {
 
 export function getNewUniqueRoomId(rooms) {
     let newRoomId = 0;
-    while (`${newRoomId}` in rooms) {
-        newRoomId += 1;
-    }
+    while (`${newRoomId}` in rooms) newRoomId += 1;
     return newRoomId;
 }

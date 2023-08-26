@@ -154,7 +154,6 @@ socket.on('disconnect', (reason) => {
     } 
 })
 
-
 socket.io.on("reconnect_attempt", () => {
     console.log('reconnect attempt')
 })

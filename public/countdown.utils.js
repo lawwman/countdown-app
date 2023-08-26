@@ -17,7 +17,6 @@ export function calculateCountdownForUi(countdown, pauseBuffer, startEpoch, curr
     const secondsString = seconds < 10 ? `0${seconds}` : `${seconds}`
 
     return { timeLeftInt, minutesString, secondsString }
-
 }
 
 export function intCountdownToMinsAndSeconds(countdown) {
