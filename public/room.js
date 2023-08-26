@@ -63,7 +63,7 @@ function updateCountdownUi(room) {
 
 function dynamicallyFitText() {
     const div = document.getElementById('msg-div')
-    const innerDiv = document.getElementById('msg-inner-div')
+    const innerDiv = document.getElementById('msg-text-holder')
     let iterations = 0
     let fontSize = 40
     msgP.style.fontSize = `${fontSize}px`
@@ -83,7 +83,7 @@ function dynamicallyFitText() {
 let firstLoad = true
 function applyRoomValues(room) {
     const msg = room.msg === '' ? '-' : room.msg
-    if (msg !== msgP.textContent && !firstLoad) triggerFlashing3x(msgP)
+    if (msg !== msgP.textContent && !firstLoad) triggerFlashing3x(document.getElementById('msg-div-inner'))
     msgP.textContent = msg;
     dynamicallyFitText()
 
