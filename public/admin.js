@@ -60,13 +60,7 @@ document.getElementById('send-msg-btn').addEventListener('click', async () => {
 
 document.getElementById('set-countdown-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-
-    const minutes = parseInt(document.getElementById(`set-room-cd-min-input`).value)
-    const seconds = parseInt(document.getElementById(`set-room-cd-s-input`).value)
-
-    const countdown = minutes * 60 + seconds
-    const room = setRoom(rooms, countdown)
-    await toggleRoom(getSelectedRoomId(), room)
+    await setTime()
 });
 
 document.getElementById('set-countdown-form').addEventListener('input', async () => {
@@ -156,6 +150,25 @@ async function sendMsg(msg) {
     const room = JSON.parse(JSON.stringify(rooms[roomId]))
     room.msg = msg
     await toggleRoom(roomId, room)
+}
+
+async function setTime() {
+    const roomId = getSelectedRoomId()
+    const minutes = parseInt(document.getElementById(`set-room-cd-min-input`).value)
+    const seconds = parseInt(document.getElementById(`set-room-cd-s-input`).value)
+    const countdown = minutes * 60 + seconds
+
+    if (rooms[roomId].instruction === 'set' || rooms[roomId].instruction === 'pause') {
+        const room = setRoom(rooms, countdown)
+        await toggleRoom(roomId, room)
+    } else {
+        const room = JSON.parse(JSON.stringify(rooms[roomId]))
+        room.countdown = countdown
+        room.startEpoch = Date.now()
+        room.pauseEpoch = undefined
+        room.pauseBuffer = 0
+        await toggleRoom(roomId, room)
+    }
 }
 
 async function extendTime(extendPeriod) {
