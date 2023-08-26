@@ -19,7 +19,7 @@ let rooms = {"1": {
   pauseBuffer: 0,
   countdown: 0,
   instruction: 'set',
-  msg: 'test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdftest aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf',
+  msg: 'test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn end',
   description: 'test room',
 }}
 
@@ -29,7 +29,7 @@ let rooms = {"1": {
 //   pauseBuffer: 0,
 //   countdown: 0,
 //   instruction: 'set',
-//   msg: '',
+//   msg: 'test',
 //   description: '',
 // }}
 

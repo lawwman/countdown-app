@@ -18,7 +18,7 @@ function triggerFlashing3x(element) {
 const clockSpan = document.getElementById('clock')
 const countdownElement = document.getElementById("countdown")
 const statusSpan = document.getElementById('status')
-const msgSpan = document.getElementById('msg')
+const msgP = document.getElementById('msg')
 
 function clockTimer() {
     const date = new Date();
@@ -38,10 +38,12 @@ function inRange(value, point, buffer) {
     return point - buffer <= value && value <= point
 }
 
-function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
-    const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(countdown, pauseBuffer, startEpoch, currentEpoch)
-
+function updateCountdownUi(room) {
+    const currentEpoch = room.instruction === 'set' ? room.startEpoch : room.instruction === 'pause' ? room.pauseEpoch : Date.now()
+    const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(room.countdown, room.pauseBuffer, room.startEpoch, currentEpoch)
     countdownElement.textContent = `${minutesString}:${secondsString}`
+
+    if (room.instruction === 'set' || room.instruction === 'pause') return
 
     if (inRange(timeLeftInt, 60, 3) || inRange(timeLeftInt, 30, 3) || inRange(timeLeftInt, 15, 3)) {
         document.getElementById("countdown-div").classList.add("flash-3x-warning")
@@ -49,9 +51,7 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
         document.getElementById("countdown-div").classList.remove("flash-3x-warning")
     }
 
-    const isSet = startEpoch === currentEpoch // only set instruction sets it like this
-
-    if (timeLeftInt <= 10 && !isSet) {
+    if (timeLeftInt <= 10) {
         document.getElementById("countdown-div").classList.add("flash-infinite")
         if (timeLeftInt <= 0) {
             statusSpan.textContent = "done"
@@ -61,32 +61,31 @@ function updateCountdownUi(countdown, pauseBuffer, startEpoch, currentEpoch) {
     } else document.getElementById("countdown-div").classList.remove("flash-infinite")
 }
 
-function updateCountdownUiV2(room) {
-    const currentEpoch = room.instruction === 'set' ? room.startEpoch : room.instruction === 'pause' ? room.pauseEpoch : Date.now()
-    const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(room.countdown, room.pauseBuffer, room.startEpoch, currentEpoch)
-    countdownElement.textContent = `${minutesString}:${secondsString}`
+function dynamicallyFitText() {
+    const div = document.getElementById('msg-div')
+    const innerDiv = document.getElementById('msg-inner-div')
+    let iterations = 0
+    let fontSize = 40
+    msgP.style.fontSize = `${fontSize}px`
 
-    if (inRange(timeLeftInt, 60, 3) || inRange(timeLeftInt, 30, 3) || inRange(timeLeftInt, 15, 3)) {
-        document.getElementById("countdown-div").classList.add("flash-3x-warning")
-    } else {
-        document.getElementById("countdown-div").classList.remove("flash-3x-warning")
-    }
-
-    if (timeLeftInt <= 10 && room.instruction !== 'set') {
-        document.getElementById("countdown-div").classList.add("flash-infinite")
-        if (timeLeftInt <= 0) {
-            statusSpan.textContent = "done"
-            document.getElementById("countdown-div").classList.remove("flash-infinite")
-            if (countdownInterval) clearInterval(countdownInterval)
+    while (iterations <= 50) {
+        iterations += 1
+        fontSize += 2
+        msgP.style.fontSize = `${fontSize}px`
+        if (innerDiv.clientWidth > div.clientWidth || innerDiv.clientHeight > div.clientHeight) {
+            fontSize -= 2
+            msgP.style.fontSize = `${fontSize}px`
+            break
         }
-    } else document.getElementById("countdown-div").classList.remove("flash-infinite")
+    }
 }
 
 let firstLoad = true
 function applyRoomValues(room) {
     const msg = room.msg === '' ? '-' : room.msg
-    if (msg !== msgSpan.textContent && !firstLoad) triggerFlashing3x(msgSpan)
-    msgSpan.textContent = msg;
+    if (msg !== msgP.textContent && !firstLoad) triggerFlashing3x(msgP)
+    msgP.textContent = msg;
+    dynamicallyFitText()
 
     document.getElementById('room-description').textContent = room.description.length === 0 ? '-' : room.description
     if (room.countdownOnly) {
@@ -102,25 +101,18 @@ function applyRoomValues(room) {
     }
 
     if (countdownInterval) clearInterval(countdownInterval)
+    updateCountdownUi(room)
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
-        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.startEpoch)
         statusSpan.textContent = 'idle'
     } else if (room.instruction === 'start') {
         statusSpan.textContent = 'running'
-        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
-        countdownInterval = setInterval(() => {
-            updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
-        }, 1000)
+        countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
-        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, room.pauseEpoch)
     } else if (room.instruction === 'restart') {
         statusSpan.textContent = 'restarted'
-        updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
-        countdownInterval = setInterval(() => {
-            updateCountdownUi(room.countdown, room.pauseBuffer, room.startEpoch, Date.now())
-        }, 1000)
+        countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     }
 }
 

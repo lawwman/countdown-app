@@ -45,12 +45,6 @@ export function updateAllRoomsCdLeft(rooms) {
     }
 }
 
-export function disableSetCdBtnIfNoChange(rooms) {
-    const userCd = parseInt(setCooldownMinInput.value) * 60 + parseInt(setCooldownSInput.value)
-    const isCountdownUpdated = userCd !== rooms[getSelectedRoomId()].countdown
-    setCdBtn.disabled = !isCountdownUpdated
-}
-
 function setSelectedRoomId(newId) {
     document.getElementById('selected-room-label').textContent = newId
 }
@@ -74,13 +68,13 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     const minutes = Math.floor(room.countdown / 60)
     const seconds = room.countdown - (minutes * 60)
 
-    setCooldownMinInput.value = minutes // update first, disableSetCdBtnIfNoChange() requires it
-    setCooldownSInput.value = seconds // update first, disableSetCdBtnIfNoChange() requires it
+    setCooldownMinInput.value = minutes
+    setCooldownSInput.value = seconds
 
     setCooldownMinInput.disabled = false
     setCooldownSInput.disabled = false
     
-    disableSetCdBtnIfNoChange(rooms)
+    setCdBtn.disabled = false
     setCdDropdown.disabled = false
 
     /* extend time section */

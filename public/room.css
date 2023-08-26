@@ -84,20 +84,24 @@ html, body {
     height: 70vh;
     box-sizing: border-box;
     padding: 1vh;
-    overflow: hidden;    
+    overflow: hidden;
+}
+
+.bottom-section-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    width: 100%;
+    height: 100%;
 }
 
 .bottom-section-sub-div {
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-    background-color: black;
-    vertical-align: middle;
+    width: fit-content;
+    height: fit-content;
 }
 
 .msg-label {
-    font-size: 5em;
-    font-size: 4.5vw;
     margin: 0px;
     word-wrap: break-word;
     text-align: center;

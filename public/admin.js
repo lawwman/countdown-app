@@ -21,7 +21,6 @@ import {
     uiUpdateRoomUnSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
-    disableSetCdBtnIfNoChange,
     deleteRoomDiv
 } from "./admin.ui.js"
 
@@ -67,10 +66,6 @@ document.getElementById('set-countdown-form').addEventListener('submit', async (
     await setTime()
 });
 
-document.getElementById('set-countdown-form').addEventListener('input', async () => {
-    disableSetCdBtnIfNoChange(rooms)
-});
-
 document.getElementById('cd-only').addEventListener('click', async () => {
     const { roomId, room } = cloneSelectedRoom(rooms)
     room.countdownOnly = !room.countdownOnly
@@ -79,7 +74,6 @@ document.getElementById('cd-only').addEventListener('click', async () => {
 
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
-    disableSetCdBtnIfNoChange(rooms)
 });
 
 document.getElementById('start-pause-cd').addEventListener('click', async () => {
