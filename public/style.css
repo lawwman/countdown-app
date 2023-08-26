@@ -23,7 +23,7 @@ html, body {
 
 .title {
     font-size: 2em;
-    color: rgb(240, 240, 240);
+    color: rgb(230, 230, 230);
     font-weight: bold;
     margin: 10px;
 }
@@ -58,7 +58,7 @@ html, body {
 /* for admin forms */
 
 .add-room-div {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(230, 230, 230);
     padding: 10px;
     border-radius: 6px;
     height: fit-content;
@@ -67,7 +67,7 @@ html, body {
 }
 
 .select-room-div {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(230, 230, 230);
     border-radius: 6px;
     padding: 10px;
     height: fit-content;
@@ -125,11 +125,28 @@ p.label {
 }
 
 .dashboard-room {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(230, 230, 230);
     padding: 10px;
     border-radius: 6px;
     width: 200px;
     cursor: pointer;
+    text-align: center;
+}
+
+.dashboard-room p {
+    font-size: 30px;
+    margin: 0px;
+    font-weight: bold;
+}
+
+.dashboard-room span {
+    margin: 0px;
+    font-weight: bolder;
+    font-size: 40px;
+}
+
+.dashboard-room:hover {
+    background-color: lightblue;
 }
 
 .selected-room {
@@ -154,7 +171,7 @@ p.label {
 
 #status {
     font-size: 1em;
-    color: rgb(240, 240, 240);
+    color: rgb(230, 230, 230);
     font-weight: normal;
     color: lightgreen;
 }

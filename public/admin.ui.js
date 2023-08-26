@@ -30,9 +30,13 @@ const restartCdBtn = document.getElementById('restart-cd')
 const deleteRoomBtn = document.getElementById('delete-room-btn')
 
 export function displayRoomCd(countdown) {
-    const mins = Math.floor(countdown / 60)
-    const seconds = parseInt(countdown - mins * 60)
-    return `${mins} mins, ${seconds}s`
+    let mins = `${Math.floor(countdown / 60)}`
+    let seconds = `${parseInt(countdown - mins * 60)}`
+
+    if (mins.length < 2) mins = `0${mins}`
+    if (seconds.length < 2) seconds = `0${seconds}`
+
+    return `${mins} : ${seconds}`
 }
 
 export function updateAllRoomsCdLeft(rooms) {
