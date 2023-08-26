@@ -11,19 +11,18 @@
     <script src="/socket.io/socket.io.js"></script>
 	  <script src="room.js" type="module"></script>
     <div class="main-div">
-      
+      <div class="absolute-label top-label"><p style="margin: 0px">room: <span id="room-label"></span> | <span id="room-description"></span></p></div>
+      <div id= "status-div" class="absolute-label top-section-bottom-label">status: <span id="status"></span></div>
 
-      <div class="top-section">
-        <div class="absolute-label top-label"><p style="margin: 0px">room: <span id="room-label"></span> | <span id="room-description"></span></p></div>
-        <div class="absolute-label bottom-label">status: <span id="status"></span></div>
-
+      <div id="top-section" class="top-section visible">
         <div id="clock-div" class="top-section-sub-div visible">
           <p id="clock" class="main-label"></p>
         </div>
-        <div id="countdown-div" class="top-section-sub-div visible">
+        <div id="countdown-div" class="top-section-sub-div visible" style="flex-grow:1">
           <p id="countdown" class="main-label"></p>
         </div>
       </div>
+
       <div id="msg-div" class="bottom-section visible">
         <div class="bottom-section-sub-div">
           <p id="msg" class="msg-label"></p>

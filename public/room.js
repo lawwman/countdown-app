@@ -81,13 +81,16 @@ function applyRoomValues(room) {
     msgSpan.textContent = msg;
 
     document.getElementById('room-description').textContent = room.description.length === 0 ? '-' : room.description
-
     if (room.countdownOnly) {
         document.getElementById('clock-div').classList.add('invisible')
         document.getElementById('msg-div').classList.add('invisible')
+        document.getElementById('countdown').classList.add('whole-label')
+        document.getElementById('status-div').classList.add('bottom-label')
     } else {
         document.getElementById('clock-div').classList.remove('invisible')
         document.getElementById('msg-div').classList.remove('invisible')
+        document.getElementById('countdown').classList.remove('whole-label')
+        document.getElementById('status-div').classList.remove('bottom-label')
     }
 
     if (countdownInterval) clearInterval(countdownInterval)
