@@ -2,7 +2,6 @@ import {
     makeUrl,
     getTimeLeftInt,
     getSelectedRoomId,
-    setSelectedRoomId,
     makeNewRoomDiv,
 } from "./admin.utils.js"
 
@@ -55,6 +54,10 @@ export function isCountdownUpdatedFn(room) {
     const userCd = parseInt(setCooldownMinInput.value) * 60 + parseInt(setCooldownSInput.value)
     const isCountdownUpdated = userCd !== room.countdown
     return isCountdownUpdated;
+}
+
+function setSelectedRoomId(newId) {
+    document.getElementById('selected-room-label').textContent = newId
 }
 
 export function uiUpdateRoomSelected(roomId, rooms) {

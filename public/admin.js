@@ -10,17 +10,23 @@ import {
     makeNewRoom,
     getSelectedRoomId,
     setRoom,
-    getNewUniqueRoomId
+    getNewUniqueRoomId,
+    cloneSelectedRoom
 } from "./admin.utils.js"
 
 import {
     uiUpdateRoomUnSelected,
-    uiUpdateRoomSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
     isCountdownUpdatedFn,
     deleteRoomDiv
 } from "./admin.ui.js"
+
+import {
+    toggleRoomApi,
+    deleteRoomApi,
+    addRoomApi
+} from "./admin.api.js"
 
 import {
     calculateTimeLeftInt
@@ -41,12 +47,11 @@ document.getElementById('set-msg-form').addEventListener('submit', async (event)
     event.preventDefault();
 });
 
-const wordCount = document.getElementById('word-count')
 document.getElementById('send-msg-input').addEventListener('input', async () => {
     const userInput = document.getElementById('send-msg-input').value
     const noMsg = userInput.length <= 0
     const sameMsgAsCurrent = userInput === rooms[getSelectedRoomId()].msg
-    wordCount.textContent = userInput.length
+    document.getElementById('word-count').textContent = userInput.length
     document.getElementById('send-msg-btn').disabled = noMsg || sameMsgAsCurrent
 });
 
@@ -68,10 +73,9 @@ document.getElementById('set-countdown-form').addEventListener('input', async ()
 });
 
 document.getElementById('cd-only').addEventListener('click', async () => {
-    const roomId = getSelectedRoomId()
-    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    const { roomId, room } = cloneSelectedRoom(rooms)
     room.countdownOnly = !room.countdownOnly
-    await toggleRoom(getSelectedRoomId(), room)
+    await toggleRoomApi(roomId, room, socket.id, rooms)
 })
 
 document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
@@ -98,29 +102,7 @@ document.getElementById('extend-10-min').addEventListener('click', async () => {
     document.getElementById('extend-10-min').disabled = false
 })
 
-document.getElementById('delete-room-btn').addEventListener('click', async () => {
-    document.getElementById('delete-room-btn').disabled = true
-    try {
-        const res = await fetch('delete-room', {
-            method: 'POST',
-            body: JSON.stringify({ roomId: getSelectedRoomId(), sourceSocketId: socket.id }),
-            headers: { "Content-Type": "application/json" },
-        })
-        if (res.status !== 200) {
-            console.log('fail to start room....') // bad response from backend
-            console.log(await res.text())
-            return
-        }
-
-        const roomId = getSelectedRoomId()
-        delete rooms[roomId]
-        uiUpdateRoomUnSelected()
-        deleteRoomDiv(roomId)
-    } catch (err) {
-        console.log(`caught error: ${err}`) // cant reach backend
-        return
-    }
-})
+document.getElementById('delete-room-btn').addEventListener('click', async () => await deleteRoomApi(getSelectedRoomId(), rooms, socket.id))
 
 
 
@@ -146,77 +128,48 @@ let rooms = {}
 let interval;
 
 async function sendMsg(msg) {
-    const roomId = getSelectedRoomId()
-    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    const { roomId, room } = cloneSelectedRoom(rooms)
     room.msg = msg
-    await toggleRoom(roomId, room)
+    await toggleRoomApi(roomId, room, socket.id, rooms)
 }
 
 async function setTime() {
-    const roomId = getSelectedRoomId()
+    let { roomId, room } = cloneSelectedRoom(rooms)
     const minutes = parseInt(document.getElementById(`set-room-cd-min-input`).value)
     const seconds = parseInt(document.getElementById(`set-room-cd-s-input`).value)
     const countdown = minutes * 60 + seconds
 
-    if (rooms[roomId].instruction === 'set' || rooms[roomId].instruction === 'pause') {
-        const room = setRoom(rooms, countdown)
-        await toggleRoom(roomId, room)
+    if (room.instruction === 'set' || room.instruction === 'pause') {
+        room = setRoom(room, countdown)
     } else {
-        const room = JSON.parse(JSON.stringify(rooms[roomId]))
         room.countdown = countdown
         room.startEpoch = Date.now()
         room.pauseEpoch = undefined
         room.pauseBuffer = 0
-        await toggleRoom(roomId, room)
     }
+    await toggleRoomApi(roomId, room, socket.id, rooms)
 }
 
 async function extendTime(extendPeriod) {
-    const roomId = getSelectedRoomId()
+    let { roomId, room } = cloneSelectedRoom(rooms)
 
-    if (rooms[roomId].instruction === 'set') {
-        const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].startEpoch))
-        const room = setRoom(rooms, timeLeft + extendPeriod * 60)
-        await toggleRoom(roomId, room)
-    } else if (rooms[roomId].instruction === 'pause') {
-        const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, rooms[roomId].pauseEpoch))
-        const room = setRoom(rooms, timeLeft + extendPeriod * 60)
-        await toggleRoom(roomId, room)
-    }
-    else {
-        const timeLeft = parseInt(calculateTimeLeftInt(rooms[roomId].countdown, rooms[roomId].pauseBuffer, rooms[roomId].startEpoch, Date.now()))
-        const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    if (room.instruction === 'set' || room.instruction === 'pause') {
+        const currentEpoch = room.instruction === 'set' ? room.startEpoch : room.pauseEpoch
+        const timeLeft = parseInt(calculateTimeLeftInt(room.countdown, room.pauseBuffer, room.startEpoch, currentEpoch))
+        room = setRoom(room, timeLeft + extendPeriod * 60)
+    } else {
+        const timeLeft = parseInt(calculateTimeLeftInt(room.countdown, room.pauseBuffer, room.startEpoch, Date.now()))
         room.countdown = timeLeft + extendPeriod * 60
         room.startEpoch = Date.now()
         room.pauseEpoch = undefined
         room.pauseBuffer = 0
-        await toggleRoom(roomId, room)
     }
-}
-
-async function toggleRoom(roomId, room) {
-    try {
-        const res = await fetch('toggle-room', {
-            method: 'POST',
-            body: JSON.stringify({ roomId, room, sourceSocketId: socket.id }),
-            headers: { "Content-Type": "application/json" },
-        })
-        if (res.status !== 200) {
-            console.log('fail to start room....') // bad response from backend
-            console.log(await res.text())
-            return
-        }
-        rooms[roomId] = room // all good, add the room
-        uiUpdateRoomSelected(roomId, rooms)
-    } catch (err) {
-        console.log(`caught error: ${err}`) // cant reach backend
-        return
-    }
+    await toggleRoomApi(roomId, room, socket.id, rooms)
 }
 
 async function sendCdInstructionToRoom(roomId, instruction) {
     const room = pauseStartOrRestartRoom(rooms, roomId, instruction)
-    await toggleRoom(roomId, room)
+    await toggleRoomApi(roomId, room, socket.id, rooms)
 }
 
 async function addRoom() {
@@ -228,28 +181,8 @@ async function addRoom() {
     const newRoomId = document.getElementById('new-room-name').value
     const countdown = 0
 
-    rooms[newRoomId] = makeNewRoom(countdown, document.getElementById('new-room-description').value);
-    try {
-        const res = await fetch('add-room', {
-            method: 'POST',
-            body: JSON.stringify({ roomId: newRoomId, room: rooms[newRoomId], sourceSocketId: socket.id }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        if (res.status !== 200) {
-            console.log('fail to add room....') // bad response from backend
-            console.log(await res.text())
-            delete rooms[newRoomId]
-            return
-        }
-    } catch (err) {
-        console.log(`caught error: ${err}`) // cant reach backend
-        delete rooms[newRoomId]
-        return
-    }
-    addRoomDiv(newRoomId, rooms)
-    document.getElementById('new-room-name').value = getNewUniqueRoomId(rooms)
+    const room = makeNewRoom(countdown, document.getElementById('new-room-description').value);
+    await addRoomApi(newRoomId, room, rooms, socket.id)
 }
 
 async function init() {

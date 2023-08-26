@@ -1,5 +1,5 @@
 import { calculateTimeLeftInt } from './countdown.utils.js'
-import { isCountdownUpdatedFn, displayRoomCd } from './admin.ui.js'
+import { displayRoomCd } from './admin.ui.js'
 
 
 export function pauseStartOrRestartRoom(rooms, roomId, instruction) {
@@ -22,9 +22,7 @@ export function pauseStartOrRestartRoom(rooms, roomId, instruction) {
     return room;
 }
 
-export function setRoom(rooms, countdown) {
-    const roomId = getSelectedRoomId()
-    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+export function setRoom(room, countdown) {
     room.countdown = countdown;
     room.startEpoch = 0;
     room.pauseBuffer = 0;
@@ -93,8 +91,10 @@ export function getSelectedRoomId() {
     return document.getElementById('selected-room-label').textContent
 }
 
-export function setSelectedRoomId(newId) {
-    document.getElementById('selected-room-label').textContent = newId
+export function cloneSelectedRoom(rooms) {
+    const roomId = document.getElementById('selected-room-label').textContent
+    const room = JSON.parse(JSON.stringify(rooms[roomId]))
+    return { roomId, room }
 }
 
 export function getNewUniqueRoomId(rooms) {
