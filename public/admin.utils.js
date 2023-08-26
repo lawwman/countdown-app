@@ -1,34 +1,45 @@
 import { calculateTimeLeftInt } from './countdown.utils.js'
 import { displayRoomCd } from './admin.ui.js'
 
-
-export function pauseStartOrRestartRoom(rooms, roomId, instruction) {
-    const room = JSON.parse(JSON.stringify(rooms[roomId]))
-    room.instruction = instruction
-
-    if (instruction === 'start') {
-        if (room.pauseEpoch !== undefined) {
-            room.pauseBuffer += room.pauseEpoch - room.startEpoch
-        }
-        room.startEpoch = Date.now()
-        room.pauseEpoch = undefined
-    } else if (instruction === 'pause') {
-        room.pauseEpoch = Date.now()
-    } else if (instruction === 'restart') {
-        room.startEpoch = Date.now()
-        room.pauseEpoch = undefined
-        room.pauseBuffer = 0
-    }
-    return room;
-}
-
 export function setRoom(room, countdown) {
+    room.instruction = 'set'
     room.countdown = countdown;
     room.startEpoch = 0;
     room.pauseBuffer = 0;
     room.pauseEpoch = undefined;
-    room.instruction = 'set'
     return room;
+}
+
+export function startRoom(room) {
+    room.instruction = 'start'
+    if (room.pauseEpoch !== undefined) {
+        room.pauseBuffer += room.pauseEpoch - room.startEpoch
+    }
+    room.startEpoch = Date.now()
+    room.pauseEpoch = undefined
+    return room
+}
+
+export function pauseRoom(room) {
+    room.instruction = 'pause'
+    room.pauseEpoch = Date.now()
+    return room
+}
+
+export function restartRoom(room) {
+    room.instruction = 'restart'
+    room.startEpoch = Date.now()
+    room.pauseEpoch = undefined
+    room.pauseBuffer = 0
+    return room
+}
+
+export function setRoomCdKeepInstruction(room, countdown) {
+    room.countdown = countdown
+    room.startEpoch = Date.now()
+    room.pauseEpoch = undefined
+    room.pauseBuffer = 0
+    return room
 }
 
 

@@ -6,7 +6,10 @@ instructions:
 */
 
 import {
-    pauseStartOrRestartRoom,
+    startRoom,
+    pauseRoom,
+    restartRoom,
+    setRoomCdKeepInstruction,
     makeNewRoom,
     getSelectedRoomId,
     setRoom,
@@ -83,8 +86,17 @@ document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
     document.getElementById('set-cd-btn').disabled = !isCountdownUpdatedFn(rooms[getSelectedRoomId()])
 });
 
-document.getElementById('start-pause-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), document.getElementById('start-pause-instr').textContent))
-document.getElementById('restart-cd').addEventListener('click', () => sendCdInstructionToRoom(getSelectedRoomId(), 'restart'))
+document.getElementById('start-pause-cd').addEventListener('click', async () => {
+    let { roomId, room } = cloneSelectedRoom(rooms)
+    if (document.getElementById('start-pause-instr').textContent === 'start') room = startRoom(room)
+    else room = pauseRoom(room)
+    await toggleRoomApi(roomId, room, socket.id, rooms)
+})
+document.getElementById('restart-cd').addEventListener('click', async () => {
+    let { roomId, room } = cloneSelectedRoom(rooms)
+    room = restartRoom(room)
+    await toggleRoomApi(roomId, room, socket.id, rooms)
+})
 
 document.getElementById('extend-1-min').addEventListener('click', async () => {
     document.getElementById('extend-1-min').disabled = true
@@ -108,14 +120,10 @@ document.getElementById('delete-room-btn').addEventListener('click', async () =>
 
 document.getElementById(`new-room-form`).addEventListener('submit', async (event) => {
     event.preventDefault();
-    for (const element of document.getElementById(`new-room-form`).elements) {
-        element.disabled = true
-    }
+    const elements = document.getElementById(`new-room-form`).elements
+    elements.map(element => element.disabled = true)
     await addRoom();
-
-    for (const element of document.getElementById(`new-room-form`).elements) {
-        element.disabled = false
-    }
+    elements.map(element => element.disabled = false)
 });
 
 /* ensure unique rooms */
@@ -164,11 +172,6 @@ async function extendTime(extendPeriod) {
         room.pauseEpoch = undefined
         room.pauseBuffer = 0
     }
-    await toggleRoomApi(roomId, room, socket.id, rooms)
-}
-
-async function sendCdInstructionToRoom(roomId, instruction) {
-    const room = pauseStartOrRestartRoom(rooms, roomId, instruction)
     await toggleRoomApi(roomId, room, socket.id, rooms)
 }
 
