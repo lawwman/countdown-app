@@ -84,7 +84,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 
     /* cd only section */
     cdOnlyBtn.disabled = false
-    cdOnlyBtn.textContent = room.countdownOnly ? 'Show Countdown And Msg' : 'Show Countdown Only'
+    cdOnlyBtn.textContent = room.countdownOnly ? 'Show All' : 'Show Countdown Only'
 
     /* pause start restart section */
     const cdDone = getTimeLeftInt(room) <= 0 // no point start or pause if countdown is done.
@@ -133,15 +133,19 @@ export function uiUpdateRoomUnSelected() {
 }
 
 export function addRoomDiv(roomId, rooms) {
-    const newRoomElement = makeNewRoomDiv(roomId, rooms[roomId].countdown)
-
     const roomHolder = document.getElementById('room-holder')
+    for (const child of roomHolder.children) {
+        if (child.id === `room-div-${roomId}`) {
+            console.log('room already exists')
+            return
+        }
+    }
+    const newRoomElement = makeNewRoomDiv(roomId, rooms[roomId].countdown)
     roomHolder.appendChild(newRoomElement)
-
     newRoomElement.addEventListener('click', () => {
         let isAnyRoomSelected = false
         for (const roomElem of roomHolder.children) {
-            if (roomElem.id.replace('room-div-', '') === roomId) {
+            if (roomElem.id === `room-div-${roomId}`) {
                 /* div id matches the div being clicked */
                 if (roomElem.classList.contains('selected-room')) {
                     /* it is already selected. remove it. */
@@ -164,7 +168,7 @@ export function deleteRoomDiv(roomId) {
     for (const child of roomHolder.children) {
         if (child.id === `room-div-${roomId}`) {
             roomHolder.removeChild(child)
-            break;
+            return
         }
     }
 }
