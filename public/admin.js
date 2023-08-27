@@ -2,13 +2,13 @@
 instructions:
  - start, pause is as expected. no new countdown value
  - set means to clear all countdown progress and not start. may have new countdown value
- - restart means to clear all countdown progress and start. no new countdown value
 */
 
 import {
     startRoom,
     pauseRoom,
-    restartRoom,
+    resetRoom,
+    stopRoom,
     setRoomCdKeepInstruction,
     makeNewRoom,
     getSelectedRoomId,
@@ -21,7 +21,8 @@ import {
     uiUpdateRoomUnSelected,
     updateAllRoomsCdLeft,
     addRoomDiv,
-    deleteRoomDiv
+    deleteRoomDiv,
+    startPauseLogic
 } from "./admin.ui.js"
 
 import {
@@ -65,6 +66,10 @@ document.getElementById('set-countdown-form').addEventListener('submit', async (
     event.preventDefault();
 });
 
+document.getElementById('set-countdown-form').addEventListener('input', async (event) => {
+    startPauseLogic(rooms[getSelectedRoomId()])
+});
+
 document.getElementById('cd-only').addEventListener('click', async () => {
     const { roomId, room } = cloneSelectedRoom(rooms)
     room.countdownOnly = !room.countdownOnly
@@ -81,9 +86,15 @@ document.getElementById('start-pause-cd').addEventListener('click', async () => 
     else room = pauseRoom(room)
     await toggleRoomApi(roomId, room, socket.id, rooms)
 })
-document.getElementById('restart-cd').addEventListener('click', async () => {
+document.getElementById('reset-cd').addEventListener('click', async () => {
     let { roomId, room } = cloneSelectedRoom(rooms)
-    room = restartRoom(room)
+    room = resetRoom(room)
+    await toggleRoomApi(roomId, room, socket.id, rooms)
+})
+
+document.getElementById('stop-cd').addEventListener('click', async () => {
+    let { roomId, room } = cloneSelectedRoom(rooms)
+    room = stopRoom(room)
     await toggleRoomApi(roomId, room, socket.id, rooms)
 })
 

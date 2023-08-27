@@ -19,13 +19,17 @@ export function setRoomCdKeepInstruction(room, countdown) {
 }
 
 export function startRoom(room) {
+
+    const cd = parseInt(document.getElementById(`set-room-cd-min-input`).value) * 60
+
     room.instruction = 'start'
     if (room.pauseEpoch !== undefined) {
         room.pauseBuffer += room.pauseEpoch - room.startEpoch
     }
-    room.countdown = parseInt(document.getElementById(`set-room-cd-min-input`).value) * 60
+    room.countdown = cd
     room.startEpoch = Date.now()
     room.pauseEpoch = undefined
+    room.originalCd = cd
     return room
 }
 
@@ -35,11 +39,17 @@ export function pauseRoom(room) {
     return room
 }
 
-export function restartRoom(room) {
-    room.instruction = 'restart'
+export function resetRoom(room) {
     room.startEpoch = Date.now()
-    room.pauseEpoch = undefined
+    room.pauseEpoch = room.instruction === 'pause' ? Date.now() : undefined
     room.pauseBuffer = 0
+    room.countdown = room.originalCd
+    return room
+}
+
+export function stopRoom(room) {
+    room.countdown = 0
+    room.instruction = 'set'
     return room
 }
 
@@ -53,6 +63,7 @@ export function makeNewRoom(description) {
         msg: '',
         countdownOnly: false,
         description: description,
+        originalCd: 0,
     }
 }
 

@@ -110,9 +110,6 @@ function applyRoomValues(room) {
         countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
-    } else if (room.instruction === 'restart') {
-        statusSpan.textContent = 'restarted'
-        countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     }
 }
 

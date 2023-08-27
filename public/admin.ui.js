@@ -24,7 +24,8 @@ const wordCount = document.getElementById('word-count')
 const startPauseCdBtn = document.getElementById('start-pause-cd')
 const startPauseInstr = document.getElementById('start-pause-instr')
 
-const restartCdBtn = document.getElementById('restart-cd')
+const resetCdBtn = document.getElementById('reset-cd')
+const stopCdBtn = document.getElementById('stop-cd')
 const deleteRoomBtn = document.getElementById('delete-room-btn')
 
 export function displayRoomCd(countdown) {
@@ -46,6 +47,15 @@ export function updateAllRoomsCdLeft(rooms) {
 
 function setSelectedRoomId(newId) {
     document.getElementById('selected-room-label').textContent = newId
+}
+
+export function startPauseLogic(room) {
+    const countdown = parseInt(setCooldownMinInput.value) * 60
+    const canStart = (room.instruction === 'pause' || room.instruction === 'set') && countdown > 0
+    startPauseCdBtn.disabled = !(canStart || room.instruction === 'start')
+
+    /* whenever you start or reset, next button will be to pause. after set or pause, next button will be to start */
+    startPauseInstr.textContent = canStart ? 'start' : 'pause'
 }
 
 export function uiUpdateRoomSelected(roomId, rooms) {
@@ -79,16 +89,10 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show All' : 'Show Countdown Only'
 
     /* pause start section */
-    startPauseCdBtn.disabled = false
-
-    /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
-    startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
-
-    /* no point restarting if countdown is zero */
-    restartCdBtn.disabled = room.countdown === 0 ? true : false
-
-    if (room.instruction === 'set') restartCdBtn.disabled = true // dont make sense to restart if just set
-    
+    startPauseLogic(room)
+    resetCdBtn.disabled = room.countdown <= 0
+    stopCdBtn.disabled = room.countdown <= 0
+    if (room.instruction === 'set') resetCdBtn.disabled = true // dont make sense to reset if just set
     deleteRoomBtn.disabled = false
 }
 
@@ -115,7 +119,8 @@ export function uiUpdateRoomUnSelected() {
 
     startPauseInstr.textContent = 'start'
     startPauseCdBtn.disabled = true
-    restartCdBtn.disabled = true
+    resetCdBtn.disabled = true
+    stopCdBtn.disabled = true
     cdOnlyBtn.disabled = true
 
     deleteRoomBtn.disabled = true
