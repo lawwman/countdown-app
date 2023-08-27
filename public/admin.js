@@ -76,10 +76,6 @@ document.getElementById('cd-only').addEventListener('click', async () => {
     await toggleRoomApi(roomId, room, socket.id, rooms)
 })
 
-document.getElementById(`set-room-dropdown`).addEventListener('change', () => {
-    document.getElementById(`set-room-cd-min-input`).value = document.getElementById(`set-room-dropdown`).value
-});
-
 document.getElementById('start-pause-cd').addEventListener('click', async () => {
     let { roomId, room } = cloneSelectedRoom(rooms)
     if (document.getElementById('start-pause-instr').textContent === 'start') room = startRoom(room)
@@ -97,6 +93,20 @@ document.getElementById('stop-cd').addEventListener('click', async () => {
     room = stopRoom(room)
     await toggleRoomApi(roomId, room, socket.id, rooms)
 })
+
+function preset(value) {
+    document.getElementById(`set-room-cd-min-input`).value = value
+    startPauseLogic(rooms[getSelectedRoomId()])
+}
+
+document.getElementById("preset-5").addEventListener('click', () => preset(5))
+document.getElementById("preset-10").addEventListener('click', () => preset(10))
+document.getElementById("preset-15").addEventListener('click', () => preset(15))
+document.getElementById("preset-20").addEventListener('click', () => preset(20))
+document.getElementById("preset-30").addEventListener('click', () => preset(30))
+document.getElementById("preset-45").addEventListener('click', () => preset(45))
+document.getElementById("preset-60").addEventListener('click', () => preset(60))
+
 
 document.getElementById('extend-1-min').addEventListener('click', async () => await extendTime(1))
 document.getElementById('extend-5-min').addEventListener('click', async () => await extendTime(5))

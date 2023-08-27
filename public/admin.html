@@ -48,15 +48,16 @@
             <form id="set-countdown-form" class="countdown-div">
               <div>
                 <p class="label">minutes</p>
-                <input id="set-room-cd-min-input" class="form-input" type="number" placeholder="20" value="0" min="0">
-                <select name="countdown" id="set-room-dropdown" style="width:20px">
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="45">45</option>
-                  <option value="60">60</option>
-                </select>
+                <input id="set-room-cd-min-input" class="form-input" style="width:4em" type="number" placeholder="20" value="0" min="0">
+              </div>
+              <div style="display:flex;flex-wrap: wrap;">
+                <button id="preset-5" class="form-button" style="width:40px;height:40px">5</button>
+                <button id="preset-10" class="form-button" style="width:40px;height:40px">10</button>
+                <button id="preset-15" class="form-button" style="width:40px;height:40px">15</button>
+                <button id="preset-20" class="form-button" style="width:40px;height:40px">20</button>
+                <button id="preset-30" class="form-button" style="width:40px;height:40px">30</button>
+                <button id="preset-45" class="form-button" style="width:40px;height:40px">45</button>
+                <button id="preset-60" class="form-button" style="width:40px;height:40px">60</button>
               </div>
               <button id="start-pause-cd" class="form-button" style="width:100px"><span id="start-pause-instr">start</span></button>
             </form>

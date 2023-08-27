@@ -1,13 +1,11 @@
 import {
     makeUrl,
     getTimeLeftInt,
-    getSelectedRoomId,
     makeNewRoomDiv,
 } from "./admin.utils.js"
 
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
-const setCdDropdown = document.getElementById('set-room-dropdown')
 
 const extend1Min = document.getElementById('extend-1-min')
 const extend5Min = document.getElementById('extend-5-min')
@@ -77,7 +75,6 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     const minutes = Math.floor(room.countdown / 60)
     setCooldownMinInput.value = minutes
     setCooldownMinInput.disabled = false
-    setCdDropdown.disabled = false
 
     /* extend time section */
     extend1Min.disabled = false
@@ -110,7 +107,6 @@ export function uiUpdateRoomUnSelected() {
 
     /* set new cooldown */
     setCooldownMinInput.disabled = true
-    setCdDropdown.disabled = true
     
     /* extend time section */
     extend1Min.disabled = true
