@@ -16,7 +16,10 @@ function triggerFlashing3x(element) {
 }
 
 const clockSpan = document.getElementById('clock')
-const countdownElement = document.getElementById("countdown")
+const cdMin1 = document.getElementById("cd-mins-1")
+const cdMin2 = document.getElementById("cd-mins-2")
+const cdSec1 = document.getElementById("cd-sec-1")
+const cdSec2 = document.getElementById("cd-sec-2")
 const statusSpan = document.getElementById('status')
 const msgP = document.getElementById('msg')
 
@@ -41,7 +44,10 @@ function inRange(value, point, buffer) {
 function updateCountdownUi(room) {
     const currentEpoch = room.instruction === 'set' ? room.startEpoch : room.instruction === 'pause' ? room.pauseEpoch : Date.now()
     const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(room.countdown, room.pauseBuffer, room.startEpoch, currentEpoch)
-    countdownElement.textContent = `${minutesString}:${secondsString}`
+    cdMin1.textContent = minutesString[0]
+    cdMin2.textContent = minutesString[1]
+    cdSec1.textContent = secondsString[0]
+    cdSec2.textContent = secondsString[1]
 
     if (room.instruction === 'set' || room.instruction === 'pause') return
 
@@ -85,20 +91,21 @@ function applyRoomValues(room) {
     const msg = room.msg === '' ? '-' : room.msg
     if (msg !== msgP.textContent && !firstLoad) triggerFlashing3x(document.getElementById('msg-div-inner'))
     msgP.textContent = msg;
-    dynamicallyFitText()
 
     document.getElementById('room-description').textContent = room.description.length === 0 ? '-' : room.description
     if (room.countdownOnly) {
         document.getElementById('clock-div').classList.add('invisible')
         document.getElementById('msg-div').classList.add('invisible')
-        document.getElementById('countdown').classList.add('whole-label')
+        document.getElementById('countdown-div').classList.add('whole-label')
         document.getElementById('status-div').classList.add('bottom-label')
     } else {
         document.getElementById('clock-div').classList.remove('invisible')
         document.getElementById('msg-div').classList.remove('invisible')
-        document.getElementById('countdown').classList.remove('whole-label')
+        document.getElementById('countdown-div').classList.remove('whole-label')
         document.getElementById('status-div').classList.remove('bottom-label')
     }
+
+    dynamicallyFitText()
 
     if (countdownInterval) clearInterval(countdownInterval)
     updateCountdownUi(room)
