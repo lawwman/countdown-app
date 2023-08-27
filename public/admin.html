@@ -58,12 +58,7 @@
                   <option value="60">60</option>
                 </select>
               </div>
-              <div>:</div>
-              <div>
-                <p class="label">seconds</p>
-                <input id="set-room-cd-s-input" class="form-input" type="number" placeholder="20" value="0" min="0" max="60">
-              </div>
-              <input id="set-cd-btn" type="submit" value="Submit" class="form-button">
+              <button id="start-pause-cd" class="form-button" style="width:100px"><span id="start-pause-instr">start</span></button>
             </form>
 
             <p class="form-label">Extend Time</p>
@@ -75,7 +70,6 @@
           <div class="select-room-sub-div">
             <p class="form-label">Toggle Countdown</p>
             <div style="width: fit-content; margin: 20px auto;">
-              <button id="start-pause-cd" class="form-button" style="width:200px"><p style="margin: 0px"><span id="start-pause-instr">start</span> countdown</p></button>
               <button id="restart-cd" class="form-button">restart countdown</button>
             </div>
           </div>
@@ -103,7 +97,7 @@
               <label>Description: </label>
               <input id="new-room-description" class="form-input" maxlength="30">
             </div>
-            <input id="add-room" type="submit" value="add new room">
+            <input id="add-room" class="form-button" type="submit" value="add new room">
           </form>
         </div>
         

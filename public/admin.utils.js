@@ -23,6 +23,7 @@ export function startRoom(room) {
     if (room.pauseEpoch !== undefined) {
         room.pauseBuffer += room.pauseEpoch - room.startEpoch
     }
+    room.countdown = parseInt(document.getElementById(`set-room-cd-min-input`).value) * 60
     room.startEpoch = Date.now()
     room.pauseEpoch = undefined
     return room

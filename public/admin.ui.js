@@ -7,9 +7,7 @@ import {
 
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
-const setCooldownSInput = document.getElementById(`set-room-cd-s-input`)
 const setCdDropdown = document.getElementById('set-room-dropdown')
-const setCdBtn = document.getElementById('set-cd-btn')
 
 const extend1Min = document.getElementById('extend-1-min')
 const extend5Min = document.getElementById('extend-5-min')
@@ -42,9 +40,6 @@ export function displayRoomCd(countdown) {
 export function updateAllRoomsCdLeft(rooms) {
     for (const roomId of Object.keys(rooms)) {
         const countdownLeft = getTimeLeftInt(rooms[roomId])
-        if (getSelectedRoomId() === roomId) {
-            if (countdownLeft <= 0) startPauseCdBtn.disabled = true
-        }
         document.getElementById(`room-cd-left-${roomId}`).textContent = displayRoomCd(countdownLeft)
     }
 }
@@ -70,15 +65,8 @@ export function uiUpdateRoomSelected(roomId, rooms) {
 
     /* set new cooldown */
     const minutes = Math.floor(room.countdown / 60)
-    const seconds = room.countdown - (minutes * 60)
-
     setCooldownMinInput.value = minutes
-    setCooldownSInput.value = seconds
-
     setCooldownMinInput.disabled = false
-    setCooldownSInput.disabled = false
-    
-    setCdBtn.disabled = false
     setCdDropdown.disabled = false
 
     /* extend time section */
@@ -90,9 +78,8 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     cdOnlyBtn.disabled = false
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show All' : 'Show Countdown Only'
 
-    /* pause start restart section */
-    const cdDone = getTimeLeftInt(room) <= 0 // no point start or pause if countdown is done.
-    startPauseCdBtn.disabled = cdDone
+    /* pause start section */
+    startPauseCdBtn.disabled = false
 
     /* whenever you start or restart, next button will be to pause. after set or pause, next button will be to start */
     startPauseInstr.textContent = (room.instruction === 'start' || room.instruction === 'restart') ? 'pause' : 'start'
@@ -119,9 +106,7 @@ export function uiUpdateRoomUnSelected() {
 
     /* set new cooldown */
     setCooldownMinInput.disabled = true
-    setCooldownSInput.disabled = true
     setCdDropdown.disabled = true
-    setCdBtn.disabled = true
     
     /* extend time section */
     extend1Min.disabled = true

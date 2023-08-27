@@ -63,7 +63,6 @@ document.getElementById('send-msg-btn').addEventListener('click', async () => {
 
 document.getElementById('set-countdown-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-    await setTime()
 });
 
 document.getElementById('cd-only').addEventListener('click', async () => {
@@ -122,17 +121,6 @@ let interval;
 async function sendMsg(msg) {
     const { roomId, room } = cloneSelectedRoom(rooms)
     room.msg = msg
-    await toggleRoomApi(roomId, room, socket.id, rooms)
-}
-
-async function setTime() {
-    let { roomId, room } = cloneSelectedRoom(rooms)
-    const minutes = parseInt(document.getElementById(`set-room-cd-min-input`).value)
-    const seconds = parseInt(document.getElementById(`set-room-cd-s-input`).value)
-    const countdown = minutes * 60 + seconds
-
-    if (room.instruction === 'set' || room.instruction === 'pause') room = setRoom(room, countdown)
-    else room = setRoomCdKeepInstruction(room, countdown)
     await toggleRoomApi(roomId, room, socket.id, rooms)
 }
 
