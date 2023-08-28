@@ -104,6 +104,13 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     deleteRoomBtn.disabled = false
 }
 
+export function unselectAllRoom() {
+    const roomHolder = document.getElementById('room-holder')
+    for (const child of roomHolder.children) {
+        child.classList.remove('selected-room')
+    }
+}
+
 export function uiUpdateRoomUnSelected() {
     /* info section */
     setSelectedRoomId('')

@@ -22,7 +22,8 @@ import {
     updateAllRoomsCdLeft,
     addRoomDiv,
     deleteRoomDiv,
-    startPauseLogic
+    startPauseLogic,
+    unselectAllRoom
 } from "./admin.ui.js"
 
 import {
@@ -211,12 +212,18 @@ socket.on("delete-room", async (roomId, sourceSocketId) => {
     if (socket.id === sourceSocketId) return;
     delete rooms[roomId]
     
-    if (getSelectedRoomId() === roomId) uiUpdateRoomUnSelected()
+    if (getSelectedRoomId() === roomId) {
+        unselectAllRoom()
+        uiUpdateRoomUnSelected()
+    }
     deleteRoomDiv(roomId)
 })
 
 socket.on("toggle-room", async (roomId, room, sourceSocketId) => {
     if (socket.id === sourceSocketId) return;
     rooms[roomId] = room
-    if (getSelectedRoomId() === roomId) uiUpdateRoomUnSelected()
+    if (getSelectedRoomId() === roomId) {
+        unselectAllRoom()
+        uiUpdateRoomUnSelected()
+    }
 })
