@@ -19,17 +19,22 @@ export function setRoomCdKeepInstruction(room, countdown) {
 }
 
 export function startRoom(room) {
-
-    const cd = parseInt(document.getElementById(`set-room-cd-min-input`).value) * 60
+    const userInputCd = parseInt(document.getElementById(`set-room-cd-min-input`).value) * 60
+    const useUserInput = userInputCd > 0
+    const cd = useUserInput ? userInputCd : room.countdown
 
     room.instruction = 'start'
-    if (room.pauseEpoch !== undefined) {
+    if (room.pauseEpoch !== undefined && !useUserInput) {
         room.pauseBuffer += room.pauseEpoch - room.startEpoch
+    } else {
+        room.pauseBuffer = 0
     }
     room.countdown = cd
     room.startEpoch = Date.now()
     room.pauseEpoch = undefined
-    room.originalCd = cd
+
+    if (useUserInput) room.originalCd = cd
+
     return room
 }
 
@@ -40,8 +45,10 @@ export function pauseRoom(room) {
 }
 
 export function resetRoom(room) {
-    room.startEpoch = Date.now()
-    room.pauseEpoch = room.instruction === 'pause' ? Date.now() : undefined
+    const hasStarted = room.instruction === 'start'
+
+    room.startEpoch = hasStarted ? Date.now() : 0
+    room.pauseEpoch = hasStarted ? undefined : 0
     room.pauseBuffer = 0
     room.countdown = room.originalCd
     return room

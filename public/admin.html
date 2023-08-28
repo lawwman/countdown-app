@@ -25,16 +25,14 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-
-          <div class="select-room-sub-div">
+        <div class="top-section">
+          <div class="top-section-sub top-section-msg">
             <p class="form-label">Send Messages</p>
-            <div style="width:500px; height:100px; overflow: scroll;">
+            <div class="msg-div">
               <p>Current Msg: <span id="current-msg"></span></p>
             </div>
-
             <form id="set-msg-form" style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
-              <textarea id="send-msg-input" rows="4" cols="50" maxlength="300"></textarea>
+              <textarea id="send-msg-input" rows="4" maxlength="300"></textarea>
               <p style="margin: 0px"><span id="word-count"></span>/300</p>
               <div>
                 <button id="clear-msg-btn" class="form-button">clear message</button>
@@ -42,44 +40,48 @@
               </div>
             </form>
           </div>
-  
-          <div class="select-room-sub-div">
-            <p class="form-label">Set New Countdown</p>
+
+          <div class="top-section-sub top-section-cd">
+            <p class="form-label">Room Countdown: <span id="original-cd" style="font-weight: bold; font-size: 1.5em; color: black;"></span></p>
             <form id="set-countdown-form" class="countdown-div">
               <div>
-                <p class="label">minutes</p>
-                <input id="set-room-cd-min-input" class="form-input" style="width:4em" type="number" placeholder="20" value="0" min="0">
+                <p class="label">minutes:</p>
+                <input id="set-room-cd-min-input" class="cd-input" type="number" placeholder="20" value="0" min="0">
               </div>
-              <div style="display:flex;flex-wrap: wrap;">
-                <button id="preset-5" class="form-button" style="width:40px;height:40px">5</button>
-                <button id="preset-10" class="form-button" style="width:40px;height:40px">10</button>
-                <button id="preset-15" class="form-button" style="width:40px;height:40px">15</button>
-                <button id="preset-20" class="form-button" style="width:40px;height:40px">20</button>
-                <button id="preset-30" class="form-button" style="width:40px;height:40px">30</button>
-                <button id="preset-45" class="form-button" style="width:40px;height:40px">45</button>
-                <button id="preset-60" class="form-button" style="width:40px;height:40px">60</button>
+              <div class="preset-btn-holder">
+                <button id="preset-5" class="preset-button">5</button>
+                <button id="preset-10" class="preset-button">10</button>
+                <button id="preset-15" class="preset-button">15</button>
+                <button id="preset-20" class="preset-button">20</button>
+                <button id="preset-30" class="preset-button">30</button>
+                <button id="preset-45" class="preset-button">45</button>
+                <button id="preset-60" class="preset-button">60</button>
               </div>
-              <button id="start-pause-cd" class="form-button" style="width:100px"><span id="start-pause-instr">start</span></button>
+              <button id="start-pause-cd" class="form-button" style="width:120px"><span id="start-pause-instr">start</span></button>
             </form>
 
-            <p class="form-label">Extend Time</p>
-            <button id="extend-1-min" class="form-button">+ 1 minute</button>
-            <button id="extend-5-min" class="form-button">+ 5 minutes</button>
-            <button id="extend-10-min" class="form-button">+ 10 minutes</button>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <button id="reset-cd" class="form-button" style="width:100px">reset</button>
+              <button id="stop-cd" class="form-button" style="width:100px">stop</button>
+              <span id="form-cd-display" style="font-size: 2em; font-weight: bold; border: 3px solid black; border-radius: 6px; padding: 5px"></span>
+            </div>
 
-            <button id="reset-cd" class="form-button">reset</button>
-            <button id="stop-cd" class="form-button">stop</button>
+            <p class="form-label">Extend Time</p>
+            <div class="extend-button-holder">
+              <button id="extend-1-min" class="extend-button">+ 1 minute</button>
+              <button id="extend-5-min" class="extend-button">+ 5 minutes</button>
+              <button id="extend-10-min" class="extend-button">+ 10 minutes</button>
+            </div>
           </div>
-  
+        </div>
+
+        <div style="display: flex; gap: 10px">
           <div class="select-room-sub-div">
             <p class="form-label">Room Display</p>
             <button id="cd-only" class="form-button" style="width:300px">Show Countdown Only</button>
           </div>
           <button id="delete-room-btn" class="form-button">Delete Room</button>
         </div>
-
-        
-
       </div>
 
       <div style="display: flex; gap: 10px;">

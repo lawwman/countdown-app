@@ -21,6 +21,7 @@ let rooms = {"1": {
   instruction: 'set',
   msg: 'test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn end',
   description: 'test room',
+  originalCd: 0,
 }}
 
 // let rooms = {"1": {
@@ -31,6 +32,7 @@ let rooms = {"1": {
 //   instruction: 'set',
 //   msg: 'test',
 //   description: '',
+//   originalCd: 0,
 // }}
 
 // let rooms = {}
