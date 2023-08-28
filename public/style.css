@@ -35,22 +35,25 @@ html, body {
     position: relative;
 }
 
-.copy:hover{
-    background-color: white;
+@media (hover: hover) {
+    .copy:hover{
+        background-color: white;
+    }
+    
+    .copy:hover .tooltip {
+        position: absolute;
+        display: block;
+        bottom: 1.5em;
+        right: 0px;
+        font-size: 1.5em;
+        background-color: black;
+        opacity: 0.8;
+        border-radius: 6px;
+        padding: 5px;
+        color: white;
+    }
 }
 
-.copy:hover .tooltip {
-    position: absolute;
-    display: block;
-    bottom: 1.5em;
-    right: 0px;
-    font-size: 1.5em;
-    background-color: black;
-    opacity: 0.8;
-    border-radius: 6px;
-    padding: 5px;
-    color: white;
-}
 
 .tooltip {
     display: none;
@@ -105,8 +108,8 @@ html, body {
 .preset-btn-holder {
     display:flex;
     flex-wrap: wrap;
-    min-width:120px;
     flex-grow: 2;
+    justify-content: center;
 }
 
 .preset-button {
@@ -196,6 +199,7 @@ p.label {
     width: 200px;
     cursor: pointer;
     text-align: center;
+    color: rgb(80, 80, 80);
 }
 
 .dashboard-room p {
@@ -210,12 +214,21 @@ p.label {
     font-size: 40px;
 }
 
-.dashboard-room:hover {
-    background-color: lightblue;
+@media (hover: hover) {
+    .dashboard-room:hover {
+        position: relative;
+        top: -3px;
+        background-color: rgb(197, 223, 231);
+    }
+}
+
+.dashboard-room:active {
+    background-color: rgb(104, 196, 226);
 }
 
 .selected-room {
-    background-color: lightblue;
+    color: black;
+    background-color: rgb(148, 209, 230);
 }
 
 
