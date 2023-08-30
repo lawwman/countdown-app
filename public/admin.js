@@ -9,10 +9,9 @@ import {
     pauseRoom,
     resetRoom,
     stopRoom,
-    setRoomCdKeepInstruction,
+    extendWhilePlaying,
     makeNewRoom,
     getSelectedRoomId,
-    setRoom,
     getNewUniqueRoomId,
     cloneSelectedRoom
 } from "./admin.utils.js"
@@ -150,15 +149,11 @@ async function extendTime(extendPeriod) {
     document.getElementById(`extend-${extendPeriod}-min`).disabled = true
     let { roomId, room } = cloneSelectedRoom(rooms)
 
-    if (room.instruction === 'set' || room.instruction === 'pause') {
-        const currentEpoch = room.instruction === 'set' ? room.startEpoch : room.pauseEpoch
-        const timeLeft = parseInt(calculateTimeLeftInt(room.countdown, room.pauseBuffer, room.startEpoch, currentEpoch))
-        room = setRoom(room, timeLeft + extendPeriod * 60)
-    } else {
+    if (room.instruction !== 'set' && room.instruction !== 'pause') {
         const timeLeft = parseInt(calculateTimeLeftInt(room.countdown, room.pauseBuffer, room.startEpoch, Date.now()))
-        room = setRoomCdKeepInstruction(room, timeLeft + extendPeriod * 60)
+        room = extendWhilePlaying(room, timeLeft + extendPeriod * 60)
+        await toggleRoomApi(roomId, room, socket.id, rooms)
     }
-    await toggleRoomApi(roomId, room, socket.id, rooms)
     document.getElementById(`extend-${extendPeriod}-min`).disabled = false
 }
 
