@@ -4,7 +4,7 @@ import path, { dirname } from "path"
 import { Server } from "socket.io"
 import { fileURLToPath } from "url";
 import { IP, PORT } from "./config.js"
-import { parseRoomId, isValidInstruction } from './utils.js'
+import { parseRoomId } from './utils.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -92,7 +92,7 @@ app.post('/toggle-room', (req, res) => {
   const data = req.body;
   if ('roomId' in data && 'room' in data) {
     const roomId = parseRoomId(data['roomId'], rooms)
-    if (roomId !== undefined && isValidInstruction(data.room.instruction)) {
+    if (roomId !== undefined) {
       console.log(`${data.room.instruction} room ${roomId}`)
       rooms[roomId] = data.room
       io.to(roomId).emit('toggle-room', data.room)

@@ -3,7 +3,3 @@ export function parseRoomId(id, rooms) {
   if (!(id in rooms)) return undefined // not in rooms
   return id
 }
-
-export function isValidInstruction(instruction) {
-  return instruction === 'start' || instruction === 'pause' || instruction === 'set'
-}
