@@ -99,17 +99,6 @@ export function makeUrl(roomId) {
     return url.href
 }
 
-export function getTimeLeftInt(room) {
-    if (room.instruction === 'set') return room.countdown
-
-    return calculateTimeLeftInt(
-        room.countdown,
-        room.pauseBuffer,
-        room.startEpoch,
-        room.instruction === 'pause' ? room.pauseEpoch : Date.now()
-    )
-}
-
 export function getSelectedRoomId() {
     return document.getElementById('selected-room-label').textContent
 }

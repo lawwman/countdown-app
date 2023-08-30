@@ -1,9 +1,10 @@
 import {
     makeUrl,
-    getTimeLeftInt,
     makeNewRoomDiv,
     getSelectedRoomId,
 } from "./admin.utils.js"
+
+import { calculateTimeLeftInt, countdownToMinsAndSecString } from './countdown.utils.js'
 
 const selectedRoomUrl = document.getElementById('selected-room-url')
 const setCooldownMinInput = document.getElementById(`set-room-cd-min-input`)
@@ -30,24 +31,19 @@ const stopCdBtn = document.getElementById('stop-cd')
 const deleteRoomBtn = document.getElementById('delete-room-btn')
 
 export function displayRoomCd(countdown) {
-    let mins = `${Math.floor(countdown / 60)}`
-    let seconds = `${parseInt(countdown - mins * 60)}`
-
-    if (mins.length < 2) mins = `0${mins}`
-    if (seconds.length < 2) seconds = `0${seconds}`
-
-    return `${mins} : ${seconds}`
+    const { minutesString, secondsString } = countdownToMinsAndSecString(countdown)
+    return `${minutesString} : ${secondsString}`
 }
 
 export function updateAllRoomsCdLeft(rooms) {
     for (const roomId of Object.keys(rooms)) {
-        const countdownLeft = getTimeLeftInt(rooms[roomId])
+        const countdownLeft = calculateTimeLeftInt(rooms[roomId])
         document.getElementById(`room-cd-left-${roomId}`).textContent = displayRoomCd(countdownLeft)
     }
 
     if (getSelectedRoomId() !== '') {
         const room = rooms[getSelectedRoomId()]
-        formCdDisplay.textContent = displayRoomCd(getTimeLeftInt(room))
+        formCdDisplay.textContent = displayRoomCd(calculateTimeLeftInt(room))
     } else {
         formCdDisplay.textContent = displayRoomCd(0)
     }
@@ -58,7 +54,7 @@ function setSelectedRoomId(newId) {
 }
 
 export function startPauseLogic(room) {
-    const canStart = (room.instruction === 'pause' || room.instruction === 'set') && (getTimeLeftInt(room) > 0 || parseInt(setCooldownMinInput.value) > 0)
+    const canStart = (room.instruction === 'pause' || room.instruction === 'set') && (calculateTimeLeftInt(room) > 0 || parseInt(setCooldownMinInput.value) > 0)
     startPauseCdBtn.disabled = !(canStart || room.instruction === 'start')
 
     /* whenever you start or reset, next button will be to pause. after set or pause, next button will be to start */
@@ -95,7 +91,7 @@ export function uiUpdateRoomSelected(roomId, rooms) {
     cdOnlyBtn.disabled = false
     cdOnlyBtn.textContent = room.countdownOnly ? 'Show All' : 'Show Countdown Only'
 
-    formCdDisplay.textContent = displayRoomCd(getTimeLeftInt(room))
+    formCdDisplay.textContent = displayRoomCd(calculateTimeLeftInt(room))
 
     /* pause start section */
     startPauseLogic(room)

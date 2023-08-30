@@ -150,7 +150,7 @@ async function extendTime(extendPeriod) {
     let { roomId, room } = cloneSelectedRoom(rooms)
 
     if (room.instruction !== 'set' && room.instruction !== 'pause') {
-        const timeLeft = parseInt(calculateTimeLeftInt(room.countdown, room.pauseBuffer, room.startEpoch, Date.now()))
+        const timeLeft = parseInt(calculateTimeLeftInt(room))
         room = extendWhilePlaying(room, timeLeft + extendPeriod * 60)
         await toggleRoomApi(roomId, room, socket.id, rooms)
     }

@@ -42,8 +42,7 @@ function inRange(value, point, buffer) {
 }
 
 function updateCountdownUi(room) {
-    const currentEpoch = room.instruction === 'set' ? room.startEpoch : room.instruction === 'pause' ? room.pauseEpoch : Date.now()
-    const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(room.countdown, room.pauseBuffer, room.startEpoch, currentEpoch)
+    const { minutesString, secondsString, timeLeftInt } = calculateCountdownForUi(room)
     cdMin1.textContent = minutesString[0]
     cdMin2.textContent = minutesString[1]
     cdSec1.textContent = secondsString[0]
