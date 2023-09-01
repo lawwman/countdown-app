@@ -93,7 +93,7 @@ app.post('/toggle-room', (req, res) => {
   if ('roomId' in data && 'room' in data) {
     const roomId = parseRoomId(data['roomId'], rooms)
     if (roomId !== undefined) {
-      console.log(`${data.room.instruction} room ${roomId}`)
+      // console.log(`${data.room.instruction} room ${roomId}`)
       rooms[roomId] = data.room
       io.to(roomId).emit('toggle-room', data.room)
       io.to('admin').emit('toggle-room', roomId, data.room, data.sourceSocketId)
@@ -106,18 +106,12 @@ io.on('connection', (socket) => {
   console.log(`Incoming socket connection from: ${socket.handshake.address}`)
 
   socket.on('join-room', (roomId) => {
-    console.log(`joining room: ${roomId}`)
     socket.join(roomId)
   })
 
   socket.on('join-admin-room', () => {
-    console.log(`joining admin room`)
     socket.join('admin')
   })
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
 });
 
 server.listen(PORT, IP, () => {
