@@ -63,7 +63,7 @@
             <div style="display: flex; align-items: center; gap: 10px">
               <button id="reset-cd" class="form-button" style="width:100px">reset</button>
               <button id="stop-cd" class="form-button" style="width:100px">stop</button>
-              <span id="form-cd-display" style="font-size: 2em; font-weight: bold; border: 3px solid black; border-radius: 6px; padding: 5px"></span>
+              <span id="form-cd-display" style="font-size: 2em; font-weight: bold; border: 3px solid black; border-radius: 6px; padding: 5px; white-space: nowrap;"></span>
             </div>
 
             <p class="form-label">Extend Time</p>
@@ -84,7 +84,7 @@
         </div>
       </div>
 
-      <div style="display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <div class="add-room-div">
           <p class="form-label">Add New Room</p>
           <form id="new-room-form">
