@@ -7,7 +7,7 @@ To check if properly installed
 ```
 node -v
 npm -v
-git -v
+git --version
 ```
 
 ```
