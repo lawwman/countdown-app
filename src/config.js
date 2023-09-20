@@ -12,11 +12,8 @@ function getIpAddress() {
     }
     throw new Error(`unable to get device's ip addr`)
 }
-
-const LOCALHOST = '127.0.0.1'
-const ACTUAL_IP = getIpAddress()
-
-const useLocal = true
+const useLocal = false
 
 export const PORT = 3000;
-export const IP = useLocal ? LOCALHOST : ACTUAL_IP
+export const IP = useLocal ? '127.0.0.1' : getIpAddress()
+console.log(`IP: ${IP}`)

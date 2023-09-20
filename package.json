@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "check:ip": "node src/config.js"
   },
   "engines": {
     "node": ">=16.13.0"

@@ -13,16 +13,16 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-let rooms = {"1": {
-  startEpoch: 0,
-  countdownOnly: false,
-  pauseBuffer: 0,
-  countdown: 0,
-  instruction: 'set',
-  msg: 'test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn end',
-  description: 'test room',
-  originalCd: 0,
-}}
+// let rooms = {"1": {
+//   startEpoch: 0,
+//   countdownOnly: false,
+//   pauseBuffer: 0,
+//   countdown: 0,
+//   instruction: 'set',
+//   msg: 'test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn asodjf paso dfjpsdofjapsodfjapsodfk ps odfk apsodfkapsdofkapdosk fpasodkf psodkf po sdkfps kfpasodkfpoasdf test aosidfjn end',
+//   description: 'test room',
+//   originalCd: 0,
+// }}
 
 // let rooms = {"1": {
 //   startEpoch: 0,
@@ -35,7 +35,7 @@ let rooms = {"1": {
 //   originalCd: 0,
 // }}
 
-// let rooms = {}
+let rooms = {}
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public')
 
