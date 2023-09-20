@@ -21,6 +21,8 @@ npm run check:ip
 
 ## receiving updates
 
+"ctrl-c" to stop the server. Then proceed with following terminal commands.
+
 ```
 git pull origin master
 npm i
