@@ -10,11 +10,12 @@ import {
     resetRoom,
     stopRoom,
     extendWhilePlaying,
-    makeNewRoom,
     getSelectedRoomId,
     getNewUniqueRoomId,
     cloneSelectedRoom
 } from "./admin.utils.js"
+
+import { makeNewRoom } from "./make-room.js"
 
 import {
     uiUpdateRoomUnSelected,

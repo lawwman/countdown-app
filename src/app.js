@@ -4,7 +4,8 @@ import path, { dirname } from "path"
 import { Server } from "socket.io"
 import { fileURLToPath } from "url";
 import { IP, PORT } from "./config.js"
-import { parseRoomId } from './utils.js'
+import { doesRoomExist } from './utils.js'
+import { makeNewRoom } from '../public/make-room.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -49,6 +50,7 @@ app.get('/', (req, res) => {
 
 app.post('/add-room', (req, res) => {
   const { roomId, room, sourceSocketId } = req.body;
+
   rooms[roomId] = room;
   io.to('admin').emit('add-room', roomId, room, sourceSocketId)
   res.end();
@@ -56,14 +58,14 @@ app.post('/add-room', (req, res) => {
 
 app.post('/delete-room', (req, res) => {
   const data = req.body;
-  const roomId = parseRoomId(data.roomId, rooms);
-  if (roomId === undefined) {
-    res.end() // maybe should throw error
-  } else {
-    delete rooms[roomId]
-    io.in(roomId).disconnectSockets(true);
-    io.to('admin').emit('delete-room', roomId, data.sourceSocketId)
+
+  if (doesRoomExist(data.roomId, rooms)) {
+    delete rooms[data.roomId]
+    io.in(data.roomId).disconnectSockets(true);
+    io.to('admin').emit('delete-room', data.roomId, data.sourceSocketId)
     res.end()
+  } else {
+    res.end() // maybe should throw error
   }
 })
 
@@ -73,30 +75,27 @@ app.get('/sync-rooms', (_req, res) => {
 })
 
 app.get('/room', (req, res) => {
-  const roomId = parseRoomId(req.query['id'], rooms);
-  if (roomId === undefined) res.sendFile(path.join(PUBLIC_DIR, 'room-not-found.html'));
-  else res.sendFile(path.join(PUBLIC_DIR, 'room.html'));
+  if (doesRoomExist(req.query['id'], rooms)) res.sendFile(path.join(PUBLIC_DIR, 'room.html'));
+  else res.sendFile(path.join(PUBLIC_DIR, 'room-not-found.html'));
 })
 
 app.get('/room-info', (req, res) => {
-  const roomId = parseRoomId(req.query['id'], rooms);
-  if (roomId === undefined) {
-    res.status(400).send()
-  } else {
+  const roomId = req.query['id']
+  if (doesRoomExist(roomId, rooms)) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(rooms[roomId]));
+  } else {
+    res.status(400).send()
   }
 })
 
 app.post('/toggle-room', (req, res) => {
   const data = req.body;
   if ('roomId' in data && 'room' in data) {
-    const roomId = parseRoomId(data['roomId'], rooms)
-    if (roomId !== undefined) {
-      // console.log(`${data.room.instruction} room ${roomId}`)
-      rooms[roomId] = data.room
-      io.to(roomId).emit('toggle-room', data.room)
-      io.to('admin').emit('toggle-room', roomId, data.room, data.sourceSocketId)
+    if (doesRoomExist(data.roomId, rooms)) {
+      rooms[data.roomId] = data.room
+      io.to(data.roomId).emit('toggle-room', data.room)
+      io.to('admin').emit('toggle-room', data.roomId, data.room, data.sourceSocketId)
     }
   }
   res.end()
@@ -107,6 +106,12 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', (roomId) => {
     socket.join(roomId)
+
+    /* create room if it does not exist */
+    // if (!doesRoomExist(roomId, rooms)) {
+    //   console.log("creating room")
+    //   io.to('admin').emit('add-room', roomId, makeNewRoom(''), socket.id)
+    // }
   })
 
   socket.on('join-admin-room', () => {
