@@ -97,6 +97,8 @@ function dynamicallyFitText() {
 let firstLoad = true
 function applyRoomValues(room) {
     const msg = room.msg === '' ? '-' : room.msg
+
+    /* only flash msg when incoming msg is different than current msg. also do not flash when page is just loaded.  */
     if (msg !== msgP.textContent && !firstLoad) triggerFlashing3x(document.getElementById('msg-div-inner'))
     msgP.textContent = msg;
 
@@ -128,6 +130,7 @@ function applyRoomValues(room) {
 }
 
 async function init() {
+    firstLoad = true
     socket.emit('join-room', roomId) // join room first before init. so you do not miss updates
     try {
         const res = await fetch('room-info?'  + new URLSearchParams({ id: roomId }), {
