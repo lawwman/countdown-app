@@ -25,8 +25,6 @@ const statusDiv = document.getElementById('status-div')
 const roomDiv = document.getElementById("room-div")
 const msgP = document.getElementById('msg')
 
-
-
 function clockTimer() {
     const date = new Date();
     clockSpan.textContent = date.toLocaleTimeString();
@@ -64,7 +62,7 @@ function updateCountdownUi(room) {
         document.getElementById("countdown-div").classList.add("flash-infinite")
         if (timeLeftInt <= 0) {
             statusSpan.textContent = "done"
-            replay()
+            replay(statusDiv);
             document.getElementById("countdown-div").classList.remove("flash-infinite")
             if (countdownInterval) clearInterval(countdownInterval)
         }
@@ -114,15 +112,13 @@ function applyRoomValues(room) {
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         statusSpan.textContent = 'idle'
-        replay();
     } else if (room.instruction === 'start') {
         statusSpan.textContent = 'running'
-        replay();
         countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
-        replay();
     }
+    replay(statusDiv);
 }
 
 async function init() {
@@ -152,7 +148,7 @@ socket.on('toggle-room', (room) => applyRoomValues(room))
 socket.on("connect", async () => {
     statusSpan.classList.remove("error")
     statusDiv.classList.add("fadeOut")
-    replay();
+    replay(statusDiv);
     await init()
 });
 
@@ -170,26 +166,16 @@ socket.io.on("reconnect_attempt", () => {
     console.log('reconnect attempt')
 })
 
-document.onmousemove = function(event){
-    statusDiv.classList.remove("fadeOut")
-    replay2();
-    statusDiv.classList.add("fadeOut")
+document.onmousemove = function() {
+    replay(roomDiv);
+    replay(statusDiv);
 }
 
-function replay(){
-    statusDiv.style.animationName = "none";
+function replay(htmlElement) {
+    htmlElement.style.animationName = "none";
     requestAnimationFrame(()=>{
         setTimeout(()=>{
-            statusDiv.style.animationName=""
-        },0);
-    });
-}
-
-function replay2(){
-    roomDiv.style.animationName = "none";
-    requestAnimationFrame(()=>{
-        setTimeout(()=>{
-            roomDiv.style.animationName=""
+            htmlElement.style.animationName=""
         },0);
     });
 }
