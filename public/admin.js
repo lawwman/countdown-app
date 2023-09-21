@@ -207,8 +207,8 @@ socket.on("add-room", async (roomId, room, sourceSocketId) => {
     rooms[roomId] = room
     addRoomDiv(roomId, rooms)
     
-    /* clear room name value. new roomId might match roomId in the text input */
-    document.getElementById(`new-room-name`).value = ''
+    /* make sure text input always has a unique roomId */
+    document.getElementById(`new-room-name`).value = getNewUniqueRoomId(rooms)
 })
 
 socket.on("delete-room", async (roomId, sourceSocketId) => {
