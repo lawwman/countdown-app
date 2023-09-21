@@ -21,7 +21,11 @@ const cdMin2 = document.getElementById("cd-mins-2")
 const cdSec1 = document.getElementById("cd-sec-1")
 const cdSec2 = document.getElementById("cd-sec-2")
 const statusSpan = document.getElementById('status')
+const statusDiv = document.getElementById('status-div')
+const roomDiv = document.getElementById("room-div")
 const msgP = document.getElementById('msg')
+
+
 
 function clockTimer() {
     const date = new Date();
@@ -60,6 +64,7 @@ function updateCountdownUi(room) {
         document.getElementById("countdown-div").classList.add("flash-infinite")
         if (timeLeftInt <= 0) {
             statusSpan.textContent = "done"
+            replay()
             document.getElementById("countdown-div").classList.remove("flash-infinite")
             if (countdownInterval) clearInterval(countdownInterval)
         }
@@ -96,12 +101,10 @@ function applyRoomValues(room) {
         document.getElementById('clock-div').classList.add('invisible')
         document.getElementById('msg-div').classList.add('invisible')
         document.getElementById('countdown-div').classList.add('whole-label')
-        document.getElementById('status-div').classList.add('bottom-label')
     } else {
         document.getElementById('clock-div').classList.remove('invisible')
         document.getElementById('msg-div').classList.remove('invisible')
         document.getElementById('countdown-div').classList.remove('whole-label')
-        document.getElementById('status-div').classList.remove('bottom-label')
     }
 
     dynamicallyFitText()
@@ -111,11 +114,14 @@ function applyRoomValues(room) {
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         statusSpan.textContent = 'idle'
+        replay();
     } else if (room.instruction === 'start') {
         statusSpan.textContent = 'running'
+        replay();
         countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
+        replay();
     }
 }
 
@@ -145,6 +151,8 @@ socket.on('toggle-room', (room) => applyRoomValues(room))
 
 socket.on("connect", async () => {
     statusSpan.classList.remove("error")
+    statusDiv.classList.add("fadeOut")
+    replay();
     await init()
 });
 
@@ -152,6 +160,7 @@ socket.on('disconnect', (reason) => {
     if (countdownInterval) clearInterval(countdownInterval)
     statusSpan.textContent = "disconnected"
     statusSpan.classList.add("error")
+    statusDiv.classList.remove("fadeOut")
     if (reason === "io server disconnect") {
         window.location.replace(`${location.origin}/room`)
     } 
@@ -160,3 +169,27 @@ socket.on('disconnect', (reason) => {
 socket.io.on("reconnect_attempt", () => {
     console.log('reconnect attempt')
 })
+
+document.onmousemove = function(event){
+    statusDiv.classList.remove("fadeOut")
+    replay2();
+    statusDiv.classList.add("fadeOut")
+}
+
+function replay(){
+    statusDiv.style.animationName = "none";
+    requestAnimationFrame(()=>{
+        setTimeout(()=>{
+            statusDiv.style.animationName=""
+        },0);
+    });
+}
+
+function replay2(){
+    roomDiv.style.animationName = "none";
+    requestAnimationFrame(()=>{
+        setTimeout(()=>{
+            roomDiv.style.animationName=""
+        },0);
+    });
+}
