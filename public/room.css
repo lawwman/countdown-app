@@ -60,11 +60,6 @@ html, body {
     white-space: nowrap;
 }
 
-.top-section-bottom-label {
-    bottom: 70vh;
-    border-radius: 6px 6px 0px 0px;
-}
-
 .bottom-label {
     bottom: 0px;
     border-radius: 6px 6px 0px 0px;

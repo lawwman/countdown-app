@@ -25,8 +25,6 @@ const statusDiv = document.getElementById('status-div')
 const roomDiv = document.getElementById("room-div")
 const msgP = document.getElementById('msg')
 
-
-
 function clockTimer() {
     const date = new Date();
     clockSpan.textContent = date.toLocaleTimeString();
@@ -37,6 +35,12 @@ statusSpan.textContent = ''
 setInterval(clockTimer, 1000);
 
 let roomId = (new URL(document.location)).searchParams.get("id");
+
+if (roomId === null || roomId === undefined || roomId === '') {
+    /* invalid roomId. not possible to create room from rubbish roomId */
+    window.location.replace(`${location.origin}/invalid-room`)
+}
+
 document.getElementById('room-label').textContent = roomId
 
 let countdownInterval;
@@ -64,7 +68,7 @@ function updateCountdownUi(room) {
         document.getElementById("countdown-div").classList.add("flash-infinite")
         if (timeLeftInt <= 0) {
             statusSpan.textContent = "done"
-            replay()
+            replay(statusDiv);
             document.getElementById("countdown-div").classList.remove("flash-infinite")
             if (countdownInterval) clearInterval(countdownInterval)
         }
@@ -93,6 +97,8 @@ function dynamicallyFitText() {
 let firstLoad = true
 function applyRoomValues(room) {
     const msg = room.msg === '' ? '-' : room.msg
+
+    /* only flash msg when incoming msg is different than current msg. also do not flash when page is just loaded.  */
     if (msg !== msgP.textContent && !firstLoad) triggerFlashing3x(document.getElementById('msg-div-inner'))
     msgP.textContent = msg;
 
@@ -114,18 +120,17 @@ function applyRoomValues(room) {
     /* no validation. assuming it is all correct */
     if (room.instruction === 'set') {
         statusSpan.textContent = 'idle'
-        replay();
     } else if (room.instruction === 'start') {
         statusSpan.textContent = 'running'
-        replay();
         countdownInterval = setInterval(() => { updateCountdownUi(room) }, 1000)
     } else if (room.instruction === 'pause') {
         statusSpan.textContent = 'paused'
-        replay();
     }
+    replay(statusDiv);
 }
 
 async function init() {
+    firstLoad = true
     socket.emit('join-room', roomId) // join room first before init. so you do not miss updates
     try {
         const res = await fetch('room-info?'  + new URLSearchParams({ id: roomId }), {
@@ -135,7 +140,7 @@ async function init() {
         if (res.status !== 200) {
             console.log('fail to init room....') // bad response from backend
             console.log(await res.text())            
-            window.location.replace(`${location.origin}/room`)
+            window.location.replace(`${location.origin}/invalid-room`)
             return
         }
         const room = await res.json()
@@ -152,7 +157,7 @@ socket.on('toggle-room', (room) => applyRoomValues(room))
 socket.on("connect", async () => {
     statusSpan.classList.remove("error")
     statusDiv.classList.add("fadeOut")
-    replay();
+    replay(statusDiv);
     await init()
 });
 
@@ -162,34 +167,25 @@ socket.on('disconnect', (reason) => {
     statusSpan.classList.add("error")
     statusDiv.classList.remove("fadeOut")
     if (reason === "io server disconnect") {
-        window.location.replace(`${location.origin}/room`)
-    } 
+        /* occurs when server side forcefully disconnects room. should only happen when admin prompts to delete a room. */
+        window.location.replace(`${location.origin}/invalid-room`)
+    }
 })
 
 socket.io.on("reconnect_attempt", () => {
     console.log('reconnect attempt')
 })
 
-document.onmousemove = function(event){
-    statusDiv.classList.remove("fadeOut")
-    replay2();
-    statusDiv.classList.add("fadeOut")
+document.onmousemove = function() {
+    replay(roomDiv);
+    replay(statusDiv);
 }
 
-function replay(){
-    statusDiv.style.animationName = "none";
+function replay(htmlElement) {
+    htmlElement.style.animationName = "none";
     requestAnimationFrame(()=>{
         setTimeout(()=>{
-            statusDiv.style.animationName=""
-        },0);
-    });
-}
-
-function replay2(){
-    roomDiv.style.animationName = "none";
-    requestAnimationFrame(()=>{
-        setTimeout(()=>{
-            roomDiv.style.animationName=""
+            htmlElement.style.animationName=""
         },0);
     });
 }

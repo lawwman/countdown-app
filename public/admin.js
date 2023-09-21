@@ -10,11 +10,12 @@ import {
     resetRoom,
     stopRoom,
     extendWhilePlaying,
-    makeNewRoom,
     getSelectedRoomId,
     getNewUniqueRoomId,
     cloneSelectedRoom
 } from "./admin.utils.js"
+
+import { makeNewRoom } from "./make-room.js"
 
 import {
     uiUpdateRoomUnSelected,
@@ -123,11 +124,15 @@ document.getElementById(`new-room-form`).addEventListener('submit', async (event
         return;
     }
 
+    /* while async operation is happening, disable all input elements. */
     const elements = document.getElementById(`new-room-form`).elements
     for (const element of elements) element.disabled = true
+
     const newRoomId = document.getElementById('new-room-name').value
     const room = makeNewRoom(document.getElementById('new-room-description').value);
     await addRoomApi(newRoomId, room, rooms, socket.id)
+
+    /* once async operations are over, enable input elements again. */
     for (const element of elements) element.disabled = false
 });
 
@@ -201,6 +206,9 @@ socket.on("add-room", async (roomId, room, sourceSocketId) => {
     if (socket.id === sourceSocketId) return;
     rooms[roomId] = room
     addRoomDiv(roomId, rooms)
+    
+    /* make sure text input always has a unique roomId */
+    document.getElementById(`new-room-name`).value = getNewUniqueRoomId(rooms)
 })
 
 socket.on("delete-room", async (roomId, sourceSocketId) => {
