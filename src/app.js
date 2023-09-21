@@ -89,7 +89,7 @@ app.get('/room-info', (req, res) => {
     /* bad scenarios occur when query parameter is not defined:
     1. "/room?id="
     2. "/room"
-    in such scenarios, a room cannot be created if even roomId is not valid
+    in such scenarios, a room cannot be created because roomId is not valid
     */
     res.status(400).send()
     return
