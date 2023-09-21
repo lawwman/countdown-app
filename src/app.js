@@ -74,19 +74,36 @@ app.get('/sync-rooms', (_req, res) => {
   res.end(JSON.stringify(rooms));
 })
 
-app.get('/room', (req, res) => {
-  if (doesRoomExist(req.query['id'], rooms)) res.sendFile(path.join(PUBLIC_DIR, 'room.html'));
-  else res.sendFile(path.join(PUBLIC_DIR, 'room-not-found.html'));
+app.get('/room', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'room.html'));
+})
+
+app.get('/invalid-room', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'invalid-room.html'));
 })
 
 app.get('/room-info', (req, res) => {
   const roomId = req.query['id']
-  if (doesRoomExist(roomId, rooms)) {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(rooms[roomId]));
-  } else {
+
+  if (roomId === 'null' || roomId === '') {
+    /* bad scenarios occur when query parameter is not defined:
+    1. "/room?id="
+    2. "/room"
+    in such scenarios, a room cannot be created if even roomId is not valid
+    */
     res.status(400).send()
+    return
   }
+
+  /* if room does not exist but roomId is valid, make a new room */
+  if (!doesRoomExist(roomId, rooms)) {
+    const newRoom = makeNewRoom('')
+    rooms[roomId] = newRoom // add new room to rooms
+    io.to('admin').emit('add-room', roomId, newRoom, 'id that does not exist') // broadcast to admin pages that new room is created
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(rooms[roomId]));
 })
 
 app.post('/toggle-room', (req, res) => {
@@ -106,12 +123,6 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', (roomId) => {
     socket.join(roomId)
-
-    /* create room if it does not exist */
-    // if (!doesRoomExist(roomId, rooms)) {
-    //   console.log("creating room")
-    //   io.to('admin').emit('add-room', roomId, makeNewRoom(''), socket.id)
-    // }
   })
 
   socket.on('join-admin-room', () => {

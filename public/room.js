@@ -35,6 +35,12 @@ statusSpan.textContent = ''
 setInterval(clockTimer, 1000);
 
 let roomId = (new URL(document.location)).searchParams.get("id");
+
+if (roomId === null || roomId === undefined || roomId === '') {
+    /* invalid roomId. not possible to create room from rubbish roomId */
+    window.location.replace(`${location.origin}/invalid-room`)
+}
+
 document.getElementById('room-label').textContent = roomId
 
 let countdownInterval;
@@ -131,7 +137,7 @@ async function init() {
         if (res.status !== 200) {
             console.log('fail to init room....') // bad response from backend
             console.log(await res.text())            
-            window.location.replace(`${location.origin}/room`)
+            window.location.replace(`${location.origin}/invalid-room`)
             return
         }
         const room = await res.json()
@@ -158,8 +164,9 @@ socket.on('disconnect', (reason) => {
     statusSpan.classList.add("error")
     statusDiv.classList.remove("fadeOut")
     if (reason === "io server disconnect") {
-        window.location.replace(`${location.origin}/room`)
-    } 
+        /* occurs when server side forcefully disconnects room. should only happen when admin prompts to delete a room. */
+        window.location.replace(`${location.origin}/invalid-room`)
+    }
 })
 
 socket.io.on("reconnect_attempt", () => {
